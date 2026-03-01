@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FastTrack">
+<title>FastTrack</title>
+<style>
+:root{
+  --or:#FF6B2B;--orl:#FFF3ED;--ord:#D95A1E;
+  --gr:#34C759;--bl:#007AFF;--re:#FF3B30;--pu:#AF52DE;--yw:#FF9500;
+  --bg:#F2F2F7;--card:#FFFFFF;--tx:#1C1C1E;--tx2:#8E8E93;--bd:#E5E5EA;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;color:var(--tx);max-width:430px;margin:0 auto;display:flex;flex-direction:column}
+#hdr{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:90;padding:calc(10px + var(--sat)) 18px 10px;background:rgba(242,242,247,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.hbrand{font-size:20px;font-weight:800;color:var(--or)}
+.hright{display:flex;align-items:center;gap:8px}
+.hdate{font-size:12px;color:var(--tx2)}
+#gbtn{background:none;border:none;font-size:22px;cursor:pointer;padding:2px;display:none}
+#content{flex:1;overflow-y:auto;overflow-x:hidden;padding-top:calc(50px + var(--sat));padding-bottom:calc(80px + var(--sab));-webkit-overflow-scrolling:touch}
+.screen{display:none;padding:0 13px}
+.screen.active{display:block}
+#tbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:90;height:calc(70px + var(--sab));background:rgba(255,255,255,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--bd);display:flex;align-items:flex-start;padding-top:8px}
+.ti{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px 0}
+.ti .ico{font-size:22px;line-height:1}.ti .lbl{font-size:10px;font-weight:500;color:var(--tx2)}
+.ti.active .lbl{color:var(--or)}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:13px;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+.chdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ctitle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.ci{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.ci-o{background:#FFF0E8}.ci-g{background:#E8F7EE}.ci-b{background:#E5F0FF}
+.chev{font-size:22px;color:var(--tx2);background:none;border:none;cursor:pointer;padding:2px 4px;line-height:1}
+/* ARC */
+.awrap{display:flex;flex-direction:column;align-items:center;position:relative;margin:4px 0 8px}
+.asvg{width:220px;height:126px}
+.acent{position:absolute;top:14px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap}
+.fbadge{background:var(--orl);color:var(--or);padding:7px 16px;border-radius:20px;font-weight:800;font-size:18px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.fbadge:active{opacity:.7}
+.atime{font-size:12px;color:var(--tx2);margin-top:5px;min-height:18px}
+.fss{text-align:center;margin-bottom:8px}
+.fss-l{font-size:12px;color:var(--tx2);margin-bottom:2px}
+.fss-t{font-size:24px;font-weight:700;cursor:pointer}.fss-t:active{opacity:.7}
+.irow{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--bd);font-size:14px}
+.ir-l{color:var(--tx2)}.ir-v{font-weight:500}
+/* BUTTONS */
+.btnp{background:var(--or);color:#fff;border:none;border-radius:25px;padding:14px;font-size:16px;font-weight:600;width:100%;margin-top:11px;cursor:pointer;transition:transform .1s,opacity .1s}
+.btnp:active{transform:scale(.97);opacity:.9}
+.btnp.stop{background:var(--re)}
+.btns{background:transparent;color:var(--tx);border:1.5px solid var(--bd);border-radius:25px;padding:11px;font-size:14px;font-weight:500;width:100%;margin-top:8px;cursor:pointer}
+.btns:active{opacity:.7}
+.btnsm{flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--bd);background:#fff;font-size:12px;font-weight:500;cursor:pointer;text-align:center}
+.btnsm:active{background:var(--bg)}
+.brow{display:flex;gap:8px;margin:8px 0}
+.bdanger{background:#FFE5E5;color:var(--re);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;width:100%;cursor:pointer;margin-top:8px}
+.bdanger:active{opacity:.7}
+/* WEIGHT */
+.wcur{font-size:36px;font-weight:700;margin:4px 0}
+.pbw{background:var(--bd);border-radius:4px;height:7px;margin:9px 0;overflow:hidden}
+.pbf{height:100%;background:var(--gr);border-radius:4px;transition:width .4s}
+.wends{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2)}
+/* WATER */
+.wamt{font-size:30px;font-weight:700;margin:3px 0}
+.wtank{width:100%;height:90px;background:#E8F4FD;border-radius:12px;margin:9px 0;overflow:hidden;position:relative;display:flex;align-items:flex-end}
+.wfill{width:100%;background:linear-gradient(to top,#0055CC,#1E90FF,#5AC8FA);border-radius:0 0 12px 12px;transition:height .5s ease}
+.wpct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-weight:800;font-size:18px;pointer-events:none}
+/* PLANS */
+.stitle{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.6px;margin:13px 0 7px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.pcard{background:var(--card);border-radius:14px;padding:13px 7px;text-align:center;cursor:pointer;border:2px solid transparent;transition:border-color .15s,background .15s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.pcard:active{opacity:.7}
+.pcard.sel{border-color:var(--or);background:var(--orl)}
+.pname{font-size:17px;font-weight:800}.pdesc{font-size:10px;color:var(--tx2);margin-top:2px}
+.pcard.sel .pname{color:var(--or)}
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sbox{background:#F7F7F9;border-radius:12px;padding:11px}
+.sico{font-size:17px;margin-bottom:3px}.slbl{font-size:11px;color:var(--tx2);margin-bottom:2px}
+.sval{font-size:22px;font-weight:800}.su{font-size:12px;font-weight:400;color:var(--tx2)}
+/* PIXELS */
+.pxwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pxtable{border-collapse:separate;border-spacing:3px;font-size:10px}
+.pxtable td{width:18px;height:18px;border-radius:3px;background:var(--bd)}
+.pxtable td.done{background:var(--or)}
+.pxtable td.part{background:#FFBE9D}
+.pxtable .dlbl{color:var(--tx2);text-align:right;padding-right:4px;width:20px;background:transparent!important}
+/* CHART TABS */
+.ctabs{display:flex;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:9px}
+.ctab{flex:1;text-align:center;padding:5px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--tx2);background:transparent;border:none}
+.ctab.active{background:#fff;color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+canvas.ch{width:100%!important;border-radius:7px}
+/* BMI */
+.bmibar{position:relative;height:11px;border-radius:6px;margin:11px 0;background:linear-gradient(to right,#5AC8FA,#34C759,#FFCC00,#FF9500,#FF3B30)}
+.bmidot{position:absolute;top:-4px;width:19px;height:19px;background:#fff;border:3px solid #333;border-radius:50%;transform:translateX(-50%);transition:left .3s}
+.bmirng{display:flex;justify-content:space-between;font-size:9px;color:var(--tx2)}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.mov.hidden{display:none}
+.modal{background:var(--card);border-radius:22px 22px 0 0;width:100%;max-width:430px;max-height:92vh;overflow-y:auto;padding:0 20px calc(28px + var(--sab));-webkit-overflow-scrolling:touch}
+.mdrag{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:13px auto 15px}
+.mtitle{font-size:17px;font-weight:700;margin-bottom:13px}
+/* CI Modal */
+.cimod{max-width:320px;border-radius:16px;padding:22px 20px;margin:auto;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)!important;width:calc(100% - 40px)}
+.cimod .mdrag{display:none}
+#conf-ov,#inp-ov{align-items:center}
+/* NUM INPUT */
+.nrow{display:flex;align-items:center;gap:11px;margin:11px 0}
+.nb{width:46px;height:46px;border-radius:23px;border:1.5px solid var(--bd);background:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.nb:active{background:var(--bg)}
+.ndisp{flex:1;text-align:center}
+.nval{font-size:28px;font-weight:800}.nunit{font-size:12px;color:var(--tx2)}
+/* INPUTS */
+.tinp{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--bd);font-size:15px;font-family:inherit;background:#fff;color:var(--tx);outline:none}
+.tinp:focus{border-color:var(--or)}
+.taio{width:100%;min-height:110px;padding:11px;border-radius:12px;border:1.5px solid var(--bd);font-size:12px;font-family:monospace;background:#F9F9FB;color:var(--tx);resize:vertical;outline:none;-webkit-user-select:text!important;user-select:text!important;touch-action:manipulation;cursor:text;-webkit-text-fill-color:var(--tx)}
+.taio:focus{border-color:var(--or)}
+/* TIME PICKER */
+.tprow{display:flex;align-items:center;justify-content:center;gap:9px;margin:14px 0}
+.tpcol{display:flex;flex-direction:column;align-items:center;gap:1px}
+.tparr{width:44px;height:34px;background:none;border:none;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tparr:active{opacity:.4}
+.tpv{font-size:32px;font-weight:800;min-width:60px;text-align:center}
+.tpap{font-size:17px;font-weight:700;color:var(--or);background:var(--orl);padding:6px 9px;border-radius:10px;cursor:pointer;border:none}
+.tpap:active{opacity:.7}
+/* SETTINGS */
+.ss{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin:15px 0 3px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bd)}
+.slv{font-size:14px}.ssv{font-size:13px;color:var(--or);font-weight:500;cursor:pointer}
+.ssel{padding:6px 10px;border-radius:8px;border:1.5px solid var(--bd);font-size:13px;background:#fff;color:var(--tx);outline:none;cursor:pointer;-webkit-appearance:none}
+/* LOG LIST */
+.li{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.liv{font-weight:600;margin-bottom:1px}.lid{font-size:11px;color:var(--tx2)}
+.lidel{color:var(--re);font-size:21px;cursor:pointer;padding:0 4px;line-height:1}
+/* TOAST */
+#toast{position:fixed;top:calc(65px + var(--sat));left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(0,0,0,.82);color:#fff;padding:9px 20px;border-radius:22px;font-size:13px;z-index:999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* QUICK WATER GRID */
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.qb{background:var(--bg);border:1.5px solid var(--bd);border-radius:9px;padding:8px 3px;font-size:11px;font-weight:600;cursor:pointer;text-align:center}
+.qb:active{background:var(--bd)}
+.qb.qs{background:var(--orl);color:var(--or);border-color:var(--or)}
+.flbl{font-size:12px;color:var(--tx2);margin-bottom:4px;display:block;margin-top:9px}
+.emsg{color:var(--tx2);text-align:center;padding:18px 0;font-size:13px}
+::-webkit-scrollbar{display:none}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div id="hdr">
+  <span class="hbrand" id="hbrand">🔥 FastTrack</span>
+  <div class="hright">
+    <span class="hdate" id="hdate"></span>
+    <button id="gbtn" onclick="openSettings()">⚙️</button>
+  </div>
+</div>
+<div id="content">
+
+<!-- TODAY -->
+<div class="screen active" id="sc-today">
+  <div class="card">
+    <div class="chdr"><div class="ctitle"><div class="ci ci-o">🔥</div>Fasting</div><button class="chev" onclick="goTab('dashboard')">›</button></div>
+    <div class="awrap">
+      <svg class="asvg" viewBox="0 0 220 126">
+        <path d="M16 110 A94 94 0 0 1 204 110" fill="none" stroke="#E5E5EA" stroke-width="13" stroke-linecap="round"/>
+        <path id="ap" d="M16 110 A94 94 0 0 1 204 110" fill="none" stroke="var(--or)" stroke-width="13" stroke-linecap="round" stroke-dasharray="0 295.3"/>
+        <circle id="adot" cx="16" cy="110" r="7" fill="var(--or)" opacity="0"/>
+      </svg>
+      <div class="acent">
+        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">16:8</span> ›</button>
+        <div class="atime" id="atime">Not fasting</div>
+      </div>
+    </div>
+    <div class="fss"><div class="fss-l">Fasting start time</div><div class="fss-t" id="fsstd" onclick="openSTModal()">Daily, PM 8:00</div></div>
+    <div class="irow"><span class="ir-l">Next start</span><span class="ir-v" id="irnext">–</span></div>
+    <div class="irow"><span class="ir-l">Expected end</span><span class="ir-v" id="irend">–</span></div>
+    <button class="btnp" id="fbtn" onclick="toggleFast()">Start fasting</button>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle"><div class="ci ci-g">⚖️</div>Weight</div><button class="chev" onclick="openWtLogsModal()">›</button></div>
+    <div class="wcur"><span id="wcur">–</span><span style="font-size:16px;font-weight:400;color:var(--tx2)" id="wunit-lbl"> kg</span></div>
+    <div class="pbw"><div class="pbf" id="wpb" style="width:0%"></div></div>
+    <div class="wends"><span>Start: <strong id="wst">–</strong></span><span>Target: <strong id="wtgt">–</strong></span></div>
+    <button class="btns" onclick="openLogWt()">+ Log weight</button>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle"><div class="ci ci-b">💧</div>Water</div><button class="chev" onclick="openWatLogsModal()">›</button></div>
+    <div class="wamt"><span id="watcur">0</span><span style="font-size:15px;color:var(--tx2)"> ml</span></div>
+    <div style="font-size:13px;color:var(--tx2)">/ <span id="watgoallbl">2000</span> ml goal</div>
+    <div class="wtank"><div class="wfill" id="wfill" style="height:0%"></div><div class="wpct" id="wpct" style="color:var(--bl)">0%</div></div>
+    <button class="btns" onclick="openLogWat()">+ Log water</button>
+  </div>
+</div>
+
+<!-- PLANS -->
+<div class="screen" id="sc-plans">
+  <div class="stitle">Daily Plans</div><div class="pgrid" id="pg-daily"></div>
+  <div class="stitle">One-Time Plans</div><div class="pgrid" id="pg-onetime"></div>
+  <div class="stitle">Custom Plans</div><div id="pg-custom"></div>
+  <button class="btns" onclick="openCPModal()" style="margin-top:8px">+ Create custom plan</button>
+  <div style="height:8px"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="screen" id="sc-dashboard">
+  <div class="card">
+    <div class="sgrid">
+      <div class="sbox"><div class="sico">⏱️</div><div class="slbl">Total fasting time</div><div class="sval"><span id="stot">0</span><span class="su" id="stotu"> h</span></div></div>
+      <div class="sbox"><div class="sico">🏆</div><div class="slbl">Longest fast</div><div class="sval"><span id="slng">0</span><span class="su"> h</span></div></div>
+      <div class="sbox"><div class="sico">📅</div><div class="slbl">Total fasting days</div><div class="sval"><span id="sdays">0</span><span class="su"> d</span></div></div>
+      <div class="sbox"><div class="sico">🔥</div><div class="slbl">Longest streak</div><div class="sval"><span id="sstrk">0</span><span class="su"> d</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle" style="font-size:14px">🟠 Fasting Pixels</div></div>
+    <div style="font-size:11px;color:var(--tx2);margin-bottom:6px">Last 12 weeks</div>
+    <div class="pxwrap"><table class="pxtable" id="pxtbl"></table></div>
+    <div style="display:flex;gap:10px;margin-top:8px;font-size:11px;color:var(--tx2)">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--or);border-radius:2px;vertical-align:middle;margin-right:2px"></span>Done</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FFBE9D;border-radius:2px;vertical-align:middle;margin-right:2px"></span>Partial</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--bd);border-radius:2px;vertical-align:middle;margin-right:2px"></span>None</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle" style="font-size:14px">📊 Fasting Logs</div></div>
+    <div class="ctabs" id="fct"><button class="ctab active" onclick="setPeriod('f','7d',this)">7d</button><button class="ctab" onclick="setPeriod('f','31d',this)">31d</button><button class="ctab" onclick="setPeriod('f','12m',this)">12m</button></div>
+    <canvas id="ch-f" class="ch" height="150"></canvas>
+    <button class="btns" onclick="openFLogsModal()" style="margin-top:8px">View all records</button>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle" style="font-size:14px">⚖️ Weight Logs</div></div>
+    <div style="font-size:12px;margin-bottom:8px;color:var(--tx2)">Current: <strong id="dw" style="color:var(--tx)">–</strong> · Start: <strong id="dws">–</strong> · Target: <strong id="dwt">–</strong></div>
+    <div class="ctabs"><button class="ctab active" onclick="setPeriod('w','7d',this)">7d</button><button class="ctab" onclick="setPeriod('w','31d',this)">31d</button><button class="ctab" onclick="setPeriod('w','12m',this)">12m</button></div>
+    <canvas id="ch-w" class="ch" height="150"></canvas>
+    <button class="btns" onclick="openWtLogsModal()" style="margin-top:8px">View all records</button>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle" style="font-size:14px">📏 BMI</div></div>
+    <div id="bmi-noht" style="font-size:13px;color:var(--tx2)">Set your height in Settings ⚙️ to track BMI</div>
+    <div id="bmi-con" style="display:none">
+      <div style="text-align:center;padding:6px 0"><div style="font-size:44px;font-weight:800" id="bmin">–</div><div style="font-size:14px;font-weight:600;margin-top:1px" id="bmilbl">–</div></div>
+      <div class="bmibar"><div class="bmidot" id="bmidot" style="left:0%"></div></div>
+      <div class="bmirng"><span>Underweight<br>&lt;18.5</span><span style="text-align:center">Normal<br>18.5–25</span><span style="text-align:center">Overweight<br>25–30</span><span style="text-align:right">Obese<br>&gt;30</span></div>
+    </div>
+    <div class="ctabs" style="margin-top:11px"><button class="ctab active" onclick="setPeriod('b','7d',this)">7d</button><button class="ctab" onclick="setPeriod('b','31d',this)">31d</button><button class="ctab" onclick="setPeriod('b','12m',this)">12m</button></div>
+    <canvas id="ch-b" class="ch" height="130"></canvas>
+  </div>
+  <div class="card">
+    <div class="chdr"><div class="ctitle" style="font-size:14px">💧 Water Logs</div></div>
+    <div class="ctabs"><button class="ctab active" onclick="setPeriod('wat','7d',this)">7d</button><button class="ctab" onclick="setPeriod('wat','31d',this)">31d</button><button class="ctab" onclick="setPeriod('wat','12m',this)">12m</button></div>
+    <canvas id="ch-wat" class="ch" height="150"></canvas>
+    <button class="btns" onclick="openWatLogsModal()" style="margin-top:8px">View all records</button>
+  </div>
+  <div style="height:4px"></div>
+</div>
+</div>
+
+<div id="tbar">
+  <div class="ti active" id="ti-today" onclick="goTab('today')"><div class="ico">🏠</div><div class="lbl">Today</div></div>
+  <div class="ti" id="ti-plans" onclick="goTab('plans')"><div class="ico">📋</div><div class="lbl">Plans</div></div>
+  <div class="ti" id="ti-dashboard" onclick="goTab('dashboard')"><div class="ico">📊</div><div class="lbl">Dashboard</div></div>
+</div>
+
+<!-- MODALS -->
+<div class="mov hidden" id="mo-ft"><div class="modal"><div class="mdrag"></div><div class="mtitle">Choose Plan</div>
+  <div class="stitle" style="margin-top:0">Daily</div><div class="pgrid" id="mopd"></div>
+  <div class="stitle">One-Time</div><div class="pgrid" id="mopo"></div>
+  <div class="stitle">Custom</div><div id="mopc"></div>
+  <button class="btns" onclick="closeMo('mo-ft')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-st"><div class="modal"><div class="mdrag"></div><div class="mtitle">Set Fast Start Time</div>
+  <div class="tprow">
+    <div class="tpcol"><button class="tparr" onclick="tpa('h',1)">▲</button><div class="tpv" id="tph">08</div><button class="tparr" onclick="tpa('h',-1)">▼</button></div>
+    <div style="font-size:28px;font-weight:800">:</div>
+    <div class="tpcol"><button class="tparr" onclick="tpa('m',15)">▲</button><div class="tpv" id="tpm">00</div><button class="tparr" onclick="tpa('m',-15)">▼</button></div>
+    <button class="tpap" id="tpap" onclick="tpToggle()">PM</button>
+  </div>
+  <div style="font-size:12px;color:var(--tx2);text-align:center;margin-bottom:11px">Fast starts daily at this time</div>
+  <button class="btnp" onclick="saveST()">Save</button>
+  <button class="btns" onclick="closeMo('mo-st')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-logwt"><div class="modal"><div class="mdrag"></div><div class="mtitle">Log Weight</div>
+  <div class="nrow"><button class="nb" onclick="adjWt(-0.1)">−</button><div class="ndisp"><div class="nval" id="wid">70.0</div><div class="nunit" id="wiu">kg</div></div><button class="nb" onclick="adjWt(0.1)">+</button></div>
+  <div class="brow"><button class="btnsm" onclick="adjWt(-1)">−1</button><button class="btnsm" onclick="adjWt(-0.5)">−0.5</button><button class="btnsm" onclick="adjWt(0.5)">+0.5</button><button class="btnsm" onclick="adjWt(1)">+1</button></div>
+  <label class="flbl">Or enter manually:</label>
+  <input type="number" step="0.1" class="tinp" id="wtman" placeholder="e.g. 75.5" oninput="syncWt(this.value)">
+  <button class="btnp" onclick="saveWt()">Save weight</button>
+  <button class="btns" onclick="closeMo('mo-logwt')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-logwat"><div class="modal"><div class="mdrag"></div><div class="mtitle">Log Water</div>
+  <div id="watprog" style="font-size:13px;color:var(--tx2);margin-bottom:7px"></div>
+  <div class="nrow"><button class="nb" onclick="adjWat(-1)">−</button><div class="ndisp"><div class="nval" id="waid">250</div><div class="nunit">ml</div></div><button class="nb" onclick="adjWat(1)">+</button></div>
+  <div class="qgrid" id="watqb"></div>
+  <label class="flbl">Or enter manually:</label>
+  <input type="number" class="tinp" id="watman" placeholder="Amount in ml..." oninput="syncWat(this.value)">
+  <button class="btnp" onclick="saveWat()">Log water</button>
+  <button class="btns" onclick="closeMo('mo-logwat')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-cp"><div class="modal"><div class="mdrag"></div><div class="mtitle">Create Custom Plan</div>
+  <label class="flbl">Plan name</label><input type="text" class="tinp" id="cpname" placeholder="e.g. My 15h Fast">
+  <label class="flbl">Fasting hours</label>
+  <div class="nrow"><button class="nb" onclick="adjCP('f',-1)">−</button><div class="ndisp"><div class="nval" id="cpfh">14</div><div class="nunit">fasting hours</div></div><button class="nb" onclick="adjCP('f',1)">+</button></div>
+  <label class="flbl">Plan type</label>
+  <select class="tinp ssel" id="cptype" style="height:auto;padding:11px"><option value="daily">Daily (recurring)</option><option value="onetime">One-time</option></select>
+  <button class="btnp" onclick="saveCPlan()">Create plan</button>
+  <button class="btns" onclick="closeMo('mo-cp')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-settings"><div class="modal"><div class="mdrag"></div><div class="mtitle">Settings</div>
+  <div class="ss">Profile</div>
+  <div class="srow"><span class="slv">Height</span><span class="ssv" id="s-ht" onclick="openInpMo('Height (cm)','number',v=>saveHt(v))">Set height</span></div>
+  <div class="srow"><span class="slv">Weight unit</span><select class="ssel" id="s-wu" onchange="saveCfg('weightUnit',this.value);renderAll()"><option value="kg">kg</option><option value="lbs">lbs</option></select></div>
+  <div class="srow"><span class="slv">Start weight</span><span class="ssv" id="s-sw" onclick="openInpMo('Start weight','number',v=>saveSW(v))">Set</span></div>
+  <div class="srow"><span class="slv">Target weight</span><span class="ssv" id="s-tw" onclick="openInpMo('Target weight','number',v=>saveTW(v))">Set</span></div>
+  <div class="ss">Display</div>
+  <div class="srow"><span class="slv">Time format</span><select class="ssel" id="s-tf" onchange="saveCfg('timeFormat',this.value);renderAll()"><option value="12h">12-hour AM/PM</option><option value="24h">24-hour</option></select></div>
+  <div class="srow"><span class="slv">Date format</span><select class="ssel" id="s-df" onchange="saveCfg('dateFormat',this.value)"><option value="datetime">Date &amp; time</option><option value="dateonly">Date only</option><option value="datetime_s">Date, time &amp; seconds</option><option value="short">Short (dd/mm)</option><option value="full">Full</option></select></div>
+  <div class="srow"><span class="slv">Stats time unit</span><select class="ssel" id="s-ftu" onchange="saveCfg('fastTimeUnit',this.value);renderDash()"><option value="h">Hours</option><option value="m">Minutes</option><option value="s">Seconds</option><option value="d">Days</option><option value="w">Weeks</option><option value="mo">Months</option></select></div>
+  <div class="ss">Water</div>
+  <div class="srow"><span class="slv">Daily water goal</span><span class="ssv" id="s-wg" onclick="openInpMo('Water goal (ml)','number',v=>saveWG(v))">2000 ml</span></div>
+  <div class="srow"><span class="slv">Quick-add increment</span>
+    <select class="ssel" id="s-wi" onchange="saveCfg('waterIncrement',parseInt(this.value))">
+      <option value="100">100 ml</option><option value="150">150 ml</option><option value="200">200 ml</option><option value="250">250 ml</option><option value="330">330 ml</option><option value="500">500 ml</option><option value="750">750 ml</option><option value="1000">1000 ml</option><option value="1500">1500 ml</option><option value="2000">2000 ml</option>
+    </select>
+  </div>
+  <div class="ss">Data Management</div>
+  <div style="font-size:12px;color:var(--tx2);margin-bottom:8px">Export your data as JSON, then paste it back to restore.</div>
+  <div class="brow"><button class="btnsm" onclick="exportData()">📋 Export &amp; Copy</button><button class="btnsm" onclick="openImport()">📥 Import / Restore</button></div>
+  <button class="bdanger" onclick="confirmWipe()">🗑️ Wipe all data</button>
+  <button class="btns" onclick="closeMo('mo-settings')" style="margin-top:13px">Done</button>
+</div></div>
+
+<div class="mov hidden" id="mo-import"><div class="modal"><div class="mdrag"></div><div class="mtitle">Import / Restore</div>
+  <div style="font-size:13px;color:var(--tx2);margin-bottom:11px">Tap the box below and use long-press → Paste. Or use the Paste button.</div>
+  <textarea class="taio" id="impta" placeholder="Paste your backup JSON here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+  <div class="brow" style="margin-top:7px">
+    <button class="btnsm" onclick="pasteClip()">📋 Paste</button>
+    <button class="btnsm" onclick="document.getElementById('impta').value=''">✕ Clear</button>
+    <button class="btnsm" onclick="document.getElementById('impta').select();document.execCommand('selectAll')">Select All</button>
+  </div>
+  <button class="btnp" onclick="doImport()" style="margin-top:4px">Restore data</button>
+  <button class="btns" onclick="closeMo('mo-import')">Cancel</button>
+</div></div>
+
+<div class="mov hidden" id="mo-flogs"><div class="modal"><div class="mdrag"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><div class="mtitle" style="margin:0">Fasting Records</div><span onclick="closeMo('mo-flogs')" style="font-size:26px;cursor:pointer;color:var(--tx2);line-height:1">×</span></div>
+  <div id="fl-list"></div>
+</div></div>
+<div class="mov hidden" id="mo-wtlogs"><div class="modal"><div class="mdrag"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><div class="mtitle" style="margin:0">Weight Records</div><span onclick="closeMo('mo-wtlogs')" style="font-size:26px;cursor:pointer;color:var(--tx2);line-height:1">×</span></div>
+  <div id="wl-list"></div>
+</div></div>
+<div class="mov hidden" id="mo-watlogs"><div class="modal"><div class="mdrag"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px"><div class="mtitle" style="margin:0">Water Records</div><span onclick="closeMo('mo-watlogs')" style="font-size:26px;cursor:pointer;color:var(--tx2);line-height:1">×</span></div>
+  <div id="watl-list"></div>
+</div></div>
+
+<div class="mov hidden" id="conf-ov"><div class="modal cimod">
+  <div class="mtitle" id="c-title">Confirm</div>
+  <div id="c-msg" style="font-size:13px;color:var(--tx2);margin-bottom:14px"></div>
+  <button class="bdanger" id="c-ok">Confirm</button>
+  <button class="btns" onclick="closeMo('conf-ov')" style="margin-top:0">Cancel</button>
+</div></div>
+<div class="mov hidden" id="inp-ov"><div class="modal cimod">
+  <div class="mtitle" id="i-title">Enter value</div>
+  <input class="tinp" id="i-fld" style="margin-bottom:11px" autocomplete="off">
+  <button class="btnp" onclick="confirmInp()" style="margin-top:0">OK</button>
+  <button class="btns" onclick="closeMo('inp-ov')" style="margin-top:5px">Cancel</button>
+</div></div>
+<script>
+// ── CONSTANTS ──────────────────────────
+const ARC=295.3;
+const DAILY=[
+  {type:'14:10',fast:14,eat:10,desc:'14h fast · 10h eat'},
+  {type:'16:8',fast:16,eat:8,desc:'16h fast · 8h eat'},
+  {type:'18:6',fast:18,eat:6,desc:'18h fast · 6h eat'},
+  {type:'20:4',fast:20,eat:4,desc:'20h fast · 4h eat'},
+  {type:'22:2',fast:22,eat:2,desc:'22h fast · 2h eat'},
+  {type:'23:1',fast:23,eat:1,desc:'23h fast · 1h eat'},
+];
+const ONETIME=[
+  {type:'24',fast:24,desc:'1 day'},
+  {type:'30',fast:30,desc:'30h fast'},
+  {type:'36',fast:36,desc:'36h fast'},
+  {type:'40',fast:40,desc:'40h fast'},
+  {type:'48',fast:48,desc:'2 days'},
+  {type:'72',fast:72,desc:'3 days'},
+];
+
+// ── STATE ──────────────────────────────
+let CF={
+  fastType:'16:8',fastStartTime:'20:00',
+  waterGoal:2000,waterIncrement:250,
+  weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',
+  fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,
+};
+let CPs=[],curFast=null,timerInt=null;
+let ST={tab:'today',wInp:70,watInp:250,cpFH:14,tpH:8,tpM:0,tpAP:'PM',inpCb:null,confCb:null};
+let CP={f:{p:'7d'},w:{p:'7d'},b:{p:'7d'},wat:{p:'7d'}};
+let charts={};
+
+// ── STORAGE ────────────────────────────
+const LS={
+  g:k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},
+  s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},
+  d:k=>{try{localStorage.removeItem(k)}catch{}}
+};
+const FL=()=>LS.g('ft_fl')||[];
+const WL=()=>LS.g('ft_wl')||[];
+const WaL=()=>LS.g('ft_wal')||[];
+const sFL=v=>LS.s('ft_fl',v);
+const sWL=v=>LS.s('ft_wl',v);
+const sWaL=v=>LS.s('ft_wal',v);
+
+const loadData=()=>{
+  CF={...CF,...(LS.g('ft_cfg')||{})};
+  CPs=LS.g('ft_cp')||[];
+  curFast=LS.g('ft_cf');
+};
+const saveCFG=()=>LS.s('ft_cfg',CF);
+const saveCPs=()=>LS.s('ft_cp',CPs);
+const saveCF=()=>curFast?LS.s('ft_cf',curFast):LS.d('ft_cf');
+
+const saveCfg=(k,v)=>{CF[k]=v;saveCFG()};
+
+// ── UTILS ──────────────────────────────
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const g=id=>document.getElementById(id);
+const parseFH=t=>{const p=t.split(':');return p.length===2?parseInt(p[0]):parseInt(t)};
+
+const todayWat=()=>{
+  const td=new Date().toDateString();
+  return WaL().filter(l=>new Date(l.ts).toDateString()===td).reduce((s,l)=>s+l.amount,0);
+};
+
+const fmtDate=iso=>{
+  if(!iso)return'–';
+  const d=new Date(iso),df=CF.dateFormat,tf=CF.timeFormat;
+  const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yyyy=d.getFullYear();
+  const H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0'),sec=String(d.getSeconds()).padStart(2,'0');
+  const h12=(H%12)||12,ap=H>=12?'PM':'AM';
+  const t12=`${h12}:${M} ${ap}`,t24=`${String(H).padStart(2,'0')}:${M}`;
+  const ts=tf==='12h'?t12:t24,tss=tf==='12h'?`${h12}:${M}:${sec} ${ap}`:`${String(H).padStart(2,'0')}:${M}:${sec}`;
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(df==='dateonly')return`${dd}/${mm}/${yyyy}`;
+  if(df==='short')return`${dd}/${mm}`;
+  if(df==='datetime_s')return`${dd}/${mm}/${yyyy} ${tss}`;
+  if(df==='full')return`${mo[d.getMonth()]} ${dd}, ${yyyy} – ${ts}`;
+  return`${dd}/${mm}/${yyyy} ${ts}`;
+};
+
+const fmtClock=iso=>{
+  if(!iso)return'–';
+  const d=new Date(iso),tf=CF.timeFormat;
+  const H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0');
+  const h12=(H%12)||12,ap=H>=12?'PM':'AM';
+  const ts=tf==='12h'?`${ap} ${h12}:${M}`:`${String(H).padStart(2,'0')}:${M}`;
+  const now=new Date();now.setHours(0,0,0,0);
+  const dd=new Date(d);dd.setHours(0,0,0,0);
+  const diff=Math.round((dd-now)/86400000);
+  const lbl=diff===0?'Today':diff===1?'Tomorrow':diff===-1?'Yesterday':['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+  return`${lbl}, ${ts}`;
+};
+
+const fmtTotalTime=h=>{
+  const u=CF.fastTimeUnit;
+  if(u==='h')return[h.toFixed(0),' h'];
+  if(u==='m')return[Math.round(h*60),' m'];
+  if(u==='s')return[Math.round(h*3600),' s'];
+  if(u==='d')return[(h/24).toFixed(1),' d'];
+  if(u==='w')return[(h/168).toFixed(2),' w'];
+  if(u==='mo')return[(h/720).toFixed(2),' mo'];
+  return[h.toFixed(0),' h'];
+};
+
+const nextStart=()=>{
+  const[h,m]=CF.fastStartTime.split(':').map(Number);
+  const now=new Date(),nx=new Date(now);
+  nx.setHours(h,m,0,0);
+  if(nx<=now)nx.setDate(nx.getDate()+1);
+  return nx;
+};
+
+// ── CONFIRM / INPUT MODALS ─────────────
+const showConfirm=(title,msg,cb)=>{
+  ST.confCb=cb;
+  g('c-title').textContent=title;
+  g('c-msg').textContent=msg;
+  g('c-ok').onclick=()=>{closeMo('conf-ov');ST.confCb&&ST.confCb();ST.confCb=null};
+  openMo('conf-ov');
+};
+const openInpMo=(title,type,cb)=>{
+  ST.inpCb=cb;
+  g('i-title').textContent=title;
+  const f=g('i-fld');f.type=type||'text';f.value='';
+  openMo('inp-ov');setTimeout(()=>f.focus(),200);
+};
+const confirmInp=()=>{
+  const v=g('i-fld').value.trim();
+  closeMo('inp-ov');
+  if(ST.inpCb)ST.inpCb(v);ST.inpCb=null;
+};
+
+// ── MODAL HELPERS ──────────────────────
+const openMo=id=>g(id).classList.remove('hidden');
+const closeMo=id=>g(id).classList.add('hidden');
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('mov')&&!e.target.closest('.cimod'))
+    e.target.classList.add('hidden');
+});
+
+// ── TOAST ──────────────────────────────
+let toastT=null;
+const toast=(msg,dur=2000)=>{
+  const t=g('toast');t.textContent=msg;t.classList.add('show');
+  if(toastT)clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),dur);
+};
+
+// ── TAB NAVIGATION ─────────────────────
+const goTab=tab=>{
+  ST.tab=tab;
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ti').forEach(el=>el.classList.remove('active'));
+  g('sc-'+tab).classList.add('active');g('ti-'+tab).classList.add('active');
+  const brands={today:'🔥 FastTrack',plans:'Plans',dashboard:'Dashboard'};
+  g('hbrand').textContent=brands[tab]||'FastTrack';
+  g('gbtn').style.display=tab==='dashboard'?'block':'none';
+  g('hdate').style.display=tab==='today'?'block':'none';
+  g('content').scrollTop=0;
+  if(tab==='today')renderToday();
+  if(tab==='plans')renderPlans();
+  if(tab==='dashboard'){renderDash();setTimeout(drawAllCharts,80);}
+};
+
+// ── FASTING ────────────────────────────
+const toggleFast=()=>curFast?stopFast():startFast();
+
+const startFast=()=>{
+  curFast={startTime:new Date().toISOString(),type:CF.fastType,plannedH:parseFH(CF.fastType)};
+  saveCF();startTimer();updateFastUI();toast('Fast started 💪');
+};
+
+const stopFast=()=>{
+  if(!curFast)return;
+  const now=new Date(),start=new Date(curFast.startTime);
+  const actualH=(now-start)/3600000;
+  const logs=FL();
+  logs.push({id:uid(),startTime:curFast.startTime,endTime:now.toISOString(),
+    type:curFast.type,plannedH:curFast.plannedH,actualH,completed:actualH>=curFast.plannedH*0.85});
+  sFL(logs);curFast=null;saveCF();
+  if(timerInt){clearInterval(timerInt);timerInt=null;}
+  updateFastUI();toast(`Saved! ${actualH.toFixed(1)}h ✓`);
+};
+
+const startTimer=()=>{if(timerInt)clearInterval(timerInt);timerInt=setInterval(updateFastUI,1000)};
+
+const updateFastUI=()=>{
+  const ap=g('ap'),ad=g('adot'),at=g('atime'),fb=g('fbtn'),ftl=g('ftlbl');
+  if(!ap)return;
+  if(ftl)ftl.textContent=CF.fastType;
+  if(curFast){
+    const now=new Date(),start=new Date(curFast.startTime);
+    const elapsed=now-start,total=curFast.plannedH*3600000;
+    const prog=Math.min(elapsed/total,1),fill=ARC*prog;
+    ap.setAttribute('stroke-dasharray',`${fill} ${ARC}`);
+    ap.style.stroke=prog>=1?'var(--gr)':'var(--or)';
+    ad.style.opacity='1';
+    // dot position
+    const ang=Math.PI*(1-prog);
+    const cx=110+94*Math.cos(ang),cy=110-94*Math.sin(ang);
+    ad.setAttribute('cx',cx);ad.setAttribute('cy',cy);
+    ad.style.fill=prog>=1?'var(--gr)':'var(--or)';
+    const rem=total-elapsed;
+    if(rem>0){
+      const rh=Math.floor(rem/3600000),rm=Math.floor((rem%3600000)/60000),rs=Math.floor((rem%60000)/1000);
+      at.textContent=`${rh}h ${rm}m ${rs}s remaining`;
+    }else{
+      const ov=Math.abs(rem),oh=Math.floor(ov/3600000),om=Math.floor((ov%3600000)/60000);
+      at.textContent=`${oh}h ${om}m over ✅`;
+    }
+    fb.textContent='Stop fasting';fb.className='btnp stop';
+  }else{
+    ap.setAttribute('stroke-dasharray',`0 ${ARC}`);ad.style.opacity='0';
+    at.textContent='Not fasting';fb.textContent='Start fasting';fb.className='btnp';
+  }
+  // next/end
+  const ni=g('irnext'),ei=g('irend');if(!ni)return;
+  if(curFast){
+    const end=new Date(new Date(curFast.startTime).getTime()+curFast.plannedH*3600000);
+    ni.textContent=fmtClock(curFast.startTime);ei.textContent=fmtClock(end.toISOString());
+  }else{
+    const ns=nextStart(),ne=new Date(ns.getTime()+parseFH(CF.fastType)*3600000);
+    ni.textContent=fmtClock(ns.toISOString());ei.textContent=fmtClock(ne.toISOString());
+  }
+};
+
+// ── TODAY RENDER ───────────────────────
+const renderToday=()=>{
+  // start time label
+  const[h,m]=CF.fastStartTime.split(':').map(Number);
+  const tf=CF.timeFormat,h12=(h%12)||12,ap=h>=12?'PM':'AM';
+  const ts=tf==='12h'?`${ap} ${h12}:${String(m).padStart(2,'0')}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const fss=g('fsstd');if(fss)fss.textContent=`Daily, ${ts}`;
+  // weight
+  const wls=WL(),lw=wls.length?wls[wls.length-1]:null;
+  const cw=lw?lw.weight:null,sw=CF.startWeight,tw=CF.targetWeight,wu=CF.weightUnit;
+  const se=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  se('wcur',cw?cw.toFixed(1):'–');
+  const ul=g('wunit-lbl');if(ul)ul.textContent=` ${wu}`;
+  se('wst',sw?`${sw} ${wu}`:'–');se('wtgt',tw?`${tw} ${wu}`:'–');
+  const pb=g('wpb');
+  if(pb&&cw&&sw&&tw&&sw!==tw){
+    const p=sw>tw?(sw-cw)/(sw-tw):(cw-sw)/(tw-sw);
+    pb.style.width=`${Math.max(0,Math.min(1,p))*100}%`;
+  }
+  // water
+  const tw2=todayWat(),goal=CF.waterGoal,pct=Math.min(tw2/goal,1);
+  se('watcur',tw2);se('watgoallbl',goal);
+  const wf=g('wfill');if(wf)wf.style.height=`${pct*100}%`;
+  const wp=g('wpct');if(wp){wp.textContent=`${Math.round(pct*100)}%`;wp.style.color=pct>0.55?'#fff':'var(--bl)';}
+  updateFastUI();
+};
+
+// ── PLANS ──────────────────────────────
+const renderPlans=()=>{
+  renderPG('pg-daily',DAILY,false);renderPG('pg-onetime',ONETIME,false);renderCPList('pg-custom',false);
+};
+
+const renderPG=(id,plans,inMo)=>{
+  const el=g(id);if(!el)return;
+  el.innerHTML=plans.map(p=>`<div class="pcard${CF.fastType===p.type?' sel':''}" onclick="${inMo?'selFastMo':'selPlan'}('${p.type}')"><div class="pname">${p.type}</div><div class="pdesc">${p.desc||p.fast+'h'}</div></div>`).join('');
+};
+
+const renderCPList=(id,inMo)=>{
+  const el=g(id);if(!el)return;
+  if(!CPs.length){el.innerHTML='<div class="emsg">No custom plans yet</div>';return;}
+  el.innerHTML=`<div class="pgrid">${CPs.map(p=>`<div class="pcard${CF.fastType===p.type?' sel':''}" onclick="${inMo?'selFastMo':'selPlan'}('${p.type}')"><div class="pname">${p.type}</div><div class="pdesc">${p.name}</div></div>`).join('')}</div>`;
+};
+
+const selPlan=type=>{CF.fastType=type;saveCFG();renderPlans();renderToday();updateFastUI();toast(`Plan: ${type}`)};
+const selFastMo=type=>{CF.fastType=type;saveCFG();closeMo('mo-ft');renderToday();updateFastUI();toast(`Plan: ${type}`)};
+
+// ── OPEN FAST TYPE MODAL ────────────────
+const openFTModal=()=>{
+  renderPG('mopd',DAILY,true);renderPG('mopo',ONETIME,true);renderCPList('mopc',true);openMo('mo-ft');
+};
+
+// ── START TIME MODAL ───────────────────
+const[_sTH,_sTM]=CF.fastStartTime.split(':').map(Number);
+ST.tpH=_sTH%12||12;ST.tpM=_sTM;ST.tpAP=_sTH>=12?'PM':'AM';
+
+const openSTModal=()=>{
+  const[h,m]=CF.fastStartTime.split(':').map(Number);
+  ST.tpH=h%12||12;ST.tpM=m;ST.tpAP=h>=12?'PM':'AM';
+  g('tph').textContent=String(ST.tpH).padStart(2,'0');
+  g('tpm').textContent=String(ST.tpM).padStart(2,'0');
+  g('tpap').textContent=ST.tpAP;
+  openMo('mo-st');
+};
+
+const tpa=(unit,delta)=>{
+  if(unit==='h'){ST.tpH=((ST.tpH-1+delta+12)%12)+1;}
+  else{ST.tpM=(ST.tpM+delta+60)%60;}
+  g('tph').textContent=String(ST.tpH).padStart(2,'0');
+  g('tpm').textContent=String(ST.tpM).padStart(2,'0');
+};
+const tpToggle=()=>{ST.tpAP=ST.tpAP==='AM'?'PM':'AM';g('tpap').textContent=ST.tpAP};
+const saveST=()=>{
+  let h24=ST.tpH%12;if(ST.tpAP==='PM')h24+=12;
+  CF.fastStartTime=`${String(h24).padStart(2,'0')}:${String(ST.tpM).padStart(2,'0')}`;
+  saveCFG();closeMo('mo-st');renderToday();toast('Start time saved');
+};
+
+// ── LOG WEIGHT ─────────────────────────
+const openLogWt=()=>{
+  const wls=WL(),lw=wls.length?wls[wls.length-1]:null;
+  ST.wInp=lw?lw.weight:70;
+  g('wid').textContent=ST.wInp.toFixed(1);g('wiu').textContent=CF.weightUnit;g('wtman').value='';
+  openMo('mo-logwt');
+};
+const adjWt=d=>{ST.wInp=Math.max(20,parseFloat((ST.wInp+d).toFixed(1)));g('wid').textContent=ST.wInp.toFixed(1)};
+const syncWt=v=>{const n=parseFloat(v);if(!isNaN(n)&&n>0){ST.wInp=n;g('wid').textContent=n.toFixed(1);}};
+const saveWt=()=>{
+  const logs=WL();logs.push({id:uid(),ts:new Date().toISOString(),weight:ST.wInp});
+  sWL(logs);closeMo('mo-logwt');renderToday();toast(`Weight: ${ST.wInp} ${CF.weightUnit}`);
+};
+
+// ── LOG WATER ──────────────────────────
+const openLogWat=()=>{
+  ST.watInp=CF.waterIncrement;
+  g('waid').textContent=ST.watInp;
+  g('watman').value='';
+  // today progress
+  const tw=todayWat(),goal=CF.waterGoal;
+  g('watprog').textContent=`Today: ${tw}ml / ${goal}ml`;
+  // quick buttons: multiples of increment up to goal
+  const inc=CF.waterIncrement;
+  const opts=[inc,inc*2,inc*3,inc*4,Math.round(goal/2),goal].filter((v,i,a)=>a.indexOf(v)===i&&v<=goal*1.5).slice(0,8);
+  g('watqb').innerHTML=opts.map(v=>`<div class="qb${v===ST.watInp?' qs':''}" onclick="setWatQ(${v})">${v}ml</div>`).join('');
+  openMo('mo-logwat');
+};
+const setWatQ=v=>{
+  ST.watInp=v;g('waid').textContent=v;g('watman').value='';
+  document.querySelectorAll('#watqb .qb').forEach(el=>{el.classList.toggle('qs',parseInt(el.textContent)===v);});
+};
+const adjWat=d=>{ST.watInp=Math.max(CF.waterIncrement,ST.watInp+(d*CF.waterIncrement));g('waid').textContent=ST.watInp};
+const syncWat=v=>{const n=parseInt(v);if(!isNaN(n)&&n>0){ST.watInp=n;g('waid').textContent=n;}};
+const saveWat=()=>{
+  const logs=WaL();logs.push({id:uid(),ts:new Date().toISOString(),amount:ST.watInp});
+  sWaL(logs);closeMo('mo-logwat');renderToday();toast(`+${ST.watInp}ml 💧`);
+};
+
+// ── CUSTOM PLAN ────────────────────────
+const openCPModal=()=>{ST.cpFH=14;g('cpfh').textContent=14;g('cpname').value='';openMo('mo-cp')};
+const adjCP=(t,d)=>{
+  if(t==='f')ST.cpFH=Math.max(1,Math.min(72,ST.cpFH+d));
+  g('cpfh').textContent=ST.cpFH;
+};
+const saveCPlan=()=>{
+  const name=g('cpname').value.trim()||`${ST.cpFH}h Fast`;
+  const eat=24-ST.cpFH;const type=`${ST.cpFH}:${eat}`;
+  CPs.push({type,name,fast:ST.cpFH,eat});saveCPs();
+  closeMo('mo-cp');renderPlans();toast(`Plan "${name}" created`);
+};
+
+// ── SETTINGS ───────────────────────────
+const openSettings=()=>{
+  // sync selects
+  const sel=(id,v)=>{const el=g(id);if(el)el.value=v||''};
+  sel('s-wu',CF.weightUnit);sel('s-tf',CF.timeFormat);sel('s-df',CF.dateFormat);
+  sel('s-ftu',CF.fastTimeUnit);sel('s-wi',String(CF.waterIncrement));
+  g('s-ht').textContent=CF.height?`${CF.height} cm`:'Set height';
+  g('s-sw').textContent=CF.startWeight?`${CF.startWeight} ${CF.weightUnit}`:'Set';
+  g('s-tw').textContent=CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set';
+  g('s-wg').textContent=`${CF.waterGoal} ml`;
+  openMo('mo-settings');
+};
+const saveHt=v=>{const n=parseFloat(v);if(n>0){CF.height=n;saveCFG();}g('s-ht').textContent=CF.height?`${CF.height} cm`:'Set height';renderDash();};
+const saveSW=v=>{const n=parseFloat(v);if(n>0){CF.startWeight=n;saveCFG();}g('s-sw').textContent=CF.startWeight?`${CF.startWeight} ${CF.weightUnit}`:'Set';renderToday();};
+const saveTW=v=>{const n=parseFloat(v);if(n>0){CF.targetWeight=n;saveCFG();}g('s-tw').textContent=CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set';renderToday();};
+const saveWG=v=>{const n=parseInt(v);if(n>0){CF.waterGoal=n;saveCFG();}g('s-wg').textContent=`${CF.waterGoal} ml`;renderToday();};
+
+// ── EXPORT / IMPORT ────────────────────
+const exportData=()=>{
+  const data=JSON.stringify({cfg:CF,cps:CPs,fl:FL(),wl:WL(),wal:WaL()},null,2);
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(data).then(()=>toast('Copied to clipboard! 📋')).catch(()=>{showExportFallback(data)});
+  }else{showExportFallback(data);}
+};
+const showExportFallback=data=>{
+  g('impta').value=data;openMo('mo-import');
+  toast('Data shown below — select all & copy');
+};
+const openImport=()=>{g('impta').value='';openMo('mo-import')};
+const pasteClip=async()=>{
+  try{
+    const t=await navigator.clipboard.readText();
+    g('impta').value=t;toast('Pasted!');
+  }catch{toast('Use long-press → Paste in the box');}
+};
+const doImport=()=>{
+  const raw=g('impta').value.trim();
+  if(!raw){toast('Nothing to import');return;}
+  try{
+    const data=JSON.parse(raw);
+    showConfirm('Restore backup?','This will replace all current data.',()=>{
+      if(data.cfg)CF={...CF,...data.cfg};
+      if(data.cps)CPs=data.cps;
+      if(data.fl)sFL(data.fl);
+      if(data.wl)sWL(data.wl);
+      if(data.wal)sWaL(data.wal);
+      saveCFG();saveCPs();
+      closeMo('mo-import');renderAll();toast('Data restored ✓');
+    });
+  }catch{toast('Invalid data — check format');}
+};
+const confirmWipe=()=>{
+  showConfirm('Wipe all data?','All fasting, weight and water records will be deleted permanently.',()=>{
+    localStorage.clear();CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null};
+    CPs=[];curFast=null;if(timerInt){clearInterval(timerInt);timerInt=null;}
+    saveCFG();saveCPs();saveCF();closeMo('mo-settings');renderAll();toast('All data wiped');
+  });
+};
+
+// ── RENDER ALL ─────────────────────────
+const renderAll=()=>{
+  if(ST.tab==='today')renderToday();
+  if(ST.tab==='plans')renderPlans();
+  if(ST.tab==='dashboard'){renderDash();setTimeout(drawAllCharts,80);}
+};
+
+// ── DASHBOARD ──────────────────────────
+const renderDash=()=>{
+  const fl=FL(),wl=WL();
+  const totalH=fl.reduce((s,l)=>s+(l.actualH||0),0);
+  const longH=fl.length?Math.max(...fl.map(l=>l.actualH||0)):0;
+  const fastDays=new Set(fl.map(l=>new Date(l.startTime).toDateString())).size;
+  const streak=calcStreak(fl);
+  const[tv,tu]=fmtTotalTime(totalH);
+  const se=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  se('stot',tv);se('stotu',tu);se('slng',longH.toFixed(1));se('sdays',fastDays);se('sstrk',streak);
+  const lw=wl.length?wl[wl.length-1]:null,wu=CF.weightUnit;
+  se('dw',lw?`${lw.weight.toFixed(1)} ${wu}`:'–');
+  se('dws',CF.startWeight?`${CF.startWeight} ${wu}`:'–');
+  se('dwt',CF.targetWeight?`${CF.targetWeight} ${wu}`:'–');
+  renderPixels(fl);renderBMI(lw?lw.weight:null);
+};
+
+const calcStreak=fl=>{
+  if(!fl.length)return 0;
+  const days=[...new Set(fl.map(l=>{const d=new Date(l.startTime);return`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`}))].sort().reverse();
+  let streak=0,check=new Date();check.setHours(0,0,0,0);
+  for(const day of days){
+    const[y,mo,d]=day.split('-').map(Number);const dd=new Date(y,mo,d);
+    const diff=Math.round((check-dd)/86400000);
+    if(diff===0||diff===1){streak++;check=dd;}else break;
+  }
+  return streak;
+};
+
+const renderPixels=fl=>{
+  const tbl=g('pxtbl');if(!tbl)return;
+  const done=new Set(),part=new Set();
+  fl.forEach(l=>{const ds=new Date(l.startTime).toDateString();(l.completed?done:part).add(ds);});
+  const today=new Date();today.setHours(0,0,0,0);
+  const dow=today.getDay(),dToMon=dow===0?6:dow-1;
+  const startMon=new Date(today);startMon.setDate(today.getDate()-dToMon-77);
+  const DLBL=['Mo','Tu','We','Th','Fr','Sa','Su'];
+  let html='';
+  // week labels row
+  html+='<tr><td style="background:transparent"></td>';
+  for(let w=0;w<12;w++){
+    const wd=new Date(startMon);wd.setDate(startMon.getDate()+w*7);
+    const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    html+=`<td style="background:transparent;font-size:9px;color:var(--tx2);text-align:center;padding-bottom:2px">${w===0||wd.getDate()<=7?mo[wd.getMonth()]:'&nbsp;'}</td>`;
+  }
+  html+='</tr>';
+  for(let d=0;d<7;d++){
+    html+=`<tr><td class="dlbl">${DLBL[d]}</td>`;
+    for(let w=0;w<12;w++){
+      const date=new Date(startMon);date.setDate(startMon.getDate()+w*7+d);date.setHours(0,0,0,0);
+      const ds=date.toDateString();
+      let cls='';
+      if(date>today)cls='';
+      else if(done.has(ds))cls='done';
+      else if(part.has(ds))cls='part';
+      html+=`<td class="${cls}" title="${ds}"></td>`;
+    }
+    html+='</tr>';
+  }
+  tbl.innerHTML=html;
+};
+
+const renderBMI=cw=>{
+  if(!CF.height||!cw){g('bmi-noht').style.display='block';g('bmi-con').style.display='none';return;}
+  g('bmi-noht').style.display='none';g('bmi-con').style.display='block';
+  const hM=CF.height/100,bmi=cw/(hM*hM);
+  g('bmin').textContent=bmi.toFixed(1);
+  let lbl,col;
+  if(bmi<18.5){lbl='Underweight';col='#5AC8FA';}
+  else if(bmi<25){lbl='Normal';col='var(--gr)';}
+  else if(bmi<30){lbl='Overweight';col='var(--yw)';}
+  else{lbl='Obese';col='var(--re)';}
+  const bl=g('bmilbl');if(bl){bl.textContent=lbl;bl.style.color=col;}
+  const pct=Math.max(0,Math.min(100,((bmi-10)/30)*100));
+  const bd=g('bmidot');if(bd)bd.style.left=`${pct}%`;
+};
+
+// ── PERIOD SWITCHING ───────────────────
+const setPeriod=(chart,period,btn)=>{
+  CP[chart].p=period;
+  btn.closest('.ctabs').querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawChart(chart);
+};
+
+// ── CANVAS CHARTS ──────────────────────
+const dpr=window.devicePixelRatio||1;
+
+const setupCanvas=id=>{
+  const canvas=g(id);if(!canvas)return null;
+  const W=canvas.parentElement.offsetWidth||300,H=canvas.height;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  return{ctx,W,H};
+};
+
+const drawBarChart=(id,labels,values,color,yLabel,yMin,yMax)=>{
+  const r=setupCanvas(id);if(!r)return;
+  const{ctx,W,H}=r;
+  ctx.clearRect(0,0,W,H);
+  const pl=42,pr=12,pt=12,pb=38;
+  const cw=W-pl-pr,ch=H-pt-pb;
+  const n=labels.length;if(!n)return;
+  // y axis
+  const range=yMax-yMin||1;
+  const yticks=5;
+  ctx.font=`${10*dpr/dpr}px -apple-system,sans-serif`;ctx.fillStyle='#8E8E93';ctx.textAlign='right';
+  for(let i=0;i<=yticks;i++){
+    const v=yMin+(range/yticks)*i;
+    const y=pt+ch-(ch*(v-yMin)/range);
+    ctx.fillText(v%1===0?v.toFixed(0):v.toFixed(1),pl-5,y+4);
+    ctx.beginPath();ctx.strokeStyle='#E5E5EA';ctx.lineWidth=.5;ctx.moveTo(pl,y);ctx.lineTo(pl+cw,y);ctx.stroke();
+  }
+  // bars / line
+  const bw=Math.max(4,cw/n*0.65),gap=cw/n;
+  labels.forEach((lbl,i)=>{
+    const v=values[i]||0;
+    const barH=Math.max(0,ch*(v-yMin)/range);
+    const x=pl+i*gap+gap/2-bw/2;
+    const y=pt+ch-barH;
+    ctx.fillStyle=color;ctx.beginPath();
+    ctx.roundRect?ctx.roundRect(x,y,bw,barH,3):ctx.rect(x,y,bw,barH);
+    ctx.fill();
+    // x label
+    ctx.fillStyle='#8E8E93';ctx.textAlign='center';ctx.font='9px -apple-system,sans-serif';
+    if(n<=14||i%(Math.ceil(n/10))===0||i===n-1)ctx.fillText(lbl,x+bw/2,H-pb+14);
+  });
+};
+
+const drawLineChart=(id,labels,values,color,yMin,yMax)=>{
+  const r=setupCanvas(id);if(!r)return;
+  const{ctx,W,H}=r;
+  ctx.clearRect(0,0,W,H);
+  const pl=44,pr=12,pt=12,pb=38;
+  const cw=W-pl-pr,ch=H-pt-pb;
+  const n=labels.length;if(n<2)return;
+  const range=yMax-yMin||1;
+  // grid
+  ctx.font='9px -apple-system,sans-serif';ctx.fillStyle='#8E8E93';
+  const yticks=5;
+  for(let i=0;i<=yticks;i++){
+    const v=yMin+(range/yticks)*i;
+    const y=pt+ch-(ch*(v-yMin)/range);
+    ctx.textAlign='right';ctx.fillText(v%1===0?v.toFixed(0):v.toFixed(1),pl-5,y+4);
+    ctx.beginPath();ctx.strokeStyle='#E5E5EA';ctx.lineWidth=.5;ctx.moveTo(pl,y);ctx.lineTo(pl+cw,y);ctx.stroke();
+  }
+  // fill area
+  ctx.beginPath();
+  const pts=values.map((v,i)=>[pl+i*(cw/(n-1)),pt+ch-(ch*(v-yMin)/range)]);
+  ctx.moveTo(pts[0][0],pt+ch);
+  pts.forEach(([x,y])=>ctx.lineTo(x,y));
+  ctx.lineTo(pts[pts.length-1][0],pt+ch);ctx.closePath();
+  const grad=ctx.createLinearGradient(0,pt,0,pt+ch);
+  const c=color.startsWith('#')?hexToRgb(color):{r:255,g:107,b:43};
+  grad.addColorStop(0,`rgba(${c.r},${c.g},${c.b},0.3)`);
+  grad.addColorStop(1,`rgba(${c.r},${c.g},${c.b},0)`);
+  ctx.fillStyle=grad;ctx.fill();
+  // line
+  ctx.beginPath();pts.forEach(([x,y],i)=>i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
+  ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
+  // dots
+  pts.forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();});
+  // x labels
+  ctx.fillStyle='#8E8E93';ctx.textAlign='center';ctx.font='9px -apple-system,sans-serif';
+  pts.forEach(([x,],i)=>{if(n<=14||i%(Math.ceil(n/8))===0||i===n-1)ctx.fillText(labels[i],x,H-pb+14);});
+};
+
+const hexToRgb=hex=>{const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);return r?{r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)}:{r:255,g:107,b:43}};
+
+// date helpers for charts
+const fmt2=(n)=>String(n).padStart(2,'0');
+const dateKey=d=>`${fmt2(d.getDate())}/${fmt2(d.getMonth()+1)}`;
+const monthKey=d=>`${d.getFullYear()}-${fmt2(d.getMonth()+1)}`;
+const monthLbl=d=>{const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return mo[d.getMonth()];};
+
+const buildPeriod=(p,logs,tsField,valFn)=>{
+  const now=new Date();
+  if(p==='7d'){
+    const days=[];
+    for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);d.setHours(0,0,0,0);days.push(d);}
+    const labels=days.map(dateKey);
+    const values=days.map(d=>{
+      const ds=d.toDateString();
+      const day_logs=logs.filter(l=>new Date(l[tsField]).toDateString()===ds);
+      return valFn(day_logs);
+    });
+    return{labels,values};
+  }
+  if(p==='31d'){
+    const days=[];
+    for(let i=30;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);d.setHours(0,0,0,0);days.push(d);}
+    const labels=days.map(dateKey);
+    const values=days.map(d=>{
+      const ds=d.toDateString();
+      const dl=logs.filter(l=>new Date(l[tsField]).toDateString()===ds);
+      return valFn(dl);
+    });
+    return{labels,values};
+  }
+  // 12m
+  const months=[];
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d);}
+  const labels=months.map(monthLbl);
+  const values=months.map(d=>{
+    const ym=monthKey(d);
+    const ml=logs.filter(l=>monthKey(new Date(l[tsField]))===ym);
+    return valFn(ml);
+  });
+  return{labels,values};
+};
+
+const drawChart=chart=>{
+  if(chart==='f'||chart==='all'){
+    const fl=FL();
+    const{labels,values}=buildPeriod(CP.f.p,fl,'startTime',ls=>ls.reduce((s,l)=>s+(l.actualH||0),0));
+    const maxV=Math.max(...values,1);
+    const yTicks=[0,2,5,10,15,20,30,40,72].filter(v=>v<=Math.ceil(maxV*1.2));
+    const yMax=yTicks[yTicks.length-1]||maxV;
+    drawBarChart('ch-f',labels,values,'#FF6B2B',null,0,yMax);
+  }
+  if(chart==='w'||chart==='all'){
+    const wl=WL();
+    if(!wl.length){const r=setupCanvas('ch-w');if(r){r.ctx.clearRect(0,0,r.W,r.H);r.ctx.fillStyle='#8E8E93';r.ctx.font='13px -apple-system,sans-serif';r.ctx.textAlign='center';r.ctx.fillText('No weight data yet',r.W/2,r.H/2);}return;}
+    const{labels,values}=buildPeriod(CP.w.p,wl,'ts',ls=>{if(!ls.length)return null;return ls[ls.length-1].weight;});
+    const nonNull=values.filter(v=>v!==null);
+    if(!nonNull.length)return;
+    const mn=Math.min(...nonNull)-5,mx=Math.max(...nonNull)+5;
+    // fill nulls with prev
+    let last=mn+5;
+    const filled=values.map(v=>{if(v!==null){last=v;return v;}return last;});
+    drawLineChart('ch-w',labels,filled,'#34C759',Math.max(0,mn),mx);
+  }
+  if(chart==='b'||chart==='all'){
+    if(!CF.height){const r=setupCanvas('ch-b');if(r){r.ctx.clearRect(0,0,r.W,r.H);r.ctx.fillStyle='#8E8E93';r.ctx.font='12px -apple-system,sans-serif';r.ctx.textAlign='center';r.ctx.fillText('Set height in Settings',r.W/2,r.H/2);}return;}
+    const wl=WL();if(!wl.length)return;
+    const hM=CF.height/100;
+    const bmiLogs=wl.map(l=>({...l,bmi:l.weight/(hM*hM)}));
+    const{labels,values}=buildPeriod(CP.b.p,bmiLogs,'ts',ls=>{if(!ls.length)return null;return parseFloat(ls[ls.length-1].bmi.toFixed(1));});
+    const nonNull=values.filter(v=>v!==null);if(!nonNull.length)return;
+    const mn=Math.min(...nonNull)-2,mx=Math.max(...nonNull)+2;
+    let last=mn+2;const filled=values.map(v=>{if(v!==null){last=v;return v;}return last;});
+    drawLineChart('ch-b',labels,filled,'#AF52DE',Math.max(10,mn),mx);
+  }
+  if(chart==='wat'||chart==='all'){
+    const wal=WaL();
+    const{labels,values}=buildPeriod(CP.wat.p,wal,'ts',ls=>ls.reduce((s,l)=>s+(l.amount||0),0));
+    const maxV=Math.max(...values,CF.waterGoal);
+    const yTicks=[0,250,500,1000,1500,2000,2500,3000].filter(v=>v<=maxV*1.1);
+    const yMax=yTicks[yTicks.length-1]||maxV;
+    drawBarChart('ch-wat',labels,values,'#007AFF',null,0,yMax);
+  }
+};
+
+const drawAllCharts=()=>{drawChart('f');drawChart('w');drawChart('b');drawChart('wat');};
+
+// ── LOG MODALS ─────────────────────────
+const openFLogsModal=()=>{
+  const fl=FL().slice().reverse();
+  g('fl-list').innerHTML=fl.length
+    ?fl.map(l=>`<div class="li"><div class="li-m"><div class="liv">${l.actualH.toFixed(2)}h (${l.type}) ${l.completed?'✅':''}</div><div class="lid">${fmtDate(l.startTime)} → ${fmtDate(l.endTime)}</div></div><span class="lidel" onclick="delLog('fl','${l.id}')">×</span></div>`).join('')
+    :'<div class="emsg">No fasting records yet</div>';
+  openMo('mo-flogs');
+};
+const openWtLogsModal=()=>{
+  const wl=WL().slice().reverse();
+  g('wl-list').innerHTML=wl.length
+    ?wl.map(l=>`<div class="li"><div class="li-m"><div class="liv">${l.weight} ${CF.weightUnit}</div><div class="lid">${fmtDate(l.ts)}</div></div><span class="lidel" onclick="delLog('wl','${l.id}')">×</span></div>`).join('')
+    :'<div class="emsg">No weight records yet</div>';
+  openMo('mo-wtlogs');
+};
+const openWatLogsModal=()=>{
+  const wal=WaL().slice().reverse();
+  g('watl-list').innerHTML=wal.length
+    ?wal.map(l=>`<div class="li"><div class="li-m"><div class="liv">${l.amount} ml</div><div class="lid">${fmtDate(l.ts)}</div></div><span class="lidel" onclick="delLog('wal','${l.id}')">×</span></div>`).join('')
+    :'<div class="emsg">No water records yet</div>';
+  openMo('mo-watlogs');
+};
+
+const delLog=(type,id)=>{
+  showConfirm('Delete record?','This cannot be undone.',()=>{
+    if(type==='fl'){const l=FL().filter(x=>x.id!==id);sFL(l);}
+    if(type==='wl'){const l=WL().filter(x=>x.id!==id);sWL(l);}
+    if(type==='wal'){const l=WaL().filter(x=>x.id!==id);sWaL(l);}
+    if(type==='fl')openFLogsModal();
+    if(type==='wl')openWtLogsModal();
+    if(type==='wal')openWatLogsModal();
+    renderAll();
+  });
+};
+
+// ── INIT ───────────────────────────────
+const updateDate=()=>{
+  const d=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  g('hdate').textContent=`${days[d.getDay()]}, ${mo[d.getMonth()]} ${d.getDate()}`;
+};
+
+window.addEventListener('load',()=>{
+  loadData();
+  updateDate();
+  setInterval(updateDate,60000);
+  // If a fast was running resume timer
+  if(curFast)startTimer();
+  renderToday();
+  renderPlans();
+  // Redraw charts on resize
+  window.addEventListener('resize',()=>{if(ST.tab==='dashboard')drawAllCharts();});
+});
+
+// Make textarea pasteable on iOS - prevent any interference
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=g('impta');
+  if(ta){
+    ta.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+    ta.addEventListener('touchend',e=>e.stopPropagation(),{passive:true});
+    ta.addEventListener('touchmove',e=>e.stopPropagation(),{passive:true});
+  }
+});
+</script>
+</body>
+</html>
