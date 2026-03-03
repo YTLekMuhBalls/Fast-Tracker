@@ -106,9 +106,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .sico{font-size:16px;margin-bottom:3px}.slbl{font-size:10px;color:var(--tx2);margin-bottom:2px}
 .sval{font-size:21px;font-weight:800;color:var(--tx)}.su{font-size:11px;font-weight:400;color:var(--tx2)}
 
-/* âââ PIXEL GRID âââ 
+/* ─── PIXEL GRID ─── 
    Uses CSS Grid to fill the full card width uniformly.
-   Row 0 = month labels header, rows 1-7 = MonâSun
+   Row 0 = month labels header, rows 1-7 = Mon–Sun
    Col 0 = day label (fixed 24px), cols 1-12 = week cells (1fr each)
 */
 .px-outer{width:100%}
@@ -235,21 +235,21 @@ input,select,textarea{color-scheme:light dark}
 <body>
 <div id="toast"></div>
 <div id="hdr">
-  <span class="hbrand">ð¥ FastTrack</span>
-  <div class="hright"><span class="hdate" id="hdate"></span><button id="gbtn" onclick="openSettings()">âï¸</button></div>
+  <span class="hbrand">🔥 FastTrack</span>
+  <div class="hright"><span class="hdate" id="hdate"></span><button id="gbtn" onclick="openSettings()">⚙️</button></div>
 </div>
 
 <div id="content">
 
 <!-- DEV BAR (shown on Today + Dashboard when dev mode on) -->
 <div class="dev-bar" id="dev-bar">
-  <div class="dev-title">â¡ Dev Mode</div>
+  <div class="dev-title">⚡ Dev Mode</div>
   <div class="spd-row">
     <span class="spd-lbl">Speed:</span>
-    <button class="spdbtn act" onclick="setSpd(1,this)">1Ã</button>
-    <button class="spdbtn" onclick="setSpd(60,this)">60Ã</button>
-    <button class="spdbtn" onclick="setSpd(720,this)">720Ã</button>
-    <button class="spdbtn" onclick="setSpd(3600,this)">3600Ã</button>
+    <button class="spdbtn act" onclick="setSpd(1,this)">1×</button>
+    <button class="spdbtn" onclick="setSpd(60,this)">60×</button>
+    <button class="spdbtn" onclick="setSpd(720,this)">720×</button>
+    <button class="spdbtn" onclick="setSpd(3600,this)">3600×</button>
   </div>
   <div class="dev-grid" style="margin-top:7px">
     <button class="dev-btn" onclick="devFill(4)">Fill 4wks</button>
@@ -262,10 +262,10 @@ input,select,textarea{color-scheme:light dark}
   <div id="dev-info"></div>
 </div>
 
-<!-- âââ TODAY âââ -->
+<!-- ═══ TODAY ═══ -->
 <div class="screen active" id="sc-today">
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-o">ð¥</div>Fasting</div><button class="chev" onclick="goTab('dashboard')">âº</button></div>
+    <div class="chdr"><div class="ctitle"><div class="ci ci-o">🔥</div>Fasting</div><button class="chev" onclick="goTab('dashboard')">›</button></div>
     <div class="awrap">
       <svg class="asvg" viewBox="0 0 200 116">
         <path d="M14 102 A86 86 0 0 1 186 102" fill="none" stroke="var(--bd)" stroke-width="12" stroke-linecap="round"/>
@@ -273,24 +273,24 @@ input,select,textarea{color-scheme:light dark}
         <circle id="adot" cx="14" cy="102" r="6" fill="var(--or)" opacity="0"/>
       </svg>
       <div class="acent">
-        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">16:8</span> âº</button>
+        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">16:8</span> ›</button>
         <div class="atime" id="atime">Not fasting</div>
       </div>
     </div>
     <div class="fss"><div class="fss-l">Fasting start time</div><div class="fss-t" id="fsstd" onclick="openSTModal()">Daily, PM 8:00</div></div>
-    <div class="irow"><span class="ir-l">Next start</span><span class="ir-v" id="irnext">â</span></div>
-    <div class="irow"><span class="ir-l">Expected end</span><span class="ir-v" id="irend">â</span></div>
+    <div class="irow"><span class="ir-l">Next start</span><span class="ir-v" id="irnext">–</span></div>
+    <div class="irow"><span class="ir-l">Expected end</span><span class="ir-v" id="irend">–</span></div>
     <button class="btnp" id="fbtn" onclick="onFastBtn()">Start fasting</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-g">âï¸</div>Weight</div><button class="chev" onclick="openWtLogs()">âº</button></div>
-    <div class="wcur"><span id="wcur">â</span><span style="font-size:15px;font-weight:400;color:var(--tx2)" id="wunit-lbl"> kg</span></div>
+    <div class="chdr"><div class="ctitle"><div class="ci ci-g">⚖️</div>Weight</div><button class="chev" onclick="openWtLogs()">›</button></div>
+    <div class="wcur"><span id="wcur">–</span><span style="font-size:15px;font-weight:400;color:var(--tx2)" id="wunit-lbl"> kg</span></div>
     <div class="pbw"><div class="pbf" id="wpb" style="width:0%"></div></div>
-    <div class="wends"><span>Start: <strong id="wst">â</strong></span><span>Target: <strong id="wtgt">â</strong></span></div>
+    <div class="wends"><span>Start: <strong id="wst">–</strong></span><span>Target: <strong id="wtgt">–</strong></span></div>
     <button class="btns" onclick="openLogWt(null)">+ Log weight</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-b">ð§</div>Water</div><button class="chev" onclick="openWatLogs()">âº</button></div>
+    <div class="chdr"><div class="ctitle"><div class="ci ci-b">💧</div>Water</div><button class="chev" onclick="openWatLogs()">›</button></div>
     <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:1px">
       <div class="wamt"><span id="watcur">0</span><span style="font-size:14px;color:var(--tx2)"> ml</span></div>
       <span style="font-size:12px;color:var(--tx2)">/ <span id="watglbl">2000</span> ml</span>
@@ -309,7 +309,7 @@ input,select,textarea{color-scheme:light dark}
   </div>
 </div>
 
-<!-- âââ PLANS âââ -->
+<!-- ═══ PLANS ═══ -->
 <div class="screen" id="sc-plans">
   <div class="stitle">Daily Plans</div><div class="pgrid" id="pg-daily"></div>
   <div class="stitle">One-Time Plans</div><div class="pgrid" id="pg-onetime"></div>
@@ -318,29 +318,29 @@ input,select,textarea{color-scheme:light dark}
   <div style="height:8px"></div>
 </div>
 
-<!-- âââ DASHBOARD âââ -->
+<!-- ═══ DASHBOARD ═══ -->
 <div class="screen" id="sc-dashboard">
   <div class="card">
     <div class="sgrid">
-      <div class="sbox"><div class="sico">â±ï¸</div><div class="slbl">Total fasting time</div><div class="sval"><span id="stot">0</span><span class="su" id="stotu"> h</span></div></div>
-      <div class="sbox"><div class="sico">ð</div><div class="slbl">Longest fast</div><div class="sval"><span id="slng">0</span><span class="su"> h</span></div></div>
-      <div class="sbox"><div class="sico">ð</div><div class="slbl">Total fasting days</div><div class="sval"><span id="sdays">0</span><span class="su"> d</span></div></div>
-      <div class="sbox"><div class="sico">ð¥</div><div class="slbl">Longest streak</div><div class="sval"><span id="sstrk">0</span><span class="su"> d</span></div></div>
+      <div class="sbox"><div class="sico">⏱️</div><div class="slbl">Total fasting time</div><div class="sval"><span id="stot">0</span><span class="su" id="stotu"> h</span></div></div>
+      <div class="sbox"><div class="sico">🏆</div><div class="slbl">Longest fast</div><div class="sval"><span id="slng">0</span><span class="su"> h</span></div></div>
+      <div class="sbox"><div class="sico">📅</div><div class="slbl">Total fasting days</div><div class="sval"><span id="sdays">0</span><span class="su"> d</span></div></div>
+      <div class="sbox"><div class="sico">🔥</div><div class="slbl">Longest streak</div><div class="sval"><span id="sstrk">0</span><span class="su"> d</span></div></div>
     </div>
   </div>
 
   <!-- Pixel grid card -->
   <div class="card" id="px-card">
-    <div class="chdr"><div class="ctitle" style="font-size:14px">ð  Fasting Pixels</div><span style="font-size:10px;color:var(--tx2)">12 weeks</span></div>
+    <div class="chdr"><div class="ctitle" style="font-size:14px">🟠 Fasting Pixels</div><span style="font-size:10px;color:var(--tx2)">12 weeks</span></div>
     <div class="px-outer"><div class="px-grid" id="px-grid"></div></div>
     <!-- Legend -->
     <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;font-size:10px;color:var(--tx2)">
       <span><span style="display:inline-block;width:10px;height:10px;background:var(--bd);border-radius:2px;vertical-align:middle;margin-right:2px"></span>None</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FFE8D6;border-radius:2px;vertical-align:middle;margin-right:2px"></span>1â20%</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FFCBA0;border-radius:2px;vertical-align:middle;margin-right:2px"></span>21â40%</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FFAB6A;border-radius:2px;vertical-align:middle;margin-right:2px"></span>41â60%</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FF8C3A;border-radius:2px;vertical-align:middle;margin-right:2px"></span>61â80%</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FF6B2B;border-radius:2px;vertical-align:middle;margin-right:2px"></span>81â99%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FFE8D6;border-radius:2px;vertical-align:middle;margin-right:2px"></span>1–20%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FFCBA0;border-radius:2px;vertical-align:middle;margin-right:2px"></span>21–40%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FFAB6A;border-radius:2px;vertical-align:middle;margin-right:2px"></span>41–60%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FF8C3A;border-radius:2px;vertical-align:middle;margin-right:2px"></span>61–80%</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FF6B2B;border-radius:2px;vertical-align:middle;margin-right:2px"></span>81–99%</span>
       <span><span style="display:inline-block;width:10px;height:10px;background:#E8520A;border-radius:2px;vertical-align:middle;margin-right:2px"></span>100%</span>
     </div>
     <!-- Dev pixel test panel (hidden unless dev mode + test pixels on) -->
@@ -351,31 +351,31 @@ input,select,textarea{color-scheme:light dark}
   </div>
 
   <div class="card">
-    <div class="chdr"><div class="ctitle" style="font-size:14px">ð Fasting Logs</div></div>
+    <div class="chdr"><div class="ctitle" style="font-size:14px">📊 Fasting Logs</div></div>
     <div class="ctabs"><button class="ctab active" onclick="setPeriod('f','7d',this)">7d</button><button class="ctab" onclick="setPeriod('f','31d',this)">31d</button><button class="ctab" onclick="setPeriod('f','12m',this)">12m</button></div>
     <div class="ch-wrap" style="height:var(--chart-h)"><canvas id="ch-f"></canvas></div>
     <button class="btns" onclick="openFLogs()" style="margin-top:7px">View all records</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle" style="font-size:14px">âï¸ Weight Logs</div></div>
-    <div style="font-size:11px;margin-bottom:7px;color:var(--tx2)">Current: <strong id="dw" style="color:var(--tx)">â</strong> Â· Start: <strong id="dws">â</strong> Â· Target: <strong id="dwt">â</strong></div>
+    <div class="chdr"><div class="ctitle" style="font-size:14px">⚖️ Weight Logs</div></div>
+    <div style="font-size:11px;margin-bottom:7px;color:var(--tx2)">Current: <strong id="dw" style="color:var(--tx)">–</strong> · Start: <strong id="dws">–</strong> · Target: <strong id="dwt">–</strong></div>
     <div class="ctabs"><button class="ctab active" onclick="setPeriod('w','7d',this)">7d</button><button class="ctab" onclick="setPeriod('w','31d',this)">31d</button><button class="ctab" onclick="setPeriod('w','12m',this)">12m</button></div>
     <div class="ch-wrap" style="height:var(--chart-h)"><canvas id="ch-w"></canvas></div>
     <button class="btns" onclick="openWtLogs()" style="margin-top:7px">View all records</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle" style="font-size:14px">ð BMI</div></div>
-    <div id="bmi-noht" style="font-size:12px;color:var(--tx2)">Set height in Settings âï¸ to track BMI</div>
+    <div class="chdr"><div class="ctitle" style="font-size:14px">📏 BMI</div></div>
+    <div id="bmi-noht" style="font-size:12px;color:var(--tx2)">Set height in Settings ⚙️ to track BMI</div>
     <div id="bmi-con" style="display:none">
-      <div style="text-align:center;padding:5px 0"><div style="font-size:42px;font-weight:800;color:var(--tx)" id="bmin">â</div><div style="font-size:13px;font-weight:600;margin-top:1px" id="bmilbl">â</div></div>
+      <div style="text-align:center;padding:5px 0"><div style="font-size:42px;font-weight:800;color:var(--tx)" id="bmin">–</div><div style="font-size:13px;font-weight:600;margin-top:1px" id="bmilbl">–</div></div>
       <div class="bmibar"><div class="bmidot" id="bmidot" style="left:0%"></div></div>
-      <div class="bmirng"><span>Under<br>&lt;18.5</span><span style="text-align:center">Normal<br>18.5â25</span><span style="text-align:center">Over<br>25â30</span><span style="text-align:right">Obese<br>&gt;30</span></div>
+      <div class="bmirng"><span>Under<br>&lt;18.5</span><span style="text-align:center">Normal<br>18.5–25</span><span style="text-align:center">Over<br>25–30</span><span style="text-align:right">Obese<br>&gt;30</span></div>
     </div>
     <div class="ctabs" style="margin-top:10px"><button class="ctab active" onclick="setPeriod('b','7d',this)">7d</button><button class="ctab" onclick="setPeriod('b','31d',this)">31d</button><button class="ctab" onclick="setPeriod('b','12m',this)">12m</button></div>
     <div class="ch-wrap" style="height:130px"><canvas id="ch-b"></canvas></div>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle" style="font-size:14px">ð§ Water Logs</div></div>
+    <div class="chdr"><div class="ctitle" style="font-size:14px">💧 Water Logs</div></div>
     <div class="ctabs"><button class="ctab active" onclick="setPeriod('wat','7d',this)">7d</button><button class="ctab" onclick="setPeriod('wat','31d',this)">31d</button><button class="ctab" onclick="setPeriod('wat','12m',this)">12m</button></div>
     <div class="ch-wrap" style="height:var(--chart-h)"><canvas id="ch-wat"></canvas></div>
     <button class="btns" onclick="openWatLogs()" style="margin-top:7px">View all records</button>
@@ -385,12 +385,12 @@ input,select,textarea{color-scheme:light dark}
 </div><!-- end #content -->
 
 <div id="tbar">
-  <div class="ti active" id="ti-today" onclick="goTab('today')"><div class="ico">ð </div><div class="lbl">Today</div></div>
-  <div class="ti" id="ti-plans" onclick="goTab('plans')"><div class="ico">ð</div><div class="lbl">Plans</div></div>
-  <div class="ti" id="ti-dashboard" onclick="goTab('dashboard')"><div class="ico">ð</div><div class="lbl">Dashboard</div></div>
+  <div class="ti active" id="ti-today" onclick="goTab('today')"><div class="ico">🏠</div><div class="lbl">Today</div></div>
+  <div class="ti" id="ti-plans" onclick="goTab('plans')"><div class="ico">📋</div><div class="lbl">Plans</div></div>
+  <div class="ti" id="ti-dashboard" onclick="goTab('dashboard')"><div class="ico">📊</div><div class="lbl">Dashboard</div></div>
 </div>
 
-<!-- ââââ MODALS ââââ -->
+<!-- ════ MODALS ════ -->
 <div class="mov hidden" id="mo-ft"><div class="modal"><div class="mdrag"></div><div class="mtitle">Choose Plan</div>
   <div class="stitle" style="margin-top:0">Daily</div><div class="pgrid" id="mopd"></div>
   <div class="stitle">One-Time</div><div class="pgrid" id="mopo"></div>
@@ -418,9 +418,9 @@ input,select,textarea{color-scheme:light dark}
 
 <div class="mov hidden" id="mo-st"><div class="modal"><div class="mdrag"></div><div class="mtitle">Daily Fast Start Time</div>
   <div class="tprow">
-    <div class="tpcol"><button class="tparr" onclick="tpa('h',1)">â²</button><div class="tpv" id="tph">08</div><button class="tparr" onclick="tpa('h',-1)">â¼</button></div>
+    <div class="tpcol"><button class="tparr" onclick="tpa('h',1)">▲</button><div class="tpv" id="tph">08</div><button class="tparr" onclick="tpa('h',-1)">▼</button></div>
     <span style="font-size:26px;font-weight:800;color:var(--tx)">:</span>
-    <div class="tpcol"><button class="tparr" onclick="tpa('m',15)">â²</button><div class="tpv" id="tpm">00</div><button class="tparr" onclick="tpa('m',-15)">â¼</button></div>
+    <div class="tpcol"><button class="tparr" onclick="tpa('m',15)">▲</button><div class="tpv" id="tpm">00</div><button class="tparr" onclick="tpa('m',-15)">▼</button></div>
     <button class="tpap" id="tpap" onclick="tpTog()">PM</button>
   </div>
   <button class="btnp" onclick="saveST()">Save</button>
@@ -428,8 +428,8 @@ input,select,textarea{color-scheme:light dark}
 </div></div>
 
 <div class="mov hidden" id="mo-wt"><div class="modal"><div class="mdrag"></div><div class="mtitle" id="wt-ttl">Log Weight</div>
-  <div class="nrow"><button class="nb" onclick="adjWt(-0.1)">â</button><div class="ndisp"><div class="nval" id="wid">70.0</div><div class="nunit" id="wiu">kg</div></div><button class="nb" onclick="adjWt(0.1)">+</button></div>
-  <div class="brow"><button class="btnsm" onclick="adjWt(-1)">â1</button><button class="btnsm" onclick="adjWt(-0.5)">âÂ½</button><button class="btnsm" onclick="adjWt(0.5)">+Â½</button><button class="btnsm" onclick="adjWt(1)">+1</button></div>
+  <div class="nrow"><button class="nb" onclick="adjWt(-0.1)">−</button><div class="ndisp"><div class="nval" id="wid">70.0</div><div class="nunit" id="wiu">kg</div></div><button class="nb" onclick="adjWt(0.1)">+</button></div>
+  <div class="brow"><button class="btnsm" onclick="adjWt(-1)">−1</button><button class="btnsm" onclick="adjWt(-0.5)">−½</button><button class="btnsm" onclick="adjWt(0.5)">+½</button><button class="btnsm" onclick="adjWt(1)">+1</button></div>
   <label class="flbl">Manual entry</label>
   <input type="number" step="0.1" class="tinp" id="wtman" placeholder="e.g. 75.5" oninput="syncWt(this.value)">
   <label class="flbl">Date &amp; time</label>
@@ -441,7 +441,7 @@ input,select,textarea{color-scheme:light dark}
 
 <div class="mov hidden" id="mo-wat"><div class="modal"><div class="mdrag"></div><div class="mtitle">Log Water</div>
   <div id="watprog" style="font-size:12px;color:var(--tx2);margin-bottom:6px"></div>
-  <div class="nrow"><button class="nb" onclick="adjWat(-1)">â</button><div class="ndisp"><div class="nval" id="waid">250</div><div class="nunit">ml</div></div><button class="nb" onclick="adjWat(1)">+</button></div>
+  <div class="nrow"><button class="nb" onclick="adjWat(-1)">−</button><div class="ndisp"><div class="nval" id="waid">250</div><div class="nunit">ml</div></div><button class="nb" onclick="adjWat(1)">+</button></div>
   <div class="qgrid" id="watqb"></div>
   <label class="flbl">Manual entry</label>
   <input type="number" class="tinp" id="watman" placeholder="ml..." oninput="syncWat(this.value)">
@@ -465,7 +465,7 @@ input,select,textarea{color-scheme:light dark}
 <div class="mov hidden" id="mo-cp"><div class="modal"><div class="mdrag"></div><div class="mtitle">Create Custom Plan</div>
   <label class="flbl">Plan name</label><input type="text" class="tinp" id="cpname" placeholder="e.g. My 15h Fast">
   <label class="flbl">Fasting hours</label>
-  <div class="nrow"><button class="nb" onclick="adjCP(-1)">â</button><div class="ndisp"><div class="nval" id="cpfh">14</div><div class="nunit">fasting hours</div></div><button class="nb" onclick="adjCP(1)">+</button></div>
+  <div class="nrow"><button class="nb" onclick="adjCP(-1)">−</button><div class="ndisp"><div class="nval" id="cpfh">14</div><div class="nunit">fasting hours</div></div><button class="nb" onclick="adjCP(1)">+</button></div>
   <label class="flbl">Type</label>
   <select class="tinp" id="cptype" style="height:auto;padding:10px"><option value="daily">Daily</option><option value="onetime">One-time</option></select>
   <button class="btnp" onclick="saveCP()">Create plan</button>
@@ -514,19 +514,19 @@ input,select,textarea{color-scheme:light dark}
     <select class="ssel" id="s-testpx" onchange="saveCfg('testPixels',this.value==='1');renderDash()"><option value="0">Off</option><option value="1">On</option></select>
   </div>
   <div class="ss">Data</div>
-  <div style="font-size:11px;color:var(--tx2);margin-bottom:7px">Export â copy â paste to restore</div>
-  <div class="brow"><button class="btnsm" onclick="exportData()">ð Export &amp; Copy</button><button class="btnsm" onclick="openImport()">ð¥ Import</button></div>
+  <div style="font-size:11px;color:var(--tx2);margin-bottom:7px">Export → copy → paste to restore</div>
+  <div class="brow"><button class="btnsm" onclick="exportData()">📋 Export &amp; Copy</button><button class="btnsm" onclick="openImport()">📥 Import</button></div>
   <button class="btns" onclick="openMF(null)">+ Log past fast</button>
-  <button class="bdanger" onclick="confirmWipe()">ðï¸ Wipe all data</button>
+  <button class="bdanger" onclick="confirmWipe()">🗑️ Wipe all data</button>
   <button class="btns" onclick="closeMo('mo-settings')" style="margin-top:12px">Done</button>
 </div></div>
 
 <div class="mov hidden" id="mo-import"><div class="modal"><div class="mdrag"></div><div class="mtitle">Import / Restore</div>
-  <div style="font-size:12px;color:var(--tx2);margin-bottom:10px">Tap the box â long-press â Paste. Or use Paste button.</div>
+  <div style="font-size:12px;color:var(--tx2);margin-bottom:10px">Tap the box → long-press → Paste. Or use Paste button.</div>
   <textarea class="taio" id="impta" placeholder="Paste backup JSON here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
   <div class="brow" style="margin-top:6px">
-    <button class="btnsm" onclick="pasteClip()">ð Paste</button>
-    <button class="btnsm" onclick="G('impta').value=''">â Clear</button>
+    <button class="btnsm" onclick="pasteClip()">📋 Paste</button>
+    <button class="btnsm" onclick="G('impta').value=''">✕ Clear</button>
     <button class="btnsm" onclick="G('impta').select()">Select all</button>
   </div>
   <button class="btnp" onclick="doImport()" style="margin-top:4px">Restore data</button>
@@ -538,7 +538,7 @@ input,select,textarea{color-scheme:light dark}
     <div class="mtitle" style="margin:0">Fasting Records</div>
     <div style="display:flex;gap:7px;align-items:center">
       <button class="btnsm" onclick="openMF(null)" style="flex:none;padding:4px 9px;font-size:11px">+ Log past</button>
-      <span onclick="closeMo('mo-flogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">Ã</span>
+      <span onclick="closeMo('mo-flogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">×</span>
     </div>
   </div>
   <div id="fl-list"></div>
@@ -547,7 +547,7 @@ input,select,textarea{color-scheme:light dark}
 <div class="mov hidden" id="mo-wtlogs"><div class="modal"><div class="mdrag"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="mtitle" style="margin:0">Weight Records</div>
-    <span onclick="closeMo('mo-wtlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">Ã</span>
+    <span onclick="closeMo('mo-wtlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">×</span>
   </div>
   <div id="wl-list"></div>
 </div></div>
@@ -555,7 +555,7 @@ input,select,textarea{color-scheme:light dark}
 <div class="mov hidden" id="mo-watlogs"><div class="modal"><div class="mdrag"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="mtitle" style="margin:0">Water Records</div>
-    <span onclick="closeMo('mo-watlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">Ã</span>
+    <span onclick="closeMo('mo-watlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">×</span>
   </div>
   <div id="watl-list"></div>
 </div></div>
@@ -574,15 +574,15 @@ input,select,textarea{color-scheme:light dark}
   <button class="btns" onclick="closeMo('mo-inp')" style="margin-top:4px">Cancel</button>
 </div></div>
 <script>
-// âââ CONSTANTS ââââââââââââââââââââââââ
+// ─── CONSTANTS ────────────────────────
 const ARC = 269.7;
 const DAILY = [
-  {type:'14:10',fast:14,eat:10,desc:'14h Â· 10h eat'},
-  {type:'16:8', fast:16,eat:8, desc:'16h Â· 8h eat'},
-  {type:'18:6', fast:18,eat:6, desc:'18h Â· 6h eat'},
-  {type:'20:4', fast:20,eat:4, desc:'20h Â· 4h eat'},
-  {type:'22:2', fast:22,eat:2, desc:'22h Â· 2h eat'},
-  {type:'23:1', fast:23,eat:1, desc:'23h Â· 1h eat'},
+  {type:'14:10',fast:14,eat:10,desc:'14h · 10h eat'},
+  {type:'16:8', fast:16,eat:8, desc:'16h · 8h eat'},
+  {type:'18:6', fast:18,eat:6, desc:'18h · 6h eat'},
+  {type:'20:4', fast:20,eat:4, desc:'20h · 4h eat'},
+  {type:'22:2', fast:22,eat:2, desc:'22h · 2h eat'},
+  {type:'23:1', fast:23,eat:1, desc:'23h · 1h eat'},
 ];
 const ONETIME = [
   {type:'24',fast:24,desc:'1 day'},
@@ -606,7 +606,7 @@ const PX_TEST_OPTIONS = [
   {label:'120%', pct:1.20, cls:'px-done'},
 ];
 
-// âââ CONFIG âââââââââââââââââââââââââââ
+// ─── CONFIG ───────────────────────────
 let CF = {
   fastType:'16:8', fastStartTime:'20:00',
   waterGoal:2000, waterIncrement:250,
@@ -622,7 +622,7 @@ let inpCb=null, confCb=null;
 let PERIODS = {f:'7d', w:'7d', b:'7d', wat:'7d'};
 let devSpd=1, devOff=0, devInt=null;
 
-// âââ STORAGE ââââââââââââââââââââââââââ
+// ─── STORAGE ──────────────────────────
 const LS = {
   g: k => { try { const v=localStorage.getItem(k); return v?JSON.parse(v):null; } catch{return null;} },
   s: (k,v) => { try { localStorage.setItem(k,JSON.stringify(v)); } catch{} },
@@ -645,7 +645,7 @@ const saveCPs = () => LS.s('ft_cp', CPs);
 const saveCF  = () => curFast ? LS.s('ft_cf',curFast) : LS.d('ft_cf');
 function saveCfg(k, v) { CF[k]=v; saveCFG(); }
 
-// âââ TIME (dev-offset aware) ââââââââââ
+// ─── TIME (dev-offset aware) ──────────
 const NOW = () => new Date(Date.now() + devOff);
 
 function dtLocal(iso) {
@@ -653,7 +653,7 @@ function dtLocal(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// âââ UTILS ââââââââââââââââââââââââââââ
+// ─── UTILS ────────────────────────────
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
 const G   = id => document.getElementById(id);
 const SET = (id, v) => { const e=G(id); if(e) e.textContent=v; };
@@ -665,7 +665,7 @@ function todayWat() {
 }
 
 function fmtDate(iso) {
-  if (!iso) return 'â';
+  if (!iso) return '–';
   const d=new Date(iso), df=CF.dateFormat, tf=CF.timeFormat;
   const dd=String(d.getDate()).padStart(2,'0'), mm=String(d.getMonth()+1).padStart(2,'0'), yyyy=d.getFullYear();
   const H=d.getHours(), M=String(d.getMinutes()).padStart(2,'0'), sec=String(d.getSeconds()).padStart(2,'0');
@@ -676,12 +676,12 @@ function fmtDate(iso) {
   if(df==='dateonly')  return `${dd}/${mm}/${yyyy}`;
   if(df==='short')     return `${dd}/${mm}`;
   if(df==='datetime_s')return `${dd}/${mm}/${yyyy} ${tss}`;
-  if(df==='full')      return `${MO[d.getMonth()]} ${dd}, ${yyyy} â ${ts}`;
+  if(df==='full')      return `${MO[d.getMonth()]} ${dd}, ${yyyy} – ${ts}`;
   return `${dd}/${mm}/${yyyy} ${ts}`;
 }
 
 function fmtClock(iso) {
-  if (!iso) return 'â';
+  if (!iso) return '–';
   const d=new Date(iso), tf=CF.timeFormat;
   const H=d.getHours(), M=String(d.getMinutes()).padStart(2,'0');
   const h12=(H%12)||12, ap=H>=12?'PM':'AM';
@@ -711,7 +711,7 @@ function nextFastStart() {
   return nx;
 }
 
-// âââ THEME / UI VARS ââââââââââââââââââ
+// ─── THEME / UI VARS ──────────────────
 function applyTheme(t) {
   if(t==='auto') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme',t);
@@ -724,7 +724,7 @@ function applyUI() {
   r.setProperty('--chart-h',  CF.chartH||'150px');
 }
 
-// âââ MODALS âââââââââââââââââââââââââââ
+// ─── MODALS ───────────────────────────
 function openMo(id)  { const e=G(id); if(e){ e.classList.remove('hidden'); e.scrollTop=0; } }
 function closeMo(id) { const e=G(id); if(e) e.classList.add('hidden'); }
 document.addEventListener('click', e => {
@@ -753,14 +753,14 @@ function toast(msg, dur=2200) {
   if(_tt) clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),dur);
 }
 
-// âââ NAVIGATION âââââââââââââââââââââââ
+// ─── NAVIGATION ───────────────────────
 function goTab(tab) {
   TAB=tab;
   document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.ti').forEach(e=>e.classList.remove('active'));
   G('sc-'+tab).classList.add('active');
   G('ti-'+tab).classList.add('active');
-  const brands={today:'ð¥ FastTrack', plans:'Plans', dashboard:'Dashboard'};
+  const brands={today:'🔥 FastTrack', plans:'Plans', dashboard:'Dashboard'};
   const hb=G('hbrand'); if(hb) hb.textContent=brands[tab]||'FastTrack';
   const gb=G('gbtn'); if(gb) gb.style.display=tab==='dashboard'?'block':'none';
   const hd=G('hdate'); if(hd) hd.style.display=tab==='today'?'block':'none';
@@ -771,7 +771,7 @@ function goTab(tab) {
   if(tab==='dashboard') { renderDash(); setTimeout(drawAllCharts,80); }
 }
 
-// âââ DEV MODE âââââââââââââââââââââââââ
+// ─── DEV MODE ─────────────────────────
 function setDevMode(on) {
   saveCfg('devMode', on);
   const db=G('dev-bar'); if(db) db.classList.toggle('show', on&&(TAB==='today'||TAB==='dashboard'));
@@ -780,7 +780,7 @@ function setDevMode(on) {
   else startDevClock();
   const sd=G('s-dev'); if(sd) sd.value=on?'1':'0';
   if(!on) renderDash();
-  toast(on?'Dev mode ON â¡':'Dev mode off');
+  toast(on?'Dev mode ON ⚡':'Dev mode off');
 }
 function setSpd(s, btn) {
   devSpd=s;
@@ -858,7 +858,7 @@ function addTestPixel(pct) {
   sFL(fl); renderAll(); toast(`Test pixel added: ${Math.round(pct*100)}%`);
 }
 
-// âââ FASTING ââââââââââââââââââââââââââ
+// ─── FASTING ──────────────────────────
 function onFastBtn() {
   if (curFast) {
     G('ef-ts').value = dtLocal(NOW().toISOString());
@@ -873,7 +873,7 @@ function updateSfPrev() {
   const el=G('sf-ts'), pv=G('sf-prev'); if(!el||!pv) return;
   if(!el.value){pv.textContent=''; return;}
   const d=new Date(el.value), diff=(NOW()-d)/3600000;
-  if(diff<0)        pv.textContent='Future start â fast not yet begun';
+  if(diff<0)        pv.textContent='Future start – fast not yet begun';
   else if(diff<0.02) pv.textContent='Starting now';
   else              pv.textContent=`Backdated ${diff.toFixed(1)}h ago`;
 }
@@ -885,7 +885,7 @@ function confirmStartFast() {
 }
 function startFast(startISO) {
   curFast={startTime:startISO, type:CF.fastType, plannedH:parseFH(CF.fastType)};
-  saveCF(); startTimer(); updateFastUI(); toast('Fast started ðª');
+  saveCF(); startTimer(); updateFastUI(); toast('Fast started 💪');
 }
 
 function updateEfPrev() {
@@ -893,8 +893,8 @@ function updateEfPrev() {
   if(!el.value){pv.textContent=''; return;}
   const end=new Date(el.value), start=new Date(curFast.startTime);
   const h=(end-start)/3600000;
-  if(h<=0) pv.textContent='â ï¸ End must be after start';
-  else pv.textContent=`Duration: ${h.toFixed(2)}h ${h>=curFast.plannedH*0.85?'â Goal met':''}`;
+  if(h<=0) pv.textContent='⚠️ End must be after start';
+  else pv.textContent=`Duration: ${h.toFixed(2)}h ${h>=curFast.plannedH*0.85?'✅ Goal met':''}`;
 }
 G('ef-ts') && G('ef-ts').addEventListener('input', updateEfPrev);
 
@@ -910,7 +910,7 @@ function confirmStopFast() {
     type:curFast.type, plannedH:curFast.plannedH, actualH:h, completed:h>=curFast.plannedH*0.85});
   sFL(fl); curFast=null; saveCF();
   if(timerInt){clearInterval(timerInt);timerInt=null;}
-  closeMo('mo-stopfast'); updateFastUI(); toast(`Saved! ${h.toFixed(1)}h â`);
+  closeMo('mo-stopfast'); updateFastUI(); toast(`Saved! ${h.toFixed(1)}h ✓`);
 }
 
 function startTimer() { if(timerInt) clearInterval(timerInt); timerInt=setInterval(updateFastUI,1000); }
@@ -932,7 +932,7 @@ function updateFastUI() {
     ad.style.fill=prog>=1?'var(--gr)':'var(--or)';
     const rem=total-elapsed;
     if(rem>0){const rh=Math.floor(rem/3600000),rm=Math.floor((rem%3600000)/60000),rs=Math.floor((rem%60000)/1000);at.textContent=`${rh}h ${rm}m ${rs}s remaining`;}
-    else{const ov=Math.abs(rem),oh=Math.floor(ov/3600000),om=Math.floor((ov%3600000)/60000);at.textContent=`${oh}h ${om}m over â`;}
+    else{const ov=Math.abs(rem),oh=Math.floor(ov/3600000),om=Math.floor((ov%3600000)/60000);at.textContent=`${oh}h ${om}m over ✅`;}
     fb.textContent='End fast'; fb.className='btnp stop';
   } else {
     ap.setAttribute('stroke-dasharray',`0 ${ARC}`); ad.style.opacity='0';
@@ -948,7 +948,7 @@ function updateFastUI() {
   }
 }
 
-// âââ WATER COLOURS ââââââââââââââââââââ
+// ─── WATER COLOURS ────────────────────
 function watColor(pct) {
   if(pct<=.25) return '#5AC8FA';
   if(pct<=.50) return '#2D8CF0';
@@ -964,12 +964,12 @@ function watZoneLbl(pct) {
   if(pct<.5)   return 'Keep going!';
   if(pct<.75)  return 'Halfway!';
   if(pct<1)    return 'Almost there!';
-  if(pct<1.25) return 'Goal met! ð¯';
-  if(pct<1.5)  return 'Well hydrated ð';
-  return 'Super hydrated! ðª';
+  if(pct<1.25) return 'Goal met! 🎯';
+  if(pct<1.5)  return 'Well hydrated 🌟';
+  return 'Super hydrated! 💪';
 }
 
-// âââ TODAY ââââââââââââââââââââââââââââ
+// ─── TODAY ────────────────────────────
 function renderToday() {
   const [h,m]=CF.fastStartTime.split(':').map(Number);
   const tf=CF.timeFormat, h12=(h%12)||12, ap=h>=12?'PM':'AM';
@@ -977,10 +977,10 @@ function renderToday() {
   SET('fsstd',`Daily, ${ts}`);
   const wls=getWL(), lw=wls.length?wls[wls.length-1]:null;
   const cw=lw?lw.weight:null, sw=CF.startWeight, tw=CF.targetWeight, wu=CF.weightUnit;
-  SET('wcur', cw?cw.toFixed(1):'â');
+  SET('wcur', cw?cw.toFixed(1):'–');
   const ul=G('wunit-lbl'); if(ul) ul.textContent=` ${wu}`;
-  SET('wst',  sw?`${sw} ${wu}`:'â');
-  SET('wtgt', tw?`${tw} ${wu}`:'â');
+  SET('wst',  sw?`${sw} ${wu}`:'–');
+  SET('wtgt', tw?`${tw} ${wu}`:'–');
   const pb=G('wpb');
   if(pb && cw && sw && tw && sw!==tw) {
     const p=sw>tw?(sw-cw)/(sw-tw):(cw-sw)/(tw-sw);
@@ -997,7 +997,7 @@ function renderToday() {
   updateFastUI();
 }
 
-// âââ PLANS ââââââââââââââââââââââââââââ
+// ─── PLANS ────────────────────────────
 function renderPlans() {
   renderPG('pg-daily',DAILY,false); renderPG('pg-onetime',ONETIME,false); renderCPL('pg-custom',false);
 }
@@ -1014,7 +1014,7 @@ function selPlan(type){CF.fastType=type;saveCFG();renderPlans();renderToday();up
 function selMo(type){CF.fastType=type;saveCFG();closeMo('mo-ft');renderToday();updateFastUI();toast(`Plan: ${type}`);}
 function openFTModal(){renderPG('mopd',DAILY,true);renderPG('mopo',ONETIME,true);renderCPL('mopc',true);openMo('mo-ft');}
 
-// âââ START TIME âââââââââââââââââââââââ
+// ─── START TIME ───────────────────────
 function openSTModal() {
   const [h,m]=CF.fastStartTime.split(':').map(Number);
   tpH=h%12||12; tpM=m; tpAP=h>=12?'PM':'AM';
@@ -1033,7 +1033,7 @@ function saveST(){
   saveCFG(); closeMo('mo-st'); renderToday(); toast('Start time saved');
 }
 
-// âââ LOG WEIGHT âââââââââââââââââââââââ
+// ─── LOG WEIGHT ───────────────────────
 function openLogWt(editId) {
   G('wt-eid').value=editId||'';
   if(editId){
@@ -1059,7 +1059,7 @@ function saveWt(){
   sWL(logs); closeMo('mo-wt'); renderAll(); toast(eid?`Updated: ${wInp} ${CF.weightUnit}`:`Weight: ${wInp} ${CF.weightUnit}`);
 }
 
-// âââ LOG WATER ââââââââââââââââââââââââ
+// ─── LOG WATER ────────────────────────
 function openLogWat() {
   watInp=CF.waterIncrement; G('waid').textContent=watInp; G('watman').value='';
   const tw=todayWat(), g=CF.waterGoal;
@@ -1074,15 +1074,15 @@ function adjWat(d){watInp=Math.max(50,watInp+(d*CF.waterIncrement));G('waid').te
 function syncWat(v){const n=parseInt(v);if(!isNaN(n)&&n>0){watInp=n;G('waid').textContent=n;}}
 function saveWat(){
   const logs=getWaL(); logs.push({id:uid(),ts:NOW().toISOString(),amount:watInp});
-  sWaL(logs); closeMo('mo-wat'); renderAll(); toast(`+${watInp}ml ð§`);
+  sWaL(logs); closeMo('mo-wat'); renderAll(); toast(`+${watInp}ml 💧`);
 }
 
-// âââ MANUAL / EDIT FAST âââââââââââââââ
+// ─── MANUAL / EDIT FAST ───────────────
 function openMF(editId) {
   closeMo('mo-flogs'); closeMo('mo-settings');
   G('mf-eid').value=editId||'';
   const all=[...DAILY,...ONETIME,...CPs];
-  G('mf-type').innerHTML=all.map(p=>`<option value="${p.type}">${p.type}${p.name?' â '+p.name:''}</option>`).join('');
+  G('mf-type').innerHTML=all.map(p=>`<option value="${p.type}">${p.type}${p.name?' – '+p.name:''}</option>`).join('');
   if(editId){
     const log=getFL().find(l=>l.id===editId); if(!log) return;
     SET('mf-ttl','Edit Fast'); G('mf-ok').textContent='Update fast';
@@ -1101,7 +1101,7 @@ function updateMFPrev(){
   const sd=G('mf-sd').value,st=G('mf-st').value,ed=G('mf-ed').value,et=G('mf-et').value;
   if(!sd||!st||!ed||!et){SET('mf-prev','Fill all fields');return;}
   const s=new Date(`${sd}T${st}`),e=new Date(`${ed}T${et}`),h=(e-s)/3600000;
-  SET('mf-prev', h<=0?'â ï¸ End must be after start':`Duration: ${h.toFixed(2)}h`);
+  SET('mf-prev', h<=0?'⚠️ End must be after start':`Duration: ${h.toFixed(2)}h`);
 }
 ['mf-sd','mf-st','mf-ed','mf-et'].forEach(id=>{ const el=G(id); if(el) el.addEventListener('change',updateMFPrev); });
 function saveMF(){
@@ -1114,10 +1114,10 @@ function saveMF(){
   let logs=getFL();
   if(eid) logs=logs.map(l=>l.id===eid?{...l,startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85}:l);
   else logs.push({id:uid(),startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85});
-  sFL(logs); closeMo('mo-mf'); renderAll(); toast(`${eid?'Updated':'Saved'}: ${h.toFixed(1)}h â`);
+  sFL(logs); closeMo('mo-mf'); renderAll(); toast(`${eid?'Updated':'Saved'}: ${h.toFixed(1)}h ✓`);
 }
 
-// âââ CUSTOM PLAN ââââââââââââââââââââââ
+// ─── CUSTOM PLAN ──────────────────────
 function openCPModal(){cpFH=14;SET('cpfh',14);G('cpname').value='';openMo('mo-cp');}
 function adjCP(d){cpFH=Math.max(1,Math.min(72,cpFH+d));SET('cpfh',cpFH);}
 function saveCP(){
@@ -1126,7 +1126,7 @@ function saveCP(){
   CPs.push({type,name,fast:cpFH,eat}); saveCPs(); closeMo('mo-cp'); renderPlans(); toast(`Plan "${name}" created`);
 }
 
-// âââ SETTINGS âââââââââââââââââââââââââ
+// ─── SETTINGS ─────────────────────────
 function openSettings(){
   const sel=(id,v)=>{const e=G(id);if(e)e.value=String(v);};
   sel('s-wu',CF.weightUnit); sel('s-tf',CF.timeFormat); sel('s-df',CF.dateFormat);
@@ -1146,18 +1146,18 @@ function saveSW(v){const n=parseFloat(v);if(n>0){CF.startWeight=n;saveCFG();}SET
 function saveTW(v){const n=parseFloat(v);if(n>0){CF.targetWeight=n;saveCFG();}SET('s-tw',CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set');renderToday();}
 function saveWG(v){const n=parseInt(v);if(n>0){CF.waterGoal=n;saveCFG();}SET('s-wg',`${CF.waterGoal} ml`);renderToday();}
 
-// âââ EXPORT / IMPORT ââââââââââââââââââ
+// ─── EXPORT / IMPORT ──────────────────
 function exportData(){
   const data=JSON.stringify({cfg:CF,cps:CPs,fl:getFL(),wl:getWL(),wal:getWaL()},null,2);
   if(navigator.clipboard&&navigator.clipboard.writeText)
-    navigator.clipboard.writeText(data).then(()=>toast('Copied! ð')).catch(()=>showFallback(data));
+    navigator.clipboard.writeText(data).then(()=>toast('Copied! 📋')).catch(()=>showFallback(data));
   else showFallback(data);
 }
-function showFallback(data){G('impta').value=data;openMo('mo-import');toast('Data shown â select & copy');}
+function showFallback(data){G('impta').value=data;openMo('mo-import');toast('Data shown – select & copy');}
 function openImport(){G('impta').value='';openMo('mo-import');}
 async function pasteClip(){
   try{const t=await navigator.clipboard.readText();G('impta').value=t;toast('Pasted!');}
-  catch{toast('Long-press â Paste in the box');}
+  catch{toast('Long-press → Paste in the box');}
 }
 function doImport(){
   const raw=G('impta').value.trim(); if(!raw){toast('Nothing here');return;}
@@ -1168,12 +1168,12 @@ function doImport(){
       if(d.cps) CPs=d.cps;
       if(d.fl)  sFL(d.fl); if(d.wl) sWL(d.wl); if(d.wal) sWaL(d.wal);
       saveCFG(); saveCPs(); applyTheme(CF.theme||'auto'); applyUI();
-      closeMo('mo-import'); renderAll(); toast('Restored â');
+      closeMo('mo-import'); renderAll(); toast('Restored ✓');
     });
   } catch { toast('Invalid data'); }
 }
 function confirmWipe(){
-  showConfirm('Wipe ALL data?','Permanent â cannot be undone.',()=>{
+  showConfirm('Wipe ALL data?','Permanent – cannot be undone.',()=>{
     localStorage.clear();
     CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px'};
     CPs=[]; curFast=null; devOff=0; devSpd=1; clearInterval(devInt); devInt=null;
@@ -1182,14 +1182,14 @@ function confirmWipe(){
   });
 }
 
-// âââ RENDER ALL âââââââââââââââââââââââ
+// ─── RENDER ALL ───────────────────────
 function renderAll(){
   if(TAB==='today')     renderToday();
   if(TAB==='plans')     renderPlans();
   if(TAB==='dashboard') { renderDash(); setTimeout(drawAllCharts,80); }
 }
 
-// âââ DASHBOARD ââââââââââââââââââââââââ
+// ─── DASHBOARD ────────────────────────
 function renderDash(){
   const fl=getFL(), wl=getWL();
   const totalH=fl.reduce((s,l)=>s+(l.actualH||0),0);
@@ -1199,9 +1199,9 @@ function renderDash(){
   const [tv,tu]=fmtTotalTime(totalH);
   SET('stot',tv); SET('stotu',tu); SET('slng',longH.toFixed(1)); SET('sdays',fastDays); SET('sstrk',streak);
   const lw=wl.length?wl[wl.length-1]:null, wu=CF.weightUnit;
-  SET('dw',  lw?`${lw.weight.toFixed(1)} ${wu}`:'â');
-  SET('dws', CF.startWeight?`${CF.startWeight} ${wu}`:'â');
-  SET('dwt', CF.targetWeight?`${CF.targetWeight} ${wu}`:'â');
+  SET('dw',  lw?`${lw.weight.toFixed(1)} ${wu}`:'–');
+  SET('dws', CF.startWeight?`${CF.startWeight} ${wu}`:'–');
+  SET('dwt', CF.targetWeight?`${CF.targetWeight} ${wu}`:'–');
   renderPx(fl);
   renderBMI(lw?lw.weight:null);
 }
@@ -1218,7 +1218,7 @@ function calcStreak(fl){
   return streak;
 }
 
-// âââ PIXEL GRID âââââââââââââââââââââââ
+// ─── PIXEL GRID ───────────────────────
 // Returns CSS class based on actualH/plannedH ratio
 function pxClass(actualH, plannedH){
   if(!actualH || actualH<=0) return 'px-empty';
@@ -1249,10 +1249,10 @@ function renderPx(fl){
   const DLBLS=['Mo','Tu','We','Th','Fr','Sa','Su'];
   const MO_=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  // grid has 13 columns (24px label + 12fr weeks) Ã 8 rows (header + 7 days)
+  // grid has 13 columns (24px label + 12fr weeks) × 8 rows (header + 7 days)
   let html='';
 
-  // ââ Row 0: month headers ââ
+  // ── Row 0: month headers ──
   html+='<div class="px-lbl"></div>'; // empty corner
   for(let w=0;w<12;w++){
     const wd=new Date(startMon); wd.setDate(startMon.getDate()+w*7);
@@ -1260,7 +1260,7 @@ function renderPx(fl){
     html+=`<div class="px-mlbl">${showM?MO_[wd.getMonth()]:''}</div>`;
   }
 
-  // ââ Rows 1-7: day rows ââ
+  // ── Rows 1-7: day rows ──
   for(let d=0;d<7;d++){
     html+=`<div class="px-lbl">${DLBLS[d]}</div>`;
     for(let w=0;w<12;w++){
@@ -1274,12 +1274,12 @@ function renderPx(fl){
         cls += ' ' + (log ? pxClass(log.actualH,log.plannedH) : 'px-empty');
       }
       const pct=dayMap[date.toDateString()]?Math.round(dayMap[date.toDateString()].actualH/dayMap[date.toDateString()].plannedH*100)+'%':'';
-      html+=`<div class="${cls}" title="${date.toLocaleDateString()}${pct?' â '+pct:''}"></div>`;
+      html+=`<div class="${cls}" title="${date.toLocaleDateString()}${pct?' – '+pct:''}"></div>`;
     }
   }
   grid.innerHTML=html;
 
-  // ââ Test pixel panel ââ
+  // ── Test pixel panel ──
   const panel=G('px-test-panel');
   if(panel){
     const show=CF.devMode&&CF.testPixels;
@@ -1314,7 +1314,7 @@ function renderBMI(cw){
   const bd=G('bmidot'); if(bd) bd.style.left=`${pct}%`;
 }
 
-// âââ CHARTS âââââââââââââââââââââââââââ
+// ─── CHARTS ───────────────────────────
 const DPR=window.devicePixelRatio||1;
 
 function setPeriod(chart,period,btn){
@@ -1452,16 +1452,16 @@ function drawChart(c){
 }
 function drawAllCharts(){drawChart('f');drawChart('w');drawChart('b');drawChart('wat');}
 
-// âââ LOG MODALS âââââââââââââââââââââââ
+// ─── LOG MODALS ───────────────────────
 function openFLogs(){
   const fl=getFL().slice().reverse();
   G('fl-list').innerHTML=fl.length?fl.map(l=>`
     <div class="li">
-      <div class="li-m"><div class="liv">${l.actualH.toFixed(2)}h (${l.type}) ${l.completed?'â':''}</div>
-      <div class="lid">${fmtDate(l.startTime)} â ${fmtDate(l.endTime)}</div></div>
+      <div class="li-m"><div class="liv">${l.actualH.toFixed(2)}h (${l.type}) ${l.completed?'✅':''}</div>
+      <div class="lid">${fmtDate(l.startTime)} → ${fmtDate(l.endTime)}</div></div>
       <div class="li-acts">
         <span class="liedit" onclick="openMF('${l.id}')">Edit</span>
-        <span class="lidel" onclick="delLog('fl','${l.id}')">Ã</span>
+        <span class="lidel" onclick="delLog('fl','${l.id}')">×</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-flogs');
@@ -1474,7 +1474,7 @@ function openWtLogs(){
       <div class="lid">${fmtDate(l.ts)}</div></div>
       <div class="li-acts">
         <span class="liedit" onclick="closeMo('mo-wtlogs');openLogWt('${l.id}')">Edit</span>
-        <span class="lidel" onclick="delLog('wl','${l.id}')">Ã</span>
+        <span class="lidel" onclick="delLog('wl','${l.id}')">×</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-wtlogs');
@@ -1486,7 +1486,7 @@ function openWatLogs(){
       <div class="li-m"><div class="liv">${l.amount} ml</div>
       <div class="lid">${fmtDate(l.ts)}</div></div>
       <div class="li-acts">
-        <span class="lidel" onclick="delLog('wal','${l.id}')">Ã</span>
+        <span class="lidel" onclick="delLog('wal','${l.id}')">×</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-watlogs');
@@ -1503,7 +1503,7 @@ function delLog(type,id){
   });
 }
 
-// âââ INIT âââââââââââââââââââââââââââââ
+// ─── INIT ─────────────────────────────
 function updateDate(){
   const d=NOW();
   const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
