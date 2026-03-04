@@ -18,6 +18,7 @@
   --inp:#FFF;--inpbd:#E5E5EA;
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
   --badge-fs:17px;--px-gap:4px;--chart-h:150px;
+  --arc-size:400px;--arc-text-y:32%;--arc-text-size:13px;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#1C1C1E;--card:#2C2C2E;--card2:#3A3A3C;--tx:#FFF;--tx2:#8E8E93;--bd:#3A3A3C;
@@ -51,11 +52,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .chev{font-size:20px;color:var(--tx2);background:none;border:none;cursor:pointer;padding:2px 4px;line-height:1}
 /* arc */
 .awrap{display:flex;flex-direction:column;align-items:center;position:relative;margin:0 0 8px}
-.asvg{width:200px;height:116px}
-.acent{position:absolute;top:30px;left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
+.asvg{width:var(--arc-size,400px);height:auto;display:block;margin:0 auto}
+.acent{position:absolute;top:var(--arc-text-y,32%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
 .fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all}
 .fbadge:active{opacity:.7}
-.atime{font-size:11px;color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:160px}
+.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:180px}
 .fss{text-align:center;margin-bottom:7px}
 .fss-l{font-size:11px;color:var(--tx2);margin-bottom:1px}
 .fss-t{font-size:20px;font-weight:700;cursor:pointer;color:var(--tx)}.fss-t:active{opacity:.7}
@@ -117,7 +118,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 #px-tip.show{display:block}
 .pt-row{display:flex;justify-content:space-between;gap:14px;font-size:12px;padding:2px 0}
 .pt-l{color:var(--tx2)}.pt-v{font-weight:600;color:var(--tx)}
-#px-tip-close{position:absolute;top:7px;right:10px;font-size:18px;cursor:pointer;color:var(--tx2);background:none;border:none;line-height:1}
+#px-tip-close{position:absolute;top:7px;right:10px;font-size:18px;cursor:pointer;color:var(--tx2);background:none;border:none;line-height:1;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 /* chart */
 .ctabs{display:flex;background:var(--card2);border-radius:9px;padding:3px;margin-bottom:8px;transition:background .25s}
 .ctab{flex:1;text-align:center;padding:5px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:var(--tx2);background:transparent;border:none}
@@ -263,20 +264,20 @@ input,select,textarea{color-scheme:light dark}
         <div class="atime" id="atime">Not fasting</div>
       </div>
     </div>
-    <div class="fss"><div class="fss-l">Fasting start time</div><div class="fss-t" id="fsstd" onclick="openSTModal()">Daily, PM 8:00</div></div>
+    <div class="fss"><div class="fss-l">Fasting start time</div><div style="display:inline-flex;align-items:center;gap:5px;cursor:pointer" onclick="openSTModal()"><div class="fss-t" id="fsstd">Daily, PM 8:00</div><span style="font-size:14px;color:var(--tx2)">✏️</span></div></div>
     <div class="irow"><span class="ir-l">Next start</span><span class="ir-v" id="irnext">-</span></div>
     <div class="irow"><span class="ir-l">Expected end</span><span class="ir-v" id="irend">-</span></div>
     <button class="btnp" id="fbtn" onclick="onFastBtn()">Start fasting</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-g">⚖️</div>Weight</div><button class="chev" onclick="openWtLogs()">›</button></div>
+    <div class="chdr" onclick="openWtLogs()" style="cursor:pointer"><div class="ctitle"><div class="ci ci-g">⚖️</div>Weight</div><button class="chev" style="pointer-events:none">›</button></div>
     <div class="wcur"><span id="wcur">-</span><span style="font-size:15px;font-weight:400;color:var(--tx2)" id="wunit-lbl"> kg</span></div>
     <div class="pbw"><div class="pbf" id="wpb" style="width:0%"></div></div>
     <div class="wends"><span>Start: <strong id="wst">-</strong></span><span>Target: <strong id="wtgt">-</strong></span></div>
     <button class="btns" onclick="openLogWt(null)">+ Log weight</button>
   </div>
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-b">💧</div>Water</div><button class="chev" onclick="openWatLogs()">›</button></div>
+    <div class="chdr" onclick="openWatLogs()" style="cursor:pointer"><div class="ctitle"><div class="ci ci-b">💧</div>Water</div><button class="chev" style="pointer-events:none">›</button></div>
     <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:1px">
       <div class="wamt"><span id="watcur">0</span><span style="font-size:14px;color:var(--tx2)"> ml</span></div>
       <span style="font-size:12px;color:var(--tx2)">/ <span id="watglbl">2000</span> ml</span>
@@ -389,12 +390,12 @@ input,select,textarea{color-scheme:light dark}
 
 <!-- PIXEL TOOLTIP -->
 <div id="px-tip">
-  <button id="px-tip-close" onclick="closePxTip()">x</button>
-  <div class="pt-row"><span class="pt-l">Date</span><span class="pt-v" id="pt-date">-</span></div>
+  <button id="px-tip-close" onclick="closePxTip()">✕</button>
+  <div class="pt-row" style="padding-right:22px"><span class="pt-l">Date</span><span class="pt-v" id="pt-date">-</span></div>
   <div class="pt-row"><span class="pt-l">Plan</span><span class="pt-v" id="pt-plan">-</span></div>
   <div class="pt-row"><span class="pt-l">Duration</span><span class="pt-v" id="pt-dur">-</span></div>
   <div class="pt-row"><span class="pt-l">Completion</span><span class="pt-v" id="pt-pct">-</span></div>
-  <div class="pt-row" id="pt-time-row"><span class="pt-l">Time</span><span class="pt-v" id="pt-time">-</span></div>
+  <div class="pt-row" id="pt-time-row"><span class="pt-l">Time</span><span class="pt-v" id="pt-time" style="font-size:10px;text-align:right;max-width:130px">-</span></div>
 </div>
 
 <!-- MODALS -->
@@ -450,7 +451,7 @@ input,select,textarea{color-scheme:light dark}
   <input type="hidden" id="wt-eid">
 </div></div>
 
-<div class="mov hidden" id="mo-wat"><div class="modal"><div class="mdrag"></div><div class="mtitle">Log Water</div>
+<div class="mov hidden" id="mo-wat"><div class="modal"><div class="mdrag"></div><div class="mtitle" id="wat-ttl">Log Water</div>
   <div id="watprog" style="font-size:12px;color:var(--tx2);margin-bottom:6px"></div>
   <div class="nrow"><button class="nb" onclick="adjWat(-1)">-</button><div class="ndisp"><div class="nval" id="waid">250</div><div class="nunit">ml</div></div><button class="nb" onclick="adjWat(1)">+</button></div>
   <div class="qgrid" id="watqb"></div>
@@ -458,7 +459,7 @@ input,select,textarea{color-scheme:light dark}
   <input type="number" class="tinp" id="watman" placeholder="ml..." oninput="syncWat(this.value)">
   <label class="flbl" id="wat-ts-lbl" style="display:none">Date and time (past log)</label>
   <input type="datetime-local" class="tinp" id="wat-ts" style="display:none">
-  <button class="btnp" onclick="saveWat()">Log water</button>
+  <button class="btnp" id="wat-ok" onclick="saveWat()">Log water</button>
   <button class="btns" onclick="closeMo('mo-wat')">Cancel</button>
   <input type="hidden" id="wat-past">
 </div></div>
@@ -524,6 +525,21 @@ input,select,textarea{color-scheme:light dark}
   <div class="srow"><span class="slv">Chart bar style</span>
     <select class="ssel" id="s-cbs" onchange="saveCfg('chartBarStyle',this.value);setTimeout(drawAllCharts,80)">
       <option value="square">Square</option><option value="rounded">Rounded</option><option value="pill">Pill</option>
+    </select>
+  </div>
+  <div class="srow"><span class="slv">Arc size</span>
+    <select class="ssel" id="s-arc-sz" onchange="saveCfg('arcSize',parseInt(this.value));applyUI()">
+      <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 (default)</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+    </select>
+  </div>
+  <div class="srow"><span class="slv">Arc text Y position</span>
+    <select class="ssel" id="s-arc-ty" onchange="saveCfg('arcTextY',this.value);applyUI()">
+      <option value="10%">10%</option><option value="15%">15%</option><option value="20%">20%</option><option value="25%">25%</option><option value="30%">30%</option><option value="32%">32% (default)</option><option value="35%">35%</option><option value="40%">40%</option><option value="45%">45%</option><option value="50%">50%</option><option value="55%">55%</option><option value="60%">60%</option><option value="65%">65%</option><option value="70%">70%</option>
+    </select>
+  </div>
+  <div class="srow"><span class="slv">Arc text size</span>
+    <select class="ssel" id="s-arc-ts" onchange="saveCfg('arcTextSize',this.value);applyUI()">
+      <option value="9px">9px</option><option value="10px">10px</option><option value="11px">11px</option><option value="12px">12px</option><option value="13px">13px (default)</option><option value="14px">14px</option><option value="15px">15px</option><option value="16px">16px</option><option value="18px">18px</option><option value="20px">20px</option>
     </select>
   </div>
   <div class="ss">App Icon</div>
@@ -651,6 +667,7 @@ let CF={
   theme:'auto',devMode:false,testPixels:false,
   badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',
   username:'',pixelRange:'3M',customIcon:null,
+  arcSize:10,arcTextY:'32%',arcTextSize:'13px',
 };
 let CPs=[],curFast=null,timerInt=null;
 let TAB='today';
@@ -738,6 +755,12 @@ function fmtTotalTime(h){
   if(u==='mo')return[(h/720).toFixed(2),' mo'];
   return[h.toFixed(0),' h'];
 }
+function fmtDuration(h){
+  const hrs=Math.floor(h),mins=Math.round((h-hrs)*60);
+  if(hrs===0)return`${mins}m`;
+  if(mins===0)return`${hrs}h`;
+  return`${hrs}h ${mins}m`;
+}
 function nextFastStart(){
   const[h,m]=CF.fastStartTime.split(':').map(Number);
   const nx=new Date(NOW());nx.setHours(h,m,0,0);
@@ -770,6 +793,10 @@ function applyUI(){
   r.setProperty('--badge-fs',CF.badgeFS||'17px');
   r.setProperty('--px-gap',CF.pxGap||'4px');
   r.setProperty('--chart-h',CF.chartH||'150px');
+  const arcPx=Math.max(1,Math.min(20,CF.arcSize||10))*40;
+  r.setProperty('--arc-size',arcPx+'px');
+  r.setProperty('--arc-text-y',CF.arcTextY||'32%');
+  r.setProperty('--arc-text-size',CF.arcTextSize||'13px');
 }
 
 // CUSTOM ICON
@@ -964,7 +991,7 @@ function updateEfPrev(){
   const h=(end-start)/3600000;
   const pv=G('ef-preview');if(!pv)return;
   if(h<=0)pv.textContent='End must be after start';
-  else pv.textContent=`Duration: ${h.toFixed(2)}h ${h>=curFast.plannedH*0.85?'- Goal met!':''}`;
+  else pv.textContent=`Duration: ${fmtDuration(h)} ${h>=curFast.plannedH*0.85?'- Goal met!':''}`;
 }
 G('ef-ts')&&G('ef-ts').addEventListener('input',updateEfPrev);
 function confirmStopFast(){
@@ -980,7 +1007,7 @@ function confirmStopFast(){
   fl.push({id:uid(),startTime:curFast.startTime,endTime:endISO,type:curFast.type,plannedH:ph,actualH:h,completed:h>=ph*0.85,completionPct});
   sFL(fl);curFast=null;saveCF();
   if(timerInt){clearInterval(timerInt);timerInt=null;}
-  closeMo('mo-stopfast');updateFastUI();toast(`Saved! ${h.toFixed(1)}h`);
+  closeMo('mo-stopfast');updateFastUI();toast(`Saved! ${fmtDuration(h)}`);
 }
 function startTimer(){if(timerInt)clearInterval(timerInt);timerInt=setInterval(updateFastUI,1000);}
 function arcColor(prog){
@@ -1046,7 +1073,7 @@ function renderToday(){
   const ts=tf==='12h'?`${ap} ${h12}:${String(m).padStart(2,'0')}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   SET('fsstd',`Daily, ${ts}`);
   const wls=getWL(),lw=wls.length?wls[wls.length-1]:null;
-  const cw=lw?lw.weight:null,sw=CF.startWeight,tw=CF.targetWeight,wu=CF.weightUnit;
+  const cw=lw?lw.weight:(CF.startWeight||null),sw=CF.startWeight,tw=CF.targetWeight,wu=CF.weightUnit;
   SET('wcur',cw?cw.toFixed(1):'-');
   const ul=G('wunit-lbl');if(ul)ul.textContent=` ${wu}`;
   SET('wst',sw?`${sw} ${wu}`:'-');
@@ -1131,6 +1158,7 @@ function saveWt(){
 // LOG WATER
 function openLogWat(isPast){
   watInp=CF.waterIncrement;G('waid').textContent=watInp;G('watman').value='';
+  SET('wat-ttl','Log Water');const ok=G('wat-ok');if(ok)ok.textContent='Log water';
   const intake=todayWat(),g=CF.waterGoal;
   SET('watprog',`Today: ${intake}ml / ${g}ml (${Math.round(intake/g*100)}%)`);
   const inc=CF.waterIncrement;
@@ -1146,11 +1174,15 @@ function setWatQ(v){watInp=v;G('waid').textContent=v;G('watman').value='';docume
 function adjWat(d){watInp=Math.max(50,watInp+(d*CF.waterIncrement));G('waid').textContent=watInp;}
 function syncWat(v){const n=parseInt(v);if(!isNaN(n)&&n>0){watInp=n;G('waid').textContent=n;}}
 function saveWat(){
-  const isPast=G('wat-past').value==='1';
-  let ts=NOW().toISOString();
-  if(isPast&&G('wat-ts').value)ts=new Date(G('wat-ts').value).toISOString();
-  const logs=getWaL();logs.push({id:uid(),ts,amount:watInp});
-  sWaL(logs);closeMo('mo-wat');renderAll();toast(`+${watInp}ml logged`);
+  const pastVal=G('wat-past').value;
+  const isEdit=pastVal.startsWith('edit:');
+  const editId=isEdit?pastVal.slice(5):'';
+  const isPast=pastVal==='1';
+  const ts=isPast||isEdit?(G('wat-ts').value?new Date(G('wat-ts').value).toISOString():NOW().toISOString()):NOW().toISOString();
+  let logs=getWaL();
+  if(isEdit){logs=logs.map(l=>l.id===editId?{...l,amount:watInp,ts}:l);}
+  else logs.push({id:uid(),ts,amount:watInp});
+  sWaL(logs);closeMo('mo-wat');renderAll();toast(isEdit?`Updated: ${watInp}ml`:`+${watInp}ml logged`);
 }
 
 // MANUAL FAST
@@ -1176,7 +1208,7 @@ function updateMFPrev(){
   const sd=G('mf-sd').value,st=G('mf-st').value,ed=G('mf-ed').value,et=G('mf-et').value;
   if(!sd||!st||!ed||!et){SET('mf-prev','Fill all fields');return;}
   const s=new Date(`${sd}T${st}`),e=new Date(`${ed}T${et}`),h=(e-s)/3600000;
-  SET('mf-prev',h<=0?'End must be after start':`Duration: ${h.toFixed(2)}h`);
+  SET('mf-prev',h<=0?'End must be after start':`Duration: ${fmtDuration(h)}`);
 }
 ['mf-sd','mf-st','mf-ed','mf-et'].forEach(id=>{const el=G(id);if(el)el.addEventListener('change',updateMFPrev);});
 function saveMF(){
@@ -1190,7 +1222,7 @@ function saveMF(){
   let logs=getFL();
   if(eid)logs=logs.map(l=>l.id===eid?{...l,startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85,completionPct}:l);
   else logs.push({id:uid(),startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85,completionPct});
-  sFL(logs);closeMo('mo-mf');renderAll();toast(`${eid?'Updated':'Saved'}: ${h.toFixed(1)}h`);
+  sFL(logs);closeMo('mo-mf');renderAll();toast(`${eid?'Updated':'Saved'}: ${fmtDuration(h)}`);
 }
 
 // CUSTOM PLAN
@@ -1210,6 +1242,7 @@ function openSettings(){
   sel('s-theme',CF.theme||'auto');sel('s-dev',CF.devMode?'1':'0');
   sel('s-bfs',CF.badgeFS||'17px');sel('s-pxg',CF.pxGap||'4px');sel('s-chh',CF.chartH||'150px');
   sel('s-cbs',CF.chartBarStyle||'rounded');sel('s-testpx',CF.testPixels?'1':'0');
+  sel('s-arc-sz',String(CF.arcSize||10));sel('s-arc-ty',CF.arcTextY||'32%');sel('s-arc-ts',CF.arcTextSize||'13px');
   SET('s-ht',CF.height?`${CF.height} cm`:'Set height');
   SET('s-sw',CF.startWeight?`${CF.startWeight} ${CF.weightUnit}`:'Set');
   SET('s-tw',CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set');
@@ -1252,7 +1285,7 @@ function doImport(){
 function confirmWipe(){
   showConfirm('Wipe ALL data?','Permanent - cannot be undone.',()=>{
     localStorage.clear();
-    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null};
+    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:10,arcTextY:'32%',arcTextSize:'13px'};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
     saveCFG();saveCPs();saveCF();closeMo('mo-settings');applyTheme('auto');applyUI();renderAll();toast('Wiped');
@@ -1282,12 +1315,18 @@ function renderDash(){
 }
 function calcStreak(fl){
   if(!fl.length)return 0;
-  const days=[...new Set(fl.map(l=>{const d=new Date(l.startTime);return`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`}))].sort().reverse();
-  let streak=0,check=new Date(NOW());check.setHours(0,0,0,0);
+  // Use zero-padded keys so string sort equals chronological sort
+  const days=[...new Set(fl.map(l=>{
+    const d=new Date(l.startTime);
+    return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }))].sort().reverse();
+  let streak=0;
+  const today=new Date(NOW());today.setHours(0,0,0,0);
+  let check=new Date(today);
   for(const day of days){
-    const[y,mo,d]=day.split('-').map(Number);const dd=new Date(y,mo,d);
+    const dd=new Date(day+'T00:00:00');dd.setHours(0,0,0,0);
     const diff=Math.round((check-dd)/86400000);
-    if(diff===0||diff===1){streak++;check=dd;}else break;
+    if(diff===0||diff===1){streak++;check=new Date(dd);}else break;
   }
   return streak;
 }
@@ -1314,8 +1353,19 @@ document.addEventListener('click',e=>{if(!e.target.closest('#px-tip')&&!e.target
 function renderPx(fl){
   const grid=G('px-grid');if(!grid)return;
   const weekCount=PX_WEEKS[CF.pixelRange||'3M']||13;
-  grid.style.gridTemplateColumns=`22px repeat(${weekCount},1fr)`;
-  grid.style.gridTemplateRows=`14px repeat(7,1fr)`;
+  
+  // Compute dynamic cell size based on available width
+  const gap=parseInt(CF.pxGap||'4px')||4;
+  const labelW=22;
+  const availW=(grid.parentElement.offsetWidth||340)-2;
+  const cellSize=Math.min(36,Math.max(4,Math.floor((availW-labelW-weekCount*gap)/weekCount)));
+  const rowH=Math.min(36,Math.max(4,cellSize));
+  
+  grid.style.gridTemplateColumns=`${labelW}px repeat(${weekCount},${cellSize}px)`;
+  grid.style.gridTemplateRows=`14px repeat(7,${rowH}px)`;
+  grid.style.width='fit-content';
+  grid.style.maxWidth='100%';
+  grid.style.overflowX='hidden';
 
   const dayMap={};
   fl.forEach(l=>{
@@ -1363,11 +1413,16 @@ function renderPx(fl){
     if(log){
       SET('pt-date',fmtDate(log.startTime).split(' ')[0]||cell.dataset.date);
       SET('pt-plan',log.type||'-');
-      SET('pt-dur',`${log.actualH.toFixed(2)}h`);
-      const pct=log.completionPct!=null?log.completionPct:parseFloat((log.actualH/log.plannedH*100).toFixed(2));
-      SET('pt-pct',`${pct}% ${log.completed?'(Complete)':'(Partial'}'}`);
+      SET('pt-dur',fmtDuration(log.actualH));
+      const pct=log.completionPct!=null?log.completionPct:parseFloat((log.actualH/log.plannedH*100).toFixed(1));
+      SET('pt-pct',`${pct.toFixed(1)}% ${log.completed?'✓ Complete':'Partial'}`);
       const tr=G('pt-time-row');
-      if(tr){tr.style.display='';SET('pt-time',fmtDate(log.startTime)+' - '+fmtDate(log.endTime));}
+      if(tr){
+        tr.style.display='';
+        const tf=CF.timeFormat;
+        function fmtT(iso){const d=new Date(iso),H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0');const h12=(H%12)||12,ap=H>=12?'PM':'AM';return tf==='12h'?`${h12}:${M}${ap}`:`${String(H).padStart(2,'0')}:${M}`;}
+        SET('pt-time',fmtT(log.startTime)+' → '+fmtT(log.endTime));
+      }
     }else{
       SET('pt-date',cell.dataset.date);SET('pt-plan','-');SET('pt-dur','-');SET('pt-pct','-');
       const tr=G('pt-time-row');if(tr)tr.style.display='none';
@@ -1434,9 +1489,15 @@ function noData(id,msg){
 }
 function drawRoundedBar(ctx,x,y,w,h,style){
   if(h<=0)return;
-  if(style==='pill'){const r=Math.min(w/2,6);if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,[r,r,0,0]);ctx.fill();}else ctx.fillRect(x,y,w,h);}
-  else if(style==='rounded'){if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,[2,2,0,0]);ctx.fill();}else ctx.fillRect(x,y,w,h);}
-  else ctx.fillRect(x,y,w,h);
+  if(style==='pill'){
+    const r=Math.min(w/2,h/2,8);
+    if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
+    else ctx.fillRect(x,y,w,h);
+  }else if(style==='rounded'){
+    const r=Math.min(w/2,5);
+    if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,[r,r,0,0]);ctx.fill();}
+    else ctx.fillRect(x,y,w,h);
+  }else ctx.fillRect(x,y,w,h);
 }
 function showChartTip(tipId,x,y,label,val,H){
   const tip=G(tipId);if(!tip)return;
@@ -1498,7 +1559,7 @@ function drawBar(id,labels,values,color,tipId,chartKey){
 }
 function drawLine(id,labels,values,color,tipId,chartKey){
   const nv=values.filter(v=>v!=null);
-  if(nv.length<2){noData(id,'Not enough data');return;}
+  if(nv.length<1){noData(id,'Not enough data');return;}
   const r=setupCv(id);if(!r)return;
   const{ctx,W,H}=r;
   ctx.clearRect(0,0,W,H);
@@ -1615,10 +1676,26 @@ function openWatLogs(){
       <div class="li-m"><div class="liv">${l.amount} ml</div>
       <div class="lid">${fmtDate(l.ts)}</div></div>
       <div class="li-acts">
+        <span class="liedit" onclick="closeMo('mo-watlogs');openEditWat('${l.id}')">Edit</span>
         <span class="lidel" onclick="delLog('wal','${l.id}')">x</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-watlogs');
+}
+function openEditWat(id){
+  const log=getWaL().find(l=>l.id===id);if(!log)return;
+  watInp=log.amount;
+  SET('wat-ttl','Edit Water Log');const ok=G('wat-ok');if(ok)ok.textContent='Update water';
+  G('waid').textContent=watInp;G('watman').value='';
+  const inc=CF.waterIncrement;
+  const g=CF.waterGoal;
+  const opts=[...new Set([inc,inc*2,inc*4,Math.round(g/4/inc)*inc||inc,Math.round(g/2/inc)*inc||inc,g].filter(v=>v>0))].sort((a,b)=>a-b).slice(0,8);
+  G('watqb').innerHTML=opts.map(v=>`<div class="qb${v===watInp?' qs':''}" onclick="setWatQ(${v})">${v}ml</div>`).join('');
+  G('wat-past').value='edit:'+id;
+  const tsl=G('wat-ts-lbl'),tsi=G('wat-ts');
+  if(tsl&&tsi){tsl.style.display='block';tsi.style.display='block';tsi.value=dtLocal(log.ts);}
+  SET('watprog',`Editing water log`);
+  openMo('mo-wat');
 }
 function delLog(type,id){
   showConfirm('Delete record?','Cannot be undone.',()=>{
