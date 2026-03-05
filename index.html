@@ -179,13 +179,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .nb:active{opacity:.6}
 .ndisp{flex:1;text-align:center}
 .nval{font-size:26px;font-weight:800;color:var(--tx)}.nunit{font-size:11px;color:var(--tx2)}
-/* time picker */
-.tprow{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0}
-.tpcol{display:flex;flex-direction:column;align-items:center}
-.tparr{width:44px;height:32px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--tx);display:flex;align-items:center;justify-content:center}
-.tparr:active{opacity:.4}
-.tpv{font-size:30px;font-weight:800;min-width:56px;text-align:center;color:var(--tx)}
-.tpap{font-size:15px;font-weight:700;color:var(--or);background:var(--orl);padding:5px 8px;border-radius:9px;cursor:pointer;border:none}
+/* wheel time picker */
+.wpick-wrap{position:relative;height:220px;overflow:hidden;margin:10px 0;border-radius:12px}
+.wpick-sel{position:absolute;top:88px;left:0;right:0;height:44px;border-top:2px solid var(--or);border-bottom:2px solid var(--or);pointer-events:none;z-index:2}
+.wpick-fade-t{position:absolute;top:0;left:0;right:0;height:88px;background:linear-gradient(to bottom,var(--card) 30%,transparent 100%);pointer-events:none;z-index:2}
+.wpick-fade-b{position:absolute;bottom:0;left:0;right:0;height:88px;background:linear-gradient(to top,var(--card) 30%,transparent 100%);pointer-events:none;z-index:2}
+.wpick-cols{display:flex;height:100%;align-items:flex-start;gap:0;justify-content:center}
+.wpick-col{height:220px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;-ms-overflow-style:none;scrollbar-width:none}
+.wpick-col::-webkit-scrollbar{display:none}
+.wpick-item{height:44px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--tx);scroll-snap-align:center;user-select:none;-webkit-user-select:none}
+.wpick-item-sp{height:88px}
+.wpick-sep{font-size:28px;font-weight:800;color:var(--tx);padding:0 4px;line-height:220px}
+.wp-h{width:68px}.wp-m{width:68px}.wp-ap{width:64px}
+.wp-ap .wpick-item{font-size:20px}
+/* multi-day fast pixels */
+.px-group{box-shadow:0 0 0 2px var(--or);z-index:1;position:relative}
+.px-cont{background:linear-gradient(135deg,#FF8040,#FFA060)!important}
 /* settings */
 .ss{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 3px}
 .srow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
@@ -457,14 +466,19 @@ input,select,textarea{color-scheme:light dark}
 
 <div class="mov hidden" id="mo-st"><div class="modal"><div class="mdrag"></div>
   <div class="mtitle">Daily Fast Start Time</div>
-  <div class="msub">Set when your fasting window begins each day.</div>
-  <div class="tprow">
-    <div class="tpcol"><button class="tparr" onclick="tpa('h',1)">▲</button><div class="tpv" id="tph">08</div><button class="tparr" onclick="tpa('h',-1)">▼</button></div>
-    <span style="font-size:26px;font-weight:800;color:var(--tx)">:</span>
-    <div class="tpcol"><button class="tparr" onclick="tpa('m',15)">▲</button><div class="tpv" id="tpm">00</div><button class="tparr" onclick="tpa('m',-15)">▼</button></div>
-    <button class="tpap" id="tpap" onclick="tpTog()">PM</button>
+  <div class="msub">Swipe up or down to set the time.</div>
+  <div class="wpick-wrap">
+    <div class="wpick-sel"></div>
+    <div class="wpick-fade-t"></div>
+    <div class="wpick-fade-b"></div>
+    <div class="wpick-cols">
+      <div class="wpick-col wp-h" id="wp-h"></div>
+      <div class="wpick-sep">:</div>
+      <div class="wpick-col wp-m" id="wp-m"></div>
+      <div class="wpick-col wp-ap" id="wp-ap"></div>
+    </div>
   </div>
-  <button class="btnp" onclick="saveST()" style="border:2px solid #1C1C1E">Change</button>
+  <button class="btnp" onclick="saveST()">Change</button>
   <button class="btns" onclick="closeMo('mo-st')">Cancel</button>
 </div></div>
 
@@ -799,10 +813,10 @@ let CF={
 };
 let CPs=[],curFast=null,timerInt=null;
 let TAB='today';
-let wInp=70,watInp=250,cpFH=14,tpH=8,tpM=0,tpAP='PM';
+let wInp=70,watInp=250,cpFH=14;
 let inpCb=null,confCb=null;
 let CP_={f:'7d',w:'7d',b:'7d',wat:'7d'};
-let pxPage=0;
+let pxPage=0,pxMonthOffset=0;
 let devSpd=1,devOff=0,devInt=null;
 let GREET_MSG='';
 
@@ -1078,22 +1092,28 @@ function importFile(input){
 function importOtherApp(input){
   const files=Array.from(input.files);if(!files.length)return;
   input.value='';
-  let allLogs=[];let detected='Unknown app';let errors=0;
+  let allLogs=[];let allWeights=[];let allWater=[];let detected='Unknown app';let errors=0;
   const done=()=>{
-    if(!allLogs.length){toast('No fasting records found in file(s)');return;}
-    const sorted=allLogs.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
-    const first=new Date(sorted[0].startTime),last=new Date(sorted[sorted.length-1].startTime);
-    const fmt=d=>`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-    showConfirm(`Import ${allLogs.length} records?`,
-      `App: ${detected}
-Period: ${fmt(first)} – ${fmt(last)}${errors?' ('+errors+' skipped)':''}`,
-      ()=>{
-        const fl=getFL();
-        const existing=new Set(fl.map(l=>l.startTime));
-        let added=0;
-        allLogs.forEach(l=>{if(!existing.has(l.startTime)){fl.push(l);added++;}});
-        sFL(fl);renderAll();toast(`Imported ${added} record${added!==1?'s':''}!`);
-      });
+    const hasF=allLogs.length,hasW=allWeights.length,hasWa=allWater.length;
+    if(!hasF&&!hasW&&!hasWa){toast('No records found — check file format');return;}
+    const parts=[];
+    if(hasF){
+      const sorted=allLogs.slice().sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
+      const fmt=d=>d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+      parts.push(hasF+' fasts ('+fmt(new Date(sorted[0].startTime))+' \u2013 '+fmt(new Date(sorted[sorted.length-1].startTime))+')');
+    }
+    if(hasW)parts.push(hasW+' weight entries');
+    if(hasWa)parts.push(hasWa+' water entries');
+    const summary=parts.join(', ')+(errors?' ('+errors+' skipped)':'');
+    showConfirm('Import from '+detected+'?',summary+'\nExisting records kept, duplicates skipped.',()=>{
+      let addedF=0,addedW=0,addedWa=0;
+      if(hasF){const fl=getFL();const ex=new Set(fl.map(l=>l.startTime));allLogs.forEach(l=>{if(!ex.has(l.startTime)){fl.push(l);addedF++;}});sFL(fl);}
+      if(hasW){const wl=getWL();const ex=new Set(wl.map(l=>l.ts));allWeights.forEach(l=>{if(!ex.has(l.ts)){wl.push(l);addedW++;}});sWL(wl);}
+      if(hasWa){const wal=getWaL();const ex=new Set(wal.map(l=>l.ts));allWater.forEach(l=>{if(!ex.has(l.ts)){wal.push(l);addedWa++;}});sWaL(wal);}
+      renderAll();
+      const msg=[addedF&&(addedF+' fasts'),addedW&&(addedW+' weights'),addedWa&&(addedWa+' water')].filter(Boolean).join(', ');
+      toast('Imported: '+msg);
+    });
   };
   let pending=files.length;
   files.forEach(file=>{
@@ -1101,9 +1121,11 @@ Period: ${fmt(first)} – ${fmt(last)}${errors?' ('+errors+' skipped)':''}`,
     r.onload=ev=>{
       try{
         const raw=JSON.parse(ev.target.result);
-        const {logs,app}=parseOtherAppJSON(raw);
+        const {logs,wl,wal,app}=parseOtherAppJSON(raw);
         if(app!=='Unknown')detected=app;
         allLogs=allLogs.concat(logs);
+        if(wl&&wl.length)allWeights=allWeights.concat(wl);
+        if(wal&&wal.length)allWater=allWater.concat(wal);
       }catch{errors++;}
       if(--pending===0)done();
     };
@@ -1114,8 +1136,28 @@ Period: ${fmt(first)} – ${fmt(last)}${errors?' ('+errors+' skipped)':''}`,
 function parseOtherAppJSON(raw){
   // Auto-detect and parse fasting records from known app export formats
   const uid=()=>Math.random().toString(36).slice(2,10);
-  const logs=[];let app='Unknown';
+  const logs=[];let wl=[];let wal=[];let app='Unknown';
   const toISO=v=>{if(!v)return null;if(typeof v==='number')return new Date(v>1e10?v:v*1000).toISOString();return new Date(v).toISOString();};
+  // Native app format: {fl:[...], wl:[...], wal:[...]} - e.g. heyfast_import.json or app backup
+  if(raw.fl&&Array.isArray(raw.fl)){
+    app='Fasting Tracker';
+    raw.fl.forEach(r=>{if(r.startTime&&r.endTime)logs.push(r);});
+    if(raw.wl&&Array.isArray(raw.wl))wl=raw.wl;
+    if(raw.wal&&Array.isArray(raw.wal))wal=raw.wal;
+    return{logs,wl,wal,app};
+  }
+  // HeyFast raw JSONL array: [{st, et, d, p}, ...]
+  if(Array.isArray(raw)&&raw[0]&&raw[0].st&&raw[0].et){
+    app='HeyFast';
+    raw.forEach(r=>{
+      const s=toISO(r.st),e=toISO(r.et);if(!s||!e)return;
+      const h=r.d?r.d/3600:(new Date(e)-new Date(s))/3600000;if(h<=0)return;
+      const m=r.p&&r.p.match(/p(\d+)_(\d+)/);
+      const type=m?(m[1]+':'+m[2]):CF.fastType;const ph=m?parseInt(m[1]):parseFH(CF.fastType);
+      logs.push({id:r.id||uid(),startTime:s,endTime:e,type,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct:parseFloat((h/ph*100).toFixed(2))});
+    });
+    return{logs,wl,wal,app};
+  }
   // Zero app format: array of {startDate, endDate, fastType}
   if(Array.isArray(raw)&&raw[0]&&(raw[0].startDate||raw[0].start_date||raw[0].StartDate)){
     app='Zero';
@@ -1157,7 +1199,7 @@ function parseOtherAppJSON(raw){
       logs.push({id:uid(),startTime:s,endTime:e,type:CF.fastType,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct:parseFloat((h/ph*100).toFixed(2))});
     });
   }
-  return{logs,app};
+  return{logs,wl,wal,app};
 }
 
 // ACCENT COLOR
@@ -1571,20 +1613,36 @@ function selMo(type){CF.fastType=type;saveCFG();closeMo('mo-ft');renderToday();b
 function openFTModal(){renderPG('mopd',DAILY,true);renderPG('mopo',ONETIME,true);renderCPL('mopc',true);openMo('mo-ft');}
 
 // START TIME
+const WP_HOURS=Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
+const WP_MINS=Array.from({length:60},(_,i)=>String(i).padStart(2,'0'));
+const WP_AP=['AM','PM'];
+function wpInit(id,items,selIdx){
+  const el=G(id);if(!el)return;
+  el.innerHTML='<div class="wpick-item-sp wpick-item" style="scroll-snap-align:none"></div>'
+    +items.map(v=>`<div class="wpick-item">${v}</div>`).join('')
+    +'<div class="wpick-item-sp wpick-item" style="scroll-snap-align:none"></div>';
+  // scrollTop = 44*selIdx to center item selIdx (with 88px top spacer)
+  requestAnimationFrame(()=>{el.scrollTop=44*selIdx;});
+}
+function wpGet(id,items){
+  const el=G(id);if(!el)return items[0];
+  const idx=Math.max(0,Math.min(items.length-1,Math.round(el.scrollTop/44)));
+  return items[idx];
+}
 function openSTModal(){
   const[h,m]=CF.fastStartTime.split(':').map(Number);
-  tpH=h%12||12;tpM=m;tpAP=h>=12?'PM':'AM';
-  SET('tph',String(tpH).padStart(2,'0'));SET('tpm',String(tpM).padStart(2,'0'));SET('tpap',tpAP);
+  const h12=(h%12)||12,ap=h>=12?1:0;
+  wpInit('wp-h',WP_HOURS,h12-1);
+  wpInit('wp-m',WP_MINS,m);
+  wpInit('wp-ap',WP_AP,ap);
   openMo('mo-st');
 }
-function tpa(u,d){
-  if(u==='h')tpH=((tpH-1+d+12)%12)+1;else tpM=(tpM+d+60)%60;
-  SET('tph',String(tpH).padStart(2,'0'));SET('tpm',String(tpM).padStart(2,'0'));
-}
-function tpTog(){tpAP=tpAP==='AM'?'PM':'AM';SET('tpap',tpAP);}
 function saveST(){
-  let h24=tpH%12;if(tpAP==='PM')h24+=12;
-  CF.fastStartTime=`${String(h24).padStart(2,'0')}:${String(tpM).padStart(2,'0')}`;
+  const h12=parseInt(wpGet('wp-h',WP_HOURS));
+  const m=parseInt(wpGet('wp-m',WP_MINS));
+  const ap=wpGet('wp-ap',WP_AP);
+  let h24=h12%12;if(ap==='PM')h24+=12;
+  CF.fastStartTime=`${String(h24).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   saveCFG();closeMo('mo-st');buildArcSVG();updateFastUI();toast('Start time saved');
 }
 
@@ -1643,7 +1701,8 @@ function saveWat(){
 }
 
 // MANUAL FAST
-function openMF(editId){
+let _lastMFPlan=null;
+function openMF(editId,prefillDate){
   closeMo('mo-flogs');closeMo('mo-settings');
   G('mf-eid').value=editId||'';
   const all=[...DAILY,...ONETIME,...CPs];
@@ -1651,13 +1710,26 @@ function openMF(editId){
   if(editId){
     const log=getFL().find(l=>l.id===editId);if(!log)return;
     SET('mf-ttl','Edit Fast');G('mf-ok').textContent='Update fast';
-    G('mf-sd').value=log.startTime.slice(0,10);G('mf-st').value=log.startTime.slice(11,16);
-    G('mf-ed').value=log.endTime.slice(0,10);G('mf-et').value=log.endTime.slice(11,16);
+    // Use dtLocal to convert UTC ISO to local time for the form
+    const sl=dtLocal(log.startTime),el=dtLocal(log.endTime);
+    G('mf-sd').value=sl.slice(0,10);G('mf-st').value=sl.slice(11,16);
+    G('mf-ed').value=el.slice(0,10);G('mf-et').value=el.slice(11,16);
     G('mf-type').value=log.type;
   }else{
     SET('mf-ttl','Log Past Fast');G('mf-ok').textContent='Save fast';
-    const n=NOW();const y=n.getFullYear(),mo=String(n.getMonth()+1).padStart(2,'0'),d=String(n.getDate()).padStart(2,'0');
-    G('mf-sd').value=`${y}-${mo}-${d}`;G('mf-st').value='20:00';G('mf-ed').value=`${y}-${mo}-${d}`;G('mf-et').value='12:00';
+    let dateStr;
+    if(prefillDate){
+      dateStr=prefillDate;
+    }else{
+      const n=NOW();dateStr=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+    }
+    G('mf-sd').value=dateStr;G('mf-st').value='20:00';
+    // End date: next day at noon (common 16h fast pattern)
+    const nd=new Date(dateStr+'T20:00');nd.setDate(nd.getDate()+1);
+    G('mf-ed').value=`${nd.getFullYear()}-${String(nd.getMonth()+1).padStart(2,'0')}-${String(nd.getDate()).padStart(2,'0')}`;
+    G('mf-et').value='12:00';
+    // Restore last used plan
+    if(_lastMFPlan){try{G('mf-type').value=_lastMFPlan;}catch{}}
   }
   updateMFPrev();openMo('mo-mf');
 }
@@ -1677,8 +1749,11 @@ function saveMF(){
   const eid=G('mf-eid').value;
   const completionPct=parseFloat((h/ph*100).toFixed(2));
   let logs=getFL();
-  if(eid)logs=logs.map(l=>l.id===eid?{...l,startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85,completionPct}:l);
-  else logs.push({id:uid(),startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:h,completed:h>=ph*0.85,completionPct});
+  if(eid)logs=logs.map(l=>l.id===eid?{...l,startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct}:l);
+  else logs.push({id:uid(),startTime:s.toISOString(),endTime:e.toISOString(),type,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct});
+  // Keep logs sorted chronologically oldest→newest
+  logs.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
+  _lastMFPlan=type;
   sFL(logs);closeMo('mo-mf');renderAll();toast(`${eid?'Updated':'Saved'}: ${fmtDuration(h)}`);
 }
 
@@ -1778,12 +1853,27 @@ function renderAll(){
 }
 
 // DASHBOARD
+function getAllFastedDays(fl){
+  // Returns Set of 'YYYY-MM-DD' strings for every calendar day covered by any fast
+  const days=new Set();
+  fl.forEach(l=>{
+    const s=new Date(l.startTime),e=new Date(l.endTime);
+    const cur=new Date(s);cur.setHours(0,0,0,0);
+    const end=new Date(e);end.setHours(0,0,0,0);
+    while(cur<=end){
+      days.add(`${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`);
+      cur.setDate(cur.getDate()+1);
+    }
+  });
+  return days;
+}
 function renderDash(){
   const fl=getFL(),wl=getWL();
   const totalH=fl.reduce((s,l)=>s+(l.actualH||0),0);
   const longH=fl.length?Math.max(...fl.map(l=>l.actualH||0)):0;
-  const fastDays=new Set(fl.map(l=>new Date(l.startTime).toDateString())).size;
-  const streak=calcStreak(fl);
+  const fastedDaySet=getAllFastedDays(fl);
+  const fastDays=fastedDaySet.size;
+  const streak=calcStreak(fl,fastedDaySet);
   const[tv,tu]=fmtTotalTime(totalH);
   SET('stot',tv);SET('stotu',tu);SET('slng',longH.toFixed(1));SET('sdays',fastDays);SET('sstrk',streak);
   const lw=wl.length?wl[wl.length-1]:null,wu=CF.weightUnit;
@@ -1792,13 +1882,9 @@ function renderDash(){
   SET('dwt',CF.targetWeight?`${CF.targetWeight} ${wu}`:'-');
   renderPx(fl);renderBMI(lw?lw.weight:null);
 }
-function calcStreak(fl){
+function calcStreak(fl,fastedDaySet){
   if(!fl.length)return 0;
-  // Use zero-padded keys so string sort equals chronological sort
-  const days=[...new Set(fl.map(l=>{
-    const d=new Date(l.startTime);
-    return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }))].sort().reverse();
+  const days=[...( fastedDaySet||getAllFastedDays(fl))].sort().reverse();
   let streak=0;
   const today=new Date(NOW());today.setHours(0,0,0,0);
   let check=new Date(today);
@@ -1812,7 +1898,7 @@ function calcStreak(fl){
 
 // PIXEL RANGE
 function setPxRange(r,btn){
-  CF.pixelRange=r;saveCFG();pxPage=0;
+  CF.pixelRange=r;saveCFG();pxPage=0;pxMonthOffset=0;
   document.querySelectorAll('.px-rbtn').forEach(b=>b.classList.remove('act'));
   btn.classList.add('act');
   renderDash();
@@ -1836,7 +1922,29 @@ function renderPx(fl){
   const availW=(grid.parentElement.offsetWidth||340)-2;
   const today=new Date(NOW());today.setHours(0,0,0,0);
   const dayMap={};
-  fl.forEach(l=>{const ds=new Date(l.startTime).toDateString();if(!dayMap[ds]||l.actualH>dayMap[ds].actualH)dayMap[ds]=l;});
+  // Build dayMap covering ALL days each fast spans (multi-day awareness)
+  fl.forEach(l=>{
+    const sDate=new Date(l.startTime),eDate=new Date(l.endTime);
+    const sDay=new Date(sDate);sDay.setHours(0,0,0,0);
+    const eDay=new Date(eDate);eDay.setHours(0,0,0,0);
+    // Primary (start) day
+    const sDs=sDate.toDateString();
+    if(!dayMap[sDs]||l.actualH>(dayMap[sDs].actualH||0))dayMap[sDs]={...l,_primary:true};
+    // Continuation days (if fast spans multiple days)
+    if(eDay>sDay){
+      let cur=new Date(sDay);cur.setDate(cur.getDate()+1);
+      while(cur<=eDay){
+        const ds=cur.toDateString();
+        if(!dayMap[ds]){
+          const nextDay=new Date(cur);nextDay.setDate(cur.getDate()+1);
+          const segEnd=new Date(Math.min(eDate.getTime(),nextDay.getTime()));
+          const hoursThisDay=(segEnd-cur)/3600000;
+          dayMap[ds]={...l,_continuation:true,_contH:hoursThisDay};
+        }
+        cur=new Date(cur);cur.setDate(cur.getDate()+1);
+      }
+    }
+  });
   const DLBLS=['Mo','Tu','We','Th','Fr','Sa','Su'];
   const MO_=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html='';
@@ -1844,7 +1952,16 @@ function renderPx(fl){
   function makeCellHTML(date,future){
     const log=dayMap[date.toDateString()];
     let cls='px-cell';
-    if(!future&&log)cls+=' '+pxClass(log.actualH,log.plannedH);
+    if(!future&&log){
+      if(log._continuation){
+        cls+=' px-cont px-group';
+      }else{
+        cls+=' '+pxClass(log.actualH,log.plannedH);
+        // Check if this is a multi-day fast (has continuation days) → add group ring
+        const nextDs=new Date(date);nextDs.setDate(date.getDate()+1);
+        if(dayMap[nextDs.toDateString()]&&dayMap[nextDs.toDateString()]._continuation&&dayMap[nextDs.toDateString()].id===log.id)cls+=' px-group';
+      }
+    }
     const dateStr=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     return `<div class="${cls}" data-date="${dateStr}" data-lid="${log?log.id:''}" data-future="${future?1:0}"></div>`;
   }
@@ -1863,28 +1980,30 @@ function renderPx(fl){
     // cells
     for(let d=0;d<7;d++){const ldate=new Date(today);ldate.setDate(today.getDate()-dToMon+d);ldate.setHours(0,0,0,0);html+=makeCellHTML(ldate,ldate>today);}
   }else if(range==='1M'){
-    // Calendar layout: 7 cols (Mon-Sun) x (4-5 rows = weeks), rows labelled "Wk N"
-    pxNavEl.style.display='none';
+    // Calendar layout: 7 cols (Mon-Sun) x (4-5 rows = weeks), with Previous/Next month nav
     const DAYS=7;
-    const labelW=26;// week label column width
+    const labelW=26;
     const cellSz=Math.min(40,Math.max(8,Math.floor((availW-labelW-DAYS*gap)/DAYS)));
-    // Figure out the current month
-    const curMonth=today.getMonth(),curYear=today.getFullYear();
+    // Determine which month to show based on pxMonthOffset
+    const refDate=new Date(today);refDate.setDate(1);refDate.setMonth(refDate.getMonth()-pxMonthOffset);
+    const curMonth=refDate.getMonth(),curYear=refDate.getFullYear();
     const firstOfMonth=new Date(curYear,curMonth,1);
     const lastOfMonth=new Date(curYear,curMonth+1,0);
-    // Determine start of grid: Monday on or before 1st
-    const firstDow=firstOfMonth.getDay();// 0=Sun..6=Sat
-    const startOffset=firstDow===0?6:firstDow-1;// days to go back to reach Monday
+    const firstDow=firstOfMonth.getDay();
+    const startOffset=firstDow===0?6:firstDow-1;
     const gridStart=new Date(firstOfMonth);gridStart.setDate(firstOfMonth.getDate()-startOffset);
-    // Determine end of grid: Sunday on or after last day
     const lastDow=lastOfMonth.getDay();
     const endOffset=lastDow===0?0:7-lastDow;
     const gridEnd=new Date(lastOfMonth);gridEnd.setDate(lastOfMonth.getDate()+endOffset);
-    // Count weeks (rows)
     const totalDays=Math.round((gridEnd-gridStart)/86400000)+1;
     const numWeeks=Math.ceil(totalDays/7);
     grid.style.cssText=`display:grid;grid-template-columns:${labelW}px repeat(${DAYS},${cellSz}px);grid-template-rows:14px repeat(${numWeeks},${cellSz}px);gap:${gap}px;width:fit-content;max-width:100%`;
-    // Header row: blank label + day names
+    // Nav buttons
+    const canPrev=true;// can always go further back
+    const canNext=pxMonthOffset>0;
+    pxNavEl.style.cssText='display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 2px;margin-bottom:6px';
+    pxNavEl.innerHTML=`<button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxMonthOffset++;renderDash()">‹ Previous</button><span style="font-size:12px;font-weight:600;color:var(--tx)">${MO_[curMonth]} ${curYear}</span><button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxMonthOffset--;renderDash()" ${canNext?'':'disabled style="opacity:.3;pointer-events:none"'}>Next ›</button>`;
+    // Header row
     html+='<div class="px-lbl"></div>';
     for(let d=0;d<DAYS;d++)html+=`<div class="px-mlbl">${DLBLS[d]}</div>`;
     // Week rows
@@ -1896,7 +2015,14 @@ function renderPx(fl){
         const future=date>today;
         const log=dayMap[date.toDateString()];
         let cls='px-cell';
-        if(!future&&log)cls+=' '+pxClass(log.actualH,log.plannedH);
+        if(!future&&log){
+          if(log._continuation){cls+=' px-cont px-group';}
+          else{
+            cls+=' '+pxClass(log.actualH,log.plannedH);
+            const nextDs=new Date(date);nextDs.setDate(date.getDate()+1);
+            if(dayMap[nextDs.toDateString()]&&dayMap[nextDs.toDateString()]._continuation&&dayMap[nextDs.toDateString()].id===log.id)cls+=' px-group';
+          }
+        }
         if(outOfMonth)cls+=' px-dim';
         const dateStr=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
         html+=`<div class="${cls}" data-date="${dateStr}" data-lid="${log?log.id:''}" data-future="${future||outOfMonth?1:0}"></div>`;
@@ -1947,7 +2073,7 @@ function renderPx(fl){
         {l:'Time',v:fmtT(log.startTime)+' \u2192 '+fmtT(log.endTime)},
       ]);
     }else{
-      showInfoModal([{l:'Date',v:cell.dataset.date},{l:'Status',v:'No fast logged'}]);
+      openMF(null,cell.dataset.date);
     }
     e.stopPropagation();
   };
