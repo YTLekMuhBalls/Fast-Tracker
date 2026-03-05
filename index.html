@@ -19,7 +19,7 @@
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
   --badge-fs:17px;--px-gap:4px;--chart-h:150px;
   --arc-size:400px;--arc-text-y:35%;--arc-text-size:13px;
-  --fss-lbl-size:11px;--fss-lbl-y:0px;--fss-val-size:20px;--fss-val-y:0px;
+  --fss-lbl-size:11px;--fss-val-size:15px;--fss-mt:6px;--fss-x:0px;
   --log-text-size:13px;--plan-shape:8px;--plan-name-size:16px;--plan-desc-size:10px;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
@@ -59,15 +59,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all}
 .fbadge:active{opacity:.7}
 .atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px}
-.fss{text-align:center;margin-bottom:7px}
-.fss-l{font-size:var(--fss-lbl-size,11px);color:var(--tx2);margin-bottom:1px;margin-top:var(--fss-lbl-y,0px)}
-.fss-t{font-size:var(--fss-val-size,20px);font-weight:700;cursor:pointer;color:var(--tx);margin-top:var(--fss-val-y,0px)}.fss-t:active{opacity:.7}
+.fss{text-align:center;margin-top:var(--fss-mt,6px);margin-left:var(--fss-x,0px)}
+.fss-l{font-size:var(--fss-lbl-size,11px);color:var(--tx2);margin-bottom:2px}
+.fss-t{font-size:var(--fss-val-size,15px);font-weight:700;cursor:pointer;color:var(--tx)}.fss-t:active{opacity:.7}
 /* greeting */
 .greet-bar{padding:8px 0 6px;font-size:14px;font-weight:600;color:var(--tx);min-height:0;margin-bottom:4px}
 /* water animation */
 @keyframes waterShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes arcPulse{0%{opacity:1}40%{opacity:.55}70%{opacity:.85}100%{opacity:1}}
 .wtank-fill{position:relative;overflow:hidden;height:100%;min-width:0;border-radius:12px;transition:width .5s ease,background .3s}
-.wtank-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.3) 50%,transparent 100%);background-size:200% 100%;animation:waterShimmer 2.5s ease-in-out infinite;pointer-events:none}
+.wtank-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.35) 50%,transparent 100%);background-size:200% 100%;animation:none;animation-duration:3.5s;animation-timing-function:ease-in-out;animation-iteration-count:1;pointer-events:none}
+.wtank-fill.anim-water::after{animation-name:waterShimmer}
+#ap.anim-arc{animation:arcPulse 2.5s ease-in-out 1}
 /* stepper */
 .stepper{display:flex;align-items:center;gap:5px}
 .step-btn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0}
@@ -107,7 +110,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 /* plans */
 .stitle{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 7px}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.pcard{background:var(--card);border-radius:var(--plan-shape,8px);padding:12px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:border-color .15s,border-radius .2s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.pcard{background:var(--card);border-radius:var(--plan-shape,8px);padding:12px 6px;text-align:center;cursor:pointer;border:2px solid var(--bd);transition:border-color .15s,border-radius .2s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .pcard:active{opacity:.7}
 .pcard.sel{border-color:var(--or);background:var(--orl)}
 .pname{font-size:var(--plan-name-size,16px);font-weight:800;color:var(--tx)}.pdesc{font-size:var(--plan-desc-size,10px);color:var(--tx2);margin-top:2px}
@@ -273,7 +276,7 @@ input,select,textarea{color-scheme:light dark}
         <!-- arc SVG injected by buildArcSVG() -->
       </div>
     </div>
-    <div class="fss"><div class="fss-l">Fasting start time</div><div style="display:inline-flex;align-items:center;gap:5px;cursor:pointer" onclick="openSTModal()"><div class="fss-t" id="fsstd">Daily, PM 8:00</div><span style="font-size:14px;color:var(--tx2)">✏️</span></div></div>
+    <!-- fss rendered inside arc acent by buildArcSVG() -->
     <div class="irow"><span class="ir-l">Next start</span><span class="ir-v" id="irnext">-</span></div>
     <div class="irow"><span class="ir-l">Expected end</span><span class="ir-v" id="irend">-</span></div>
     <button class="btnp" id="fbtn" onclick="onFastBtn()">Start fasting</button>
@@ -535,6 +538,11 @@ input,select,textarea{color-scheme:light dark}
         <option value="100">100ml</option><option value="150">150ml</option><option value="200">200ml</option><option value="250">250ml</option><option value="330">330ml</option><option value="500">500ml</option><option value="750">750ml</option><option value="1000">1L</option><option value="1500">1.5L</option><option value="2000">2L</option>
       </select>
     </div>
+    <div class="srow"><span class="slv">Animation interval</span>
+      <select class="ssel" id="s-anim" onchange="saveCfg('animInterval',parseInt(this.value));startAnimations()">
+        <option value="3">3s</option><option value="5">5s</option><option value="10">10s (default)</option><option value="15">15s</option><option value="30">30s</option><option value="60">60s</option><option value="0">Off</option>
+      </select>
+    </div>
   </div>
 
   <div class="ss" onclick="togSS('sg-arc')">Fasting Arc / Circle <span class="ss-tog" id="sg-arc-tog">▾</span></div>
@@ -552,10 +560,11 @@ input,select,textarea{color-scheme:light dark}
 
   <div class="ss" onclick="togSS('sg-fsslbl')">Fasting Start Time Label <span class="ss-tog" id="sg-fsslbl-tog">▾</span></div>
   <div class="ss-body" id="sg-fsslbl">
-    <div class="srow"><span class="slv">Label text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Label Y offset</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblY',-2)">−</button><span class="step-val" id="sv-fssLblY">0</span><button class="step-btn" onclick="stepSetting('fssLblY',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Value text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">20</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Value Y offset</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValY',-2)">−</button><span class="step-val" id="sv-fssValY">0</span><button class="step-btn" onclick="stepSetting('fssValY',2)">+</button></div></div>
+    <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">This section sits inside the arc overlay. Use Arc Text Y to move the whole block up/down, then use these offsets to fine-tune.</div>
+    <div class="srow"><span class="slv">Label size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Value size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">15</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Top gap (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssMt',-2)">−</button><span class="step-val" id="sv-fssMt">6</span><button class="step-btn" onclick="stepSetting('fssMt',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Horizontal shift (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssX',-2)">−</button><span class="step-val" id="sv-fssX">0</span><button class="step-btn" onclick="stepSetting('fssX',2)">+</button></div></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-charts')">Charts &amp; Stats <span class="ss-tog" id="sg-charts-tog">▾</span></div>
@@ -714,9 +723,10 @@ let CF={
   username:'',pixelRange:'3M',customIcon:null,
   arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,
   arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,
-  fssLblSize:11,fssLblY:0,fssValSize:20,fssValY:0,
+  fssLblSize:11,fssValSize:15,fssMt:6,fssX:0,
   logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,
   accentColor:null,
+  animInterval:10,
 };
 let CPs=[],curFast=null,timerInt=null;
 let TAB='today';
@@ -788,7 +798,7 @@ function fmtClock(iso){
   const d=new Date(iso),tf=CF.timeFormat;
   const H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0');
   const h12=(H%12)||12,ap=H>=12?'PM':'AM';
-  const ts=tf==='12h'?`${ap} ${h12}:${M}`:`${String(H).padStart(2,'0')}:${M}`;
+  const ts=tf==='12h'?`${h12}:${M} ${ap}`:`${String(H).padStart(2,'0')}:${M}`;
   const n=new Date(NOW());n.setHours(0,0,0,0);
   const dd=new Date(d);dd.setHours(0,0,0,0);
   const diff=Math.round((dd-n)/86400000);
@@ -842,6 +852,18 @@ function setTheme(t){CF.theme=t;saveCFG();applyTheme(t)}
 // ARC SVG BUILDER
 const ARC_LEN=Math.PI*86;
 const CIRCLE_LEN=2*Math.PI*86;
+function fssHTML(){
+  const[h,m]=CF.fastStartTime.split(':').map(Number);
+  const tf=CF.timeFormat,h12=(h%12)||12,ap=h>=12?'PM':'AM';
+  const ts=tf==='12h'?`${h12}:${String(m).padStart(2,'0')} ${ap}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  return `<div class="fss">
+    <div class="fss-l">Fasting start time</div>
+    <div style="display:inline-flex;align-items:center;gap:4px;cursor:pointer" onclick="openSTModal()">
+      <div class="fss-t" id="fsstd">Daily, ${ts}</div>
+      <span style="font-size:12px;color:var(--tx2)">\u270f\ufe0f</span>
+    </div>
+  </div>`;
+}
 function buildArcSVG(){
   const cont=G('arc-container');if(!cont)return;
   const isCircle=CF.arcShape==='circle';
@@ -857,12 +879,13 @@ function buildArcSVG(){
       <svg class="asvg" id="arc-svg" viewBox="0 0 200 200">
         <circle cx="100" cy="100" r="86" fill="none" stroke="var(--bd)" stroke-width="${sw}" stroke-linecap="round"/>
         <circle id="ap" cx="100" cy="100" r="86" fill="none" stroke="var(--or)" stroke-width="${sw}" stroke-linecap="round"
-          stroke-dasharray="0 ${CIRCLE_LEN.toFixed(1)}" style="stroke-dashoffset:${(CIRCLE_LEN*0.25).toFixed(1)};transform-origin:center;transform:rotate(-90deg)"/>
+          stroke-dasharray="0 ${CIRCLE_LEN.toFixed(1)}" transform="rotate(-90,100,100)"/>
         <circle id="adot" cx="100" cy="${14+sw/2}" r="${dotR}" fill="var(--or)" opacity="0"/>
       </svg>
       <div class="acent" id="arc-acent">
         <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">${ft}</span> \u203a</button>
         <div class="atime" id="atime">Not fasting</div>
+        ${fssHTML()}
       </div>`;
   }else{
     const slY=114+slD;const elY=114+elD;
@@ -878,6 +901,7 @@ function buildArcSVG(){
       <div class="acent" id="arc-acent">
         <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">${ft}</span> \u203a</button>
         <div class="atime" id="atime">Not fasting</div>
+        ${fssHTML()}
       </div>`;
   }
 }
@@ -892,10 +916,10 @@ const STEP_DEFS={
   arcStartLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
-  fssLblSize:{min:8,max:20,step:1,t:'px',apply:()=>{applyUI();}},
-  fssLblY:{min:-30,max:30,step:1,t:'px',apply:()=>{applyUI();}},
-  fssValSize:{min:12,max:32,step:1,t:'px',apply:()=>{applyUI();}},
-  fssValY:{min:-30,max:30,step:1,t:'px',apply:()=>{applyUI();}},
+  fssLblSize:{min:8,max:20,step:1,t:'px',apply:()=>{applyUI();buildArcSVG();updateFastUI();}},
+  fssValSize:{min:10,max:32,step:1,t:'px',apply:()=>{applyUI();buildArcSVG();updateFastUI();}},
+  fssMt:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
+  fssX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
   logTextSize:{min:10,max:20,step:1,t:'px',apply:()=>{applyUI();}},
   planNameSize:{min:11,max:26,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
   planDescSize:{min:8,max:16,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
@@ -953,9 +977,9 @@ function applyUI(){
   r.setProperty('--arc-text-y',CF.arcTextY||'35%');
   r.setProperty('--arc-text-size',CF.arcTextSize||'13px');
   r.setProperty('--fss-lbl-size',(CF.fssLblSize||11)+'px');
-  r.setProperty('--fss-lbl-y',(CF.fssLblY||0)+'px');
-  r.setProperty('--fss-val-size',(CF.fssValSize||20)+'px');
-  r.setProperty('--fss-val-y',(CF.fssValY||0)+'px');
+  r.setProperty('--fss-val-size',(CF.fssValSize||15)+'px');
+  r.setProperty('--fss-mt',(CF.fssMt!=null?CF.fssMt:6)+'px');
+  r.setProperty('--fss-x',(CF.fssX||0)+'px');
   r.setProperty('--log-text-size',(CF.logTextSize||13)+'px');
   r.setProperty('--plan-shape',(CF.planShapeVal||8)+'px');
   r.setProperty('--plan-name-size',(CF.planNameSize||16)+'px');
@@ -1181,6 +1205,42 @@ function confirmStopFast(){
   closeMo('mo-stopfast');updateFastUI();toast(`Saved! ${fmtDuration(h)}`);
 }
 function startTimer(){if(timerInt)clearInterval(timerInt);timerInt=setInterval(updateFastUI,1000);}
+// ANIMATION SYSTEM
+let _animWaterTimer=null,_animArcTimer=null;
+function animIntervalMs(){return(CF.animInterval||10)*1000;}
+function startAnimations(){
+  stopAnimations();
+  if(!CF.animInterval)return;// 0 = off
+  const ms=animIntervalMs();
+  // Water shimmer - runs periodically
+  function runWater(){
+    const fill=document.querySelector('.wtank-fill');
+    if(fill){fill.classList.remove('anim-water');void fill.offsetWidth;fill.classList.add('anim-water');}
+    _animWaterTimer=setTimeout(runWater,ms);
+  }
+  _animWaterTimer=setTimeout(runWater,ms);
+  // Arc pulse - runs periodically while fasting
+  function runArc(){
+    if(curFast){
+      const ap=G('ap');
+      if(ap){ap.classList.remove('anim-arc');void ap.offsetWidth;ap.classList.add('anim-arc');}
+    }
+    _animArcTimer=setTimeout(runArc,ms);
+  }
+  _animArcTimer=setTimeout(runArc,ms);
+}
+function stopAnimations(){
+  if(_animWaterTimer){clearTimeout(_animWaterTimer);_animWaterTimer=null;}
+  if(_animArcTimer){clearTimeout(_animArcTimer);_animArcTimer=null;}
+}
+// Clean up anim class after animation ends
+document.addEventListener('animationend',e=>{
+  if(e.animationName==='waterShimmer'&&e.target.closest('.wtank-fill')){
+    e.target.closest('.wtank-fill').classList.remove('anim-water');
+  }
+  if(e.animationName==='arcPulse'){e.target.classList.remove('anim-arc');}
+});
+
 function arcColor(prog){
   if(prog>=1)return'var(--gr)';
   if(prog>=0.75)return'#E07010';
@@ -1247,10 +1307,7 @@ function watZoneLbl(pct){
 
 // TODAY
 function renderToday(){
-  const[h,m]=CF.fastStartTime.split(':').map(Number);
-  const tf=CF.timeFormat,h12=(h%12)||12,ap=h>=12?'PM':'AM';
-  const ts=tf==='12h'?`${ap} ${h12}:${String(m).padStart(2,'0')}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-  SET('fsstd',`Daily, ${ts}`);
+  buildArcSVG();updateFastUI();
   const wls=getWL(),lw=wls.length?wls[wls.length-1]:null;
   const cw=lw?lw.weight:(CF.startWeight||null),sw=CF.startWeight,tw=CF.targetWeight,wu=CF.weightUnit;
   SET('wcur',cw?cw.toFixed(1):'-');
@@ -1307,7 +1364,7 @@ function tpTog(){tpAP=tpAP==='AM'?'PM':'AM';SET('tpap',tpAP);}
 function saveST(){
   let h24=tpH%12;if(tpAP==='PM')h24+=12;
   CF.fastStartTime=`${String(h24).padStart(2,'0')}:${String(tpM).padStart(2,'0')}`;
-  saveCFG();closeMo('mo-st');renderToday();toast('Start time saved');
+  saveCFG();closeMo('mo-st');buildArcSVG();updateFastUI();toast('Start time saved');
 }
 
 // LOG WEIGHT
@@ -1428,12 +1485,13 @@ function openSettings(){
   sv('arcTextY',parseInt(CF.arcTextY||'35'));sv('arcTextSize',parseInt(CF.arcTextSize||'13'));
   sv('arcStartLblSize',CF.arcStartLblSize||8);sv('arcStartLblDist',CF.arcStartLblDist!=null?CF.arcStartLblDist:8);
   sv('arcEndLblSize',CF.arcEndLblSize||8);sv('arcEndLblDist',CF.arcEndLblDist!=null?CF.arcEndLblDist:8);
-  sv('fssLblSize',CF.fssLblSize||11);sv('fssLblY',CF.fssLblY||0);
-  sv('fssValSize',CF.fssValSize||20);sv('fssValY',CF.fssValY||0);
+  sv('fssLblSize',CF.fssLblSize||11);sv('fssValSize',CF.fssValSize||15);
+  sv('fssMt',CF.fssMt!=null?CF.fssMt:6);sv('fssX',CF.fssX||0);
   sv('logTextSize',CF.logTextSize||13);
   sv('planNameSize',CF.planNameSize||16);sv('planDescSize',CF.planDescSize||10);
   sel('s-plan-shape',String(CF.planShapeVal||8));
   const ac=G('s-accent');if(ac)ac.value=CF.accentColor||'#FF6B2B';
+  sel('s-anim',String(CF.animInterval!=null?CF.animInterval:10));
   SET('s-ht',CF.height?`${CF.height} cm`:'Set height');
   SET('s-sw',CF.startWeight?`${CF.startWeight} ${CF.weightUnit}`:'Set');
   SET('s-tw',CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set');
@@ -1476,7 +1534,7 @@ function doImport(){
 function confirmWipe(){
   showConfirm('Wipe ALL data?','Permanent - cannot be undone.',()=>{
     localStorage.clear();
-    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fssLblSize:11,fssLblY:0,fssValSize:20,fssValY:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null};
+    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fssLblSize:11,fssValSize:15,fssMt:6,fssX:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
     saveCFG();saveCPs();saveCF();closeMo('mo-settings');applyTheme('auto');applyUI();renderAll();toast('Wiped');
@@ -1599,10 +1657,8 @@ function renderPx(fl){
       pxNavEl.style.display='flex';
       // page 0 = most recent, page N-1 = oldest
       const canPrev=pxPage<totalPages-1;const canNext=pxPage>0;
-      pxNavEl.innerHTML=`
-        <button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage++;renderDash()" ${canPrev?'':'disabled style="opacity:.3;pointer-events:none"'}>\u2039 Older</button>
-        <span style="font-size:11px;color:var(--tx2)">Page ${totalPages-pxPage} of ${totalPages}</span>
-        <button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage--;renderDash()" ${canNext?'':'disabled style="opacity:.3;pointer-events:none"'}>Newer \u203a</button>`;
+      pxNavEl.style.cssText='display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 2px;margin-bottom:6px';
+      pxNavEl.innerHTML=`<button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage++;renderDash()" ${canPrev?'':'disabled style="opacity:.3;pointer-events:none""'}>‹ Older</button><span style="font-size:11px;color:var(--tx2);flex:1;text-align:center">Page ${totalPages-pxPage} of ${totalPages}</span><button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage--;renderDash()" ${canNext?'':'disabled style="opacity:.3;pointer-events:none"'}>Newer ›</button>`;
     }else{pxNavEl.style.display='none';}
     const dow=today.getDay(),dToMon=dow===0?6:dow-1;
     // page 0 = most recent PAGE_WK weeks, page 1 = previous PAGE_WK weeks, etc.
@@ -1696,13 +1752,17 @@ function drawRoundedBar(ctx,x,y,w,h,style){
     else ctx.fillRect(x,y,w,h);
   }else ctx.fillRect(x,y,w,h);
 }
+const _cvHandlers={};
 function addChartTapHandler(cvId,tipId,pts,valFmt,chartLabel){
   const cv=G(cvId);if(!cv)return;
-  // Remove old listeners by cloning
-  const newCv=cv.cloneNode(true);cv.parentNode.replaceChild(newCv,cv);
+  // Remove previous listeners
+  if(_cvHandlers[cvId]){
+    cv.removeEventListener('click',_cvHandlers[cvId]);
+    cv.removeEventListener('touchend',_cvHandlers[cvId]);
+  }
   function onTap(e){
     e.preventDefault();
-    const rect=newCv.getBoundingClientRect();
+    const rect=cv.getBoundingClientRect();
     const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
     if(!pts||!pts.length)return;
     let best=null,bestD=9999;
@@ -1712,8 +1772,9 @@ function addChartTapHandler(cvId,tipId,pts,valFmt,chartLabel){
       showInfoModal([{l:'Period',v:best.lbl},{l:chartLabel||'Value',v:val}]);
     }
   }
-  newCv.addEventListener('click',onTap);
-  newCv.addEventListener('touchend',onTap,{passive:false});
+  _cvHandlers[cvId]=onTap;
+  cv.addEventListener('click',onTap);
+  cv.addEventListener('touchend',onTap,{passive:false});
 }
 function drawBar(id,labels,values,color,tipId,chartKey,chartLabel){
   if(!labels.length){noData(id,'No data yet');return;}
@@ -1905,7 +1966,7 @@ function updateDate(){
   SET('hdate',`${days[d.getDay()]}, ${mo[d.getMonth()]} ${d.getDate()}`);
 }
 window.addEventListener('load',()=>{
-  loadData();applyTheme(CF.theme||'auto');applyUI();buildArcSVG();
+  loadData();applyTheme(CF.theme||'auto');applyUI();buildArcSVG();startAnimations();
   // Sync pixel range button
   const pxRangeBtns=document.querySelectorAll('.px-rbtn');
   pxRangeBtns.forEach(b=>{b.classList.toggle('act',b.dataset.r===(CF.pixelRange||'3M'));});
