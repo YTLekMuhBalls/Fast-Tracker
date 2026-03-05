@@ -58,14 +58,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .asvg{width:100%;height:auto;display:block}
 .acent{position:absolute;top:var(--arc-text-y,35%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;width:100%}
 /* Plan Type badge */
-.fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all;transform:translate(var(--pt-x,0px),var(--pt-y,0px))}
+.fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:var(--pt-fw,800);font-size:var(--badge-fs-scaled,17px);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all;transform:translate(var(--pt-x,0px),var(--pt-y,0px))}
 .fbadge:active{opacity:.7}
 /* Remaining Time */
-.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px;transform:translate(var(--rt-x,0px),var(--rt-y,0px))}
+.atime{font-size:var(--arc-text-size-scaled,13px);font-weight:var(--rt-fw,400);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px;transform:translate(var(--rt-x,0px),var(--rt-y,0px))}
 /* Fasting start time label */
-.fsl{font-size:var(--fsl-size,11px);color:var(--tx2);transform:translate(var(--fsl-x,0px),var(--fsl-y,0px))}
+.fsl{font-size:var(--fsl-size,11px);font-weight:var(--fsl-fw,400);color:var(--tx2);transform:translate(var(--fsl-x,0px),var(--fsl-y,0px))}
 /* Daily hh:mm AM/PM starting time */
-.dst{font-size:var(--dst-size,15px);font-weight:700;color:var(--tx);pointer-events:all;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transform:translate(var(--dst-x,0px),var(--dst-y,0px))}
+.dst{font-size:var(--dst-size,15px);font-weight:var(--dst-fw,700);color:var(--tx);pointer-events:all;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transform:translate(var(--dst-x,0px),var(--dst-y,0px))}
 .dst:active{opacity:.7}
 /* greeting */
 .greet-bar{padding:8px 0 6px;font-size:14px;font-weight:600;color:var(--tx);min-height:0;margin-bottom:4px}
@@ -86,6 +86,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .ss-tog{font-size:13px;transition:transform .2s;display:inline-block}
 .ss-body.collapsed{display:none}
 .stip{font-size:11px;color:var(--tx2);margin:2px 0 5px;line-height:1.4;padding:0 2px}
+.stog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--tx)}
+.stog input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--or)}
 .irow{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--bd);font-size:13px}
 .ir-l{color:var(--tx2)}.ir-v{font-weight:500;color:var(--tx)}
 /* buttons */
@@ -566,42 +568,54 @@ input,select,textarea{color-scheme:light dark}
     <div class="srow"><span class="slv">"End" tip label distance — arc only</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-1)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',1)">+</button></div></div>
   </div>
 
+  <!-- Overlay global controls -->
+  <div class="ss" onclick="togSS('sg-overlay-global')">Overlay: Global Controls (all 4 texts) <span class="ss-tog" id="sg-overlay-global-tog">▾</span></div>
+  <div class="ss-body" id="sg-overlay-global">
+    <div class="stip">These controls move or scale ALL four overlay texts together at once — Plan Type, Remaining Time, Fasting Start Time, and Daily Starting Time.</div>
+    <div class="srow"><span class="slv">Overlay Y position — moves all texts vertically (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
+    <div class="stip">Lower number = higher position. Typically 25–50% works well for arc; 30–50% for circle.</div>
+    <div class="srow"><span class="slv">Scale all text sizes together</span><div class="stepper"><button class="step-btn" onclick="adjScale(-0.05)">−</button><span class="step-val" id="sv-overlayScale">1.0</span><button class="step-btn" onclick="adjScale(0.05)">+</button></div></div>
+    <div class="stip">Proportionally enlarges or shrinks all 4 text elements. Default 1.0. Try 1.2 to zoom in, 0.8 to shrink.</div>
+  </div>
+
   <!-- ① Plan Type pill -->
   <div class="ss" onclick="togSS('sg-pt')">① Plan Type — "16:8 ›" badge <span class="ss-tog" id="sg-pt-tog">▾</span></div>
   <div class="ss-body collapsed" id="sg-pt">
-    <div class="stip">The orange pill at the top of the ring overlay. Tap it to change your fasting plan. Controls here move/resize it independently.</div>
-    <div class="srow"><span class="slv">Badge text size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
-    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptX',-2)">−</button><span class="step-val" id="sv-ptX">0</span><button class="step-btn" onclick="stepSetting('ptX',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptY',-2)">−</button><span class="step-val" id="sv-ptY">0</span><button class="step-btn" onclick="stepSetting('ptY',2)">+</button></div></div>
-    <div class="stip">Whole overlay Y position (all 4 elements move together):</div>
-    <div class="srow"><span class="slv">Overlay Y position (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
+    <div class="stip">The orange pill at the top of the ring. Tap it to change fasting plan. These controls move and resize it independently of the others.</div>
+    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="adjBadgeSize(-1)">−</button><span class="step-val" id="sv-badgeFSpx">17</span><button class="step-btn" onclick="adjBadgeSize(1)">+</button></div></div>
+    <div class="srow"><span class="slv">Bold</span><label class="stog"><input type="checkbox" id="ck-pt-bold" onchange="CF.ptBold=this.checked;saveCFG();applyUI()"> Bold text</label></div>
+    <div class="srow"><span class="slv">Shift right (+) / left (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptX',-2)">−</button><span class="step-val" id="sv-ptX">0</span><button class="step-btn" onclick="stepSetting('ptX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down (+) / up (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptY',-2)">−</button><span class="step-val" id="sv-ptY">0</span><button class="step-btn" onclick="stepSetting('ptY',2)">+</button></div></div>
   </div>
 
   <!-- ② Remaining Time -->
   <div class="ss" onclick="togSS('sg-rt')">② Remaining Time — "Xh Ym Zs remaining" <span class="ss-tog" id="sg-rt-tog">▾</span></div>
   <div class="ss-body collapsed" id="sg-rt">
-    <div class="stip">The countdown text below the Plan Type badge. Shows time left in the fast (or time over goal).</div>
+    <div class="stip">The countdown below the badge. Shows time remaining in the fast, or how far over goal you are.</div>
     <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtX',-2)">−</button><span class="step-val" id="sv-rtX">0</span><button class="step-btn" onclick="stepSetting('rtX',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtY',-2)">−</button><span class="step-val" id="sv-rtY">0</span><button class="step-btn" onclick="stepSetting('rtY',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Bold</span><label class="stog"><input type="checkbox" id="ck-rt-bold" onchange="CF.rtBold=this.checked;saveCFG();applyUI()"> Bold text</label></div>
+    <div class="srow"><span class="slv">Shift right (+) / left (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtX',-2)">−</button><span class="step-val" id="sv-rtX">0</span><button class="step-btn" onclick="stepSetting('rtX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down (+) / up (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtY',-2)">−</button><span class="step-val" id="sv-rtY">0</span><button class="step-btn" onclick="stepSetting('rtY',2)">+</button></div></div>
   </div>
 
   <!-- ③ Fasting Start Time label -->
-  <div class="ss" onclick="togSS('sg-fsl')">③ Fasting Start Time — label text <span class="ss-tog" id="sg-fsl-tog">▾</span></div>
+  <div class="ss" onclick="togSS('sg-fsl')">③ Fasting Start Time — small label <span class="ss-tog" id="sg-fsl-tog">▾</span></div>
   <div class="ss-body collapsed" id="sg-fsl">
-    <div class="stip">The small grey "Fasting start time" caption above the daily time. Controls its size and position.</div>
+    <div class="stip">The small grey "Fasting start time" caption just above the daily time value.</div>
     <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslSize',-1)">−</button><span class="step-val" id="sv-fslSize">11</span><button class="step-btn" onclick="stepSetting('fslSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslX',-2)">−</button><span class="step-val" id="sv-fslX">0</span><button class="step-btn" onclick="stepSetting('fslX',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslY',-2)">−</button><span class="step-val" id="sv-fslY">0</span><button class="step-btn" onclick="stepSetting('fslY',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Bold</span><label class="stog"><input type="checkbox" id="ck-fsl-bold" onchange="CF.fslBold=this.checked;saveCFG();applyUI()"> Bold text</label></div>
+    <div class="srow"><span class="slv">Shift right (+) / left (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslX',-2)">−</button><span class="step-val" id="sv-fslX">0</span><button class="step-btn" onclick="stepSetting('fslX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down (+) / up (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslY',-2)">−</button><span class="step-val" id="sv-fslY">0</span><button class="step-btn" onclick="stepSetting('fslY',2)">+</button></div></div>
   </div>
 
   <!-- ④ Daily Starting Time -->
-  <div class="ss" onclick="togSS('sg-dst')">④ Daily Starting Time — "Daily, hh:mm AM/PM" <span class="ss-tog" id="sg-dst-tog">▾</span></div>
+  <div class="ss" onclick="togSS('sg-dst')">④ Daily Starting Time — "Daily, hh:mm AM/PM ✏️" <span class="ss-tog" id="sg-dst-tog">▾</span></div>
   <div class="ss-body collapsed" id="sg-dst">
-    <div class="stip">The tappable time value (e.g. "Daily, 8:00 PM ✏️"). Tap it in the app to change your daily fasting start time.</div>
+    <div class="stip">The tappable "Daily, 8:00 PM ✏️" line. Tap it directly in the fasting widget to change start time.</div>
     <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstSize',-1)">−</button><span class="step-val" id="sv-dstSize">15</span><button class="step-btn" onclick="stepSetting('dstSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstX',-2)">−</button><span class="step-val" id="sv-dstX">0</span><button class="step-btn" onclick="stepSetting('dstX',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstY',-2)">−</button><span class="step-val" id="sv-dstY">0</span><button class="step-btn" onclick="stepSetting('dstY',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Bold</span><label class="stog"><input type="checkbox" id="ck-dst-bold" onchange="CF.dstBold=this.checked;saveCFG();applyUI()"> Bold text</label></div>
+    <div class="srow"><span class="slv">Shift right (+) / left (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstX',-2)">−</button><span class="step-val" id="sv-dstX">0</span><button class="step-btn" onclick="stepSetting('dstX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down (+) / up (−)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstY',-2)">−</button><span class="step-val" id="sv-dstY">0</span><button class="step-btn" onclick="stepSetting('dstY',2)">+</button></div></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-charts')">Charts &amp; Stats <span class="ss-tog" id="sg-charts-tog">▾</span></div>
@@ -650,15 +664,24 @@ input,select,textarea{color-scheme:light dark}
 
   <div class="ss" onclick="togSS('sg-data')">Data <span class="ss-tog" id="sg-data-tog">▾</span></div>
   <div class="ss-body" id="sg-data">
-    <div style="font-size:11px;color:var(--tx2);margin-bottom:7px">Export to copy, paste to restore.</div>
-    <div class="brow"><button class="btnsm" onclick="exportData()">Export and Copy</button><button class="btnsm" onclick="openImport()">Import</button></div>
-    <button class="btns" onclick="openMF(null)">+ Log past fast</button>
-    <button class="bdanger" onclick="confirmWipe()">Wipe all data</button>
+    <div class="stip">Backup your data as a .json file saved to your Files app, or restore from a previously saved file.</div>
+    <div class="brow">
+      <button class="btnsm" onclick="exportFile()">Save backup file</button>
+      <button class="btnsm" onclick="G('import-file').click()">Load backup file</button>
+    </div>
+    <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importFile(this)">
+    <div class="stip" style="margin-top:6px">Legacy clipboard method:</div>
+    <div class="brow"><button class="btnsm" onclick="exportData()">Copy to clipboard</button><button class="btnsm" onclick="openImport()">Paste from clipboard</button></div>
+    <div class="stip" style="margin-top:8px;border-top:1px solid var(--bd);padding-top:8px">Import fasting records from another app (Zero, Fastic, Life, etc.):</div>
+    <button class="btns" onclick="G('import-other-file').click()" style="margin-top:4px">Import from other app...</button>
+    <input type="file" id="import-other-file" accept=".json,application/json" multiple style="display:none" onchange="importOtherApp(this)">
+    <button class="bdanger" onclick="confirmWipe()" style="margin-top:14px">Wipe all data</button>
   </div>
 
-  <div style="position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 0;margin:10px -18px -26px;display:flex;gap:8px;align-items:center;padding-left:18px;padding-right:18px">
+  <div style="height:64px"></div>
+  <div style="position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 18px;margin:0 -18px;display:flex;gap:8px;align-items:center">
     <button class="btnp" onclick="closeMo('mo-settings')" style="margin:0;flex:1;padding:11px">Done</button>
-    <button class="btns" onclick="G('mo-settings').scrollTop=0" style="margin:0;padding:11px;width:auto;flex:none;font-size:12px">↑ Top</button>
+    <button class="btns" onclick="(function(){const m=G('mo-settings').querySelector('.modal');if(m)m.scrollTop=0;})()" style="margin:0;padding:11px;width:auto;flex:none;font-size:12px">↑ Top</button>
   </div>
 </div></div>
 
@@ -765,10 +788,11 @@ let CF={
   theme:'auto',devMode:false,testPixels:false,
   badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',
   username:'',pixelRange:'3M',customIcon:null,
-  arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,
+  arcSize:9,arcTextY:35,arcTextSize:13,arcShape:'arc',arcWidth:12,
   arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,
-  fslSize:11,dstSize:15,
+  fslSize:11,dstSize:15,overlayScale:1.0,
   ptX:0,ptY:0,rtX:0,rtY:0,fslX:0,fslY:0,dstX:0,dstY:0,
+  ptBold:false,rtBold:false,fslBold:false,dstBold:true,
   logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,
   accentColor:null,
   animInterval:10,
@@ -950,22 +974,22 @@ function buildArcSVG(){
 const STEP_DEFS={
   arcSize:{min:1,max:20,step:1,t:'n',apply:()=>{applyUI();}},
   arcWidth:{min:4,max:24,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
-  arcTextY:{min:5,max:90,step:1,t:'pct',apply:()=>{applyUI();}},
-  arcTextSize:{min:8,max:32,step:1,t:'px',apply:()=>{applyUI();}},
+  arcTextY:{min:5,max:90,step:1,t:'n',apply:()=>{applyUI();}},
+  arcTextSize:{min:8,max:32,step:1,t:'n',apply:()=>{applyUI();}},
   arcStartLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcStartLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
-  ptX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
-  ptY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
-  rtX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
-  rtY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
-  fslSize:{min:8,max:22,step:1,t:'px',apply:()=>{applyUI();}},
-  fslX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
-  fslY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
-  dstSize:{min:8,max:32,step:1,t:'px',apply:()=>{applyUI();}},
-  dstX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
-  dstY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
+  ptX:{min:-80,max:80,step:2,t:'n',apply:()=>{applyUI();}},
+  ptY:{min:-60,max:60,step:2,t:'n',apply:()=>{applyUI();}},
+  rtX:{min:-80,max:80,step:2,t:'n',apply:()=>{applyUI();}},
+  rtY:{min:-60,max:60,step:2,t:'n',apply:()=>{applyUI();}},
+  fslSize:{min:8,max:22,step:1,t:'n',apply:()=>{applyUI();}},
+  fslX:{min:-80,max:80,step:2,t:'n',apply:()=>{applyUI();}},
+  fslY:{min:-60,max:60,step:2,t:'n',apply:()=>{applyUI();}},
+  dstSize:{min:8,max:32,step:1,t:'n',apply:()=>{applyUI();}},
+  dstX:{min:-80,max:80,step:2,t:'n',apply:()=>{applyUI();}},
+  dstY:{min:-60,max:60,step:2,t:'n',apply:()=>{applyUI();}},
   logTextSize:{min:10,max:20,step:1,t:'px',apply:()=>{applyUI();}},
   planNameSize:{min:11,max:26,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
   planDescSize:{min:8,max:16,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
@@ -1008,6 +1032,134 @@ function showInfoModal(rows){
   openMo('mo-info');
 }
 
+// OVERLAY HELPERS
+function adjScale(d){
+  let s=parseFloat(CF.overlayScale||1);
+  s=Math.max(0.5,Math.min(2.5,parseFloat((s+d).toFixed(2))));
+  CF.overlayScale=s;saveCFG();applyUI();
+  const el=G('sv-overlayScale');if(el)el.textContent=s.toFixed(1);
+}
+function adjBadgeSize(d){
+  let v=parseInt(CF.badgeFS||17);
+  v=Math.max(10,Math.min(30,v+d));
+  CF.badgeFS=v;saveCFG();applyUI();
+  const el=G('sv-badgeFSpx');if(el)el.textContent=v;
+}
+// FILE EXPORT/IMPORT
+function exportFile(){
+  const data=JSON.stringify({cfg:CF,cps:CPs,fl:getFL(),wl:getWL(),wal:getWaL()},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=new Date();
+  a.href=url;a.download=`fasttrack-backup-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},2000);
+  toast('Backup file saved!');
+}
+function importFile(input){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      showConfirm('Restore backup?','This will replace all current data.',()=>{
+        if(d.cfg)Object.assign(CF,d.cfg);if(d.cps)CPs=d.cps;
+        if(d.fl)sFL(d.fl);if(d.wl)sWL(d.wl);if(d.wal)sWaL(d.wal);
+        saveCFG();saveCPs();applyTheme(CF.theme||'auto');applyUI();
+        initCustomIcon();buildArcSVG();renderAll();toast('Restored!');
+      });
+    }catch{toast('Could not read file — invalid format');}
+  };
+  reader.readAsText(f);
+  input.value='';
+}
+// OTHER APP IMPORT GATE
+function importOtherApp(input){
+  const files=Array.from(input.files);if(!files.length)return;
+  input.value='';
+  let allLogs=[];let detected='Unknown app';let errors=0;
+  const done=()=>{
+    if(!allLogs.length){toast('No fasting records found in file(s)');return;}
+    const sorted=allLogs.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));
+    const first=new Date(sorted[0].startTime),last=new Date(sorted[sorted.length-1].startTime);
+    const fmt=d=>`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    showConfirm(`Import ${allLogs.length} records?`,
+      `App: ${detected}
+Period: ${fmt(first)} – ${fmt(last)}${errors?' ('+errors+' skipped)':''}`,
+      ()=>{
+        const fl=getFL();
+        const existing=new Set(fl.map(l=>l.startTime));
+        let added=0;
+        allLogs.forEach(l=>{if(!existing.has(l.startTime)){fl.push(l);added++;}});
+        sFL(fl);renderAll();toast(`Imported ${added} record${added!==1?'s':''}!`);
+      });
+  };
+  let pending=files.length;
+  files.forEach(file=>{
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const raw=JSON.parse(ev.target.result);
+        const {logs,app}=parseOtherAppJSON(raw);
+        if(app!=='Unknown')detected=app;
+        allLogs=allLogs.concat(logs);
+      }catch{errors++;}
+      if(--pending===0)done();
+    };
+    r.onerror=()=>{errors++;if(--pending===0)done();};
+    r.readAsText(file);
+  });
+}
+function parseOtherAppJSON(raw){
+  // Auto-detect and parse fasting records from known app export formats
+  const uid=()=>Math.random().toString(36).slice(2,10);
+  const logs=[];let app='Unknown';
+  const toISO=v=>{if(!v)return null;if(typeof v==='number')return new Date(v>1e10?v:v*1000).toISOString();return new Date(v).toISOString();};
+  // Zero app format: array of {startDate, endDate, fastType}
+  if(Array.isArray(raw)&&raw[0]&&(raw[0].startDate||raw[0].start_date||raw[0].StartDate)){
+    app='Zero';
+    raw.forEach(r=>{
+      const s=toISO(r.startDate||r.start_date||r.StartDate);
+      const e=toISO(r.endDate||r.end_date||r.EndDate);
+      if(!s||!e)return;
+      const h=(new Date(e)-new Date(s))/3600000;
+      if(h<=0)return;
+      const ph=parseFH(CF.fastType);
+      logs.push({id:uid(),startTime:s,endTime:e,type:CF.fastType,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct:parseFloat((h/ph*100).toFixed(2))});
+    });
+  }
+  // Fastic: {fasts:[{startTimestamp,endTimestamp}]}
+  else if(raw.fasts&&Array.isArray(raw.fasts)){
+    app='Fastic';
+    raw.fasts.forEach(r=>{
+      const s=toISO(r.startTimestamp||r.startTime||r.start);
+      const e=toISO(r.endTimestamp||r.endTime||r.end);
+      if(!s||!e)return;
+      const h=(new Date(e)-new Date(s))/3600000;
+      if(h<=0)return;
+      const ph=parseFH(CF.fastType);
+      logs.push({id:uid(),startTime:s,endTime:e,type:CF.fastType,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct:parseFloat((h/ph*100).toFixed(2))});
+    });
+  }
+  // Generic: array of objects with any start/end time fields
+  else if(Array.isArray(raw)&&raw[0]){
+    app='Generic';
+    raw.forEach(r=>{
+      const sk=['startTime','start_time','StartTime','started_at','start','begin','startDate'];
+      const ek=['endTime','end_time','EndTime','ended_at','end','finish','endDate'];
+      const s=toISO(sk.map(k=>r[k]).find(v=>v));
+      const e=toISO(ek.map(k=>r[k]).find(v=>v));
+      if(!s||!e)return;
+      const h=(new Date(e)-new Date(s))/3600000;
+      if(h<=0||h>72)return;
+      const ph=parseFH(CF.fastType);
+      logs.push({id:uid(),startTime:s,endTime:e,type:CF.fastType,plannedH:ph,actualH:parseFloat(h.toFixed(2)),completed:h>=ph*0.85,completionPct:parseFloat((h/ph*100).toFixed(2))});
+    });
+  }
+  return{logs,app};
+}
+
 // ACCENT COLOR
 function saveAccentColor(v){CF.accentColor=v;saveCFG();applyUI();}
 function resetAccentColor(){CF.accentColor=null;saveCFG();applyUI();const el=G('s-accent');if(el)el.value='#FF6B2B';}
@@ -1015,23 +1167,31 @@ function savePlanShape(v){CF.planShapeVal=parseInt(v)||8;saveCFG();applyUI();ren
 
 function applyUI(){
   const r=document.documentElement.style;
-  r.setProperty('--badge-fs',CF.badgeFS||'17px');
+  const n=v=>parseInt(v)||0;// safe int extraction – prevents double-px bug
+  r.setProperty('--badge-fs',n(CF.badgeFS||17)+'px');
   r.setProperty('--px-gap',CF.pxGap||'4px');
   r.setProperty('--chart-h',CF.chartH||'150px');
   const arcPx=Math.max(1,Math.min(20,CF.arcSize||9))*40;
   r.setProperty('--arc-size',arcPx+'px');
-  r.setProperty('--arc-text-y',CF.arcTextY||'35%');
-  r.setProperty('--arc-text-size',CF.arcTextSize||'13px');
-  r.setProperty('--fsl-size',(CF.fslSize||CF.fssLblSize||11)+'px');
-  r.setProperty('--dst-size',(CF.dstSize||CF.fssValSize||15)+'px');
-  r.setProperty('--pt-x',(CF.ptX||0)+'px');r.setProperty('--pt-y',(CF.ptY||0)+'px');
-  r.setProperty('--rt-x',(CF.rtX||0)+'px');r.setProperty('--rt-y',(CF.rtY||0)+'px');
-  r.setProperty('--fsl-x',(CF.fslX||0)+'px');r.setProperty('--fsl-y',(CF.fslY||0)+'px');
-  r.setProperty('--dst-x',(CF.dstX||0)+'px');r.setProperty('--dst-y',(CF.dstY||0)+'px');
-  r.setProperty('--log-text-size',(CF.logTextSize||13)+'px');
-  r.setProperty('--plan-shape',(CF.planShapeVal||8)+'px');
-  r.setProperty('--plan-name-size',(CF.planNameSize||16)+'px');
-  r.setProperty('--plan-desc-size',(CF.planDescSize||10)+'px');
+  r.setProperty('--arc-text-y',n(CF.arcTextY||35)+'%');
+  r.setProperty('--arc-text-size',n(CF.arcTextSize||13)+'px');
+  const scale=parseFloat(CF.overlayScale||1);
+  r.setProperty('--fsl-size',Math.round(n(CF.fslSize||11)*scale)+'px');
+  r.setProperty('--dst-size',Math.round(n(CF.dstSize||15)*scale)+'px');
+  r.setProperty('--arc-text-size-scaled',Math.round(n(CF.arcTextSize||13)*scale)+'px');
+  r.setProperty('--badge-fs-scaled',Math.round(n(CF.badgeFS||17)*scale)+'px');
+  r.setProperty('--pt-x',n(CF.ptX)+'px');r.setProperty('--pt-y',n(CF.ptY)+'px');
+  r.setProperty('--rt-x',n(CF.rtX)+'px');r.setProperty('--rt-y',n(CF.rtY)+'px');
+  r.setProperty('--fsl-x',n(CF.fslX)+'px');r.setProperty('--fsl-y',n(CF.fslY)+'px');
+  r.setProperty('--dst-x',n(CF.dstX)+'px');r.setProperty('--dst-y',n(CF.dstY)+'px');
+  r.setProperty('--pt-fw',CF.ptBold?'800':'600');
+  r.setProperty('--rt-fw',CF.rtBold?'700':'400');
+  r.setProperty('--fsl-fw',CF.fslBold?'700':'400');
+  r.setProperty('--dst-fw',CF.dstBold?'700':'700');// dst always bold by default
+  r.setProperty('--log-text-size',n(CF.logTextSize||13)+'px');
+  r.setProperty('--plan-shape',n(CF.planShapeVal||8)+'px');
+  r.setProperty('--plan-name-size',n(CF.planNameSize||16)+'px');
+  r.setProperty('--plan-desc-size',n(CF.planDescSize||10)+'px');
   if(CF.accentColor){
     r.setProperty('--or',CF.accentColor);
     const hx=CF.accentColor.replace('#','');
@@ -1074,11 +1234,13 @@ function openMo(id){
   const e=G(id);if(!e)return;
   e.classList.remove('hidden');
   if(id==='mo-settings'){
-    if(!_settingsOpened){e.scrollTop=0;_settingsOpened=true;}
-    else{requestAnimationFrame(()=>{e.scrollTop=_settingsScroll;});}
-    e.onscroll=()=>{_settingsScroll=e.scrollTop;};
+    const m=e.querySelector('.modal');if(!m)return;
+    if(!_settingsOpened){m.scrollTop=0;_settingsOpened=true;}
+    else{requestAnimationFrame(()=>{m.scrollTop=_settingsScroll;});}
+    m.onscroll=()=>{_settingsScroll=m.scrollTop;};
   }else{
-    e.scrollTop=0;
+    const m=e.querySelector('.modal');
+    if(m)m.scrollTop=0;else e.scrollTop=0;
   }
 }
 function closeMo(id){const e=G(id);if(e)e.classList.add('hidden')}
@@ -1544,10 +1706,16 @@ function openSettings(){
   sv('arcTextY',parseInt(CF.arcTextY||'35'));sv('arcTextSize',parseInt(CF.arcTextSize||'13'));
   sv('arcStartLblSize',CF.arcStartLblSize||8);sv('arcStartLblDist',CF.arcStartLblDist!=null?CF.arcStartLblDist:8);
   sv('arcEndLblSize',CF.arcEndLblSize||8);sv('arcEndLblDist',CF.arcEndLblDist!=null?CF.arcEndLblDist:8);
-  sv('ptX',CF.ptX||0);sv('ptY',CF.ptY||0);
-  sv('rtX',CF.rtX||0);sv('rtY',CF.rtY||0);
-  sv('fslSize',CF.fslSize||CF.fssLblSize||11);sv('fslX',CF.fslX||0);sv('fslY',CF.fslY||0);
-  sv('dstSize',CF.dstSize||CF.fssValSize||15);sv('dstX',CF.dstX||0);sv('dstY',CF.dstY||0);
+  sv('ptX',parseInt(CF.ptX)||0);sv('ptY',parseInt(CF.ptY)||0);
+  sv('rtX',parseInt(CF.rtX)||0);sv('rtY',parseInt(CF.rtY)||0);
+  sv('fslSize',parseInt(CF.fslSize||11));sv('fslX',parseInt(CF.fslX)||0);sv('fslY',parseInt(CF.fslY)||0);
+  sv('dstSize',parseInt(CF.dstSize||15));sv('dstX',parseInt(CF.dstX)||0);sv('dstY',parseInt(CF.dstY)||0);
+  sv('arcTextY',parseInt(CF.arcTextY)||35);sv('arcTextSize',parseInt(CF.arcTextSize)||13);
+  sv('overlayScale',parseFloat(CF.overlayScale||1).toFixed(1));
+  // Bold toggles
+  const bchk=(id,val)=>{const e=G(id);if(e)e.checked=!!val;};
+  bchk('ck-pt-bold',CF.ptBold);bchk('ck-rt-bold',CF.rtBold);
+  bchk('ck-fsl-bold',CF.fslBold);bchk('ck-dst-bold',CF.dstBold!==false);
   sv('logTextSize',CF.logTextSize||13);
   sv('planNameSize',CF.planNameSize||16);sv('planDescSize',CF.planDescSize||10);
   sel('s-plan-shape',String(CF.planShapeVal||8));
@@ -1595,7 +1763,7 @@ function doImport(){
 function confirmWipe(){
   showConfirm('Wipe ALL data?','Permanent - cannot be undone.',()=>{
     localStorage.clear();
-    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fslSize:11,dstSize:15,ptX:0,ptY:0,rtX:0,rtY:0,fslX:0,fslY:0,dstX:0,dstY:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
+    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:35,arcTextSize:13,arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fslSize:11,dstSize:15,overlayScale:1.0,ptX:0,ptY:0,rtX:0,rtY:0,fslX:0,fslY:0,dstX:0,dstY:0,ptBold:false,rtBold:false,fslBold:false,dstBold:true,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
     const db=G('dev-bar');if(db)db.classList.remove('show');
