@@ -19,7 +19,8 @@
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
   --badge-fs:17px;--px-gap:4px;--chart-h:150px;
   --arc-size:400px;--arc-text-y:35%;--arc-text-size:13px;
-  --fss-lbl-size:11px;--fss-val-size:15px;--fss-mt:6px;--fss-x:0px;
+  --fsl-size:11px;--dst-size:15px;
+  --pt-x:0px;--pt-y:0px;--rt-x:0px;--rt-y:0px;--fsl-x:0px;--fsl-y:0px;--dst-x:0px;--dst-y:0px;
   --log-text-size:13px;--plan-shape:8px;--plan-name-size:16px;--plan-desc-size:10px;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
@@ -55,13 +56,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .awrap{display:flex;flex-direction:column;align-items:center;margin:0 0 8px}
 .arc-container{position:relative;width:min(var(--arc-size,400px),100%)}
 .asvg{width:100%;height:auto;display:block}
-.acent{position:absolute;top:var(--arc-text-y,35%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
-.fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all}
+.acent{position:absolute;top:var(--arc-text-y,35%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;width:100%}
+/* Plan Type badge */
+.fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all;transform:translate(var(--pt-x,0px),var(--pt-y,0px))}
 .fbadge:active{opacity:.7}
-.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px}
-.fss{text-align:center;margin-top:var(--fss-mt,6px);margin-left:var(--fss-x,0px);pointer-events:all}
-.fss-l{font-size:var(--fss-lbl-size,11px);color:var(--tx2);margin-bottom:2px}
-.fss-t{font-size:var(--fss-val-size,15px);font-weight:700;cursor:pointer;color:var(--tx)}.fss-t:active{opacity:.7}
+/* Remaining Time */
+.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px;transform:translate(var(--rt-x,0px),var(--rt-y,0px))}
+/* Fasting start time label */
+.fsl{font-size:var(--fsl-size,11px);color:var(--tx2);transform:translate(var(--fsl-x,0px),var(--fsl-y,0px))}
+/* Daily hh:mm AM/PM starting time */
+.dst{font-size:var(--dst-size,15px);font-weight:700;color:var(--tx);pointer-events:all;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transform:translate(var(--dst-x,0px),var(--dst-y,0px))}
+.dst:active{opacity:.7}
 /* greeting */
 .greet-bar{padding:8px 0 6px;font-size:14px;font-weight:600;color:var(--tx);min-height:0;margin-bottom:4px}
 /* water animation */
@@ -549,42 +554,59 @@ input,select,textarea{color-scheme:light dark}
     </div>
   </div>
 
-  <div class="ss" onclick="togSS('sg-arc')">Fasting Arc / Circle <span class="ss-tog" id="sg-arc-tog">▾</span></div>
+  <div class="ss" onclick="togSS('sg-arc')">Ring Shape &amp; Size <span class="ss-tog" id="sg-arc-tog">▾</span></div>
   <div class="ss-body" id="sg-arc">
-    <div class="stip">Controls the progress ring shown in the Fasting widget.</div>
+    <div class="stip">Controls the progress ring in the Fasting widget — shape, dimensions, and the arc-tip labels.</div>
     <div class="srow"><span class="slv">Shape</span><select class="ssel" id="s-arc-shape" onchange="saveCfg('arcShape',this.value);buildArcSVG();updateFastUI()"><option value="arc">Arc (open half-ring)</option><option value="circle">Full circle</option></select></div>
-    <div class="srow"><span class="slv">Overall size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcSize',-1)">−</button><span class="step-val" id="sv-arcSize">10</span><button class="step-btn" onclick="stepSetting('arcSize',1)">+</button></div></div>
-    <div class="stip">How large the ring appears (1 = smallest, 20 = largest).</div>
-    <div class="srow"><span class="slv">Ring thickness</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcWidth',-1)">−</button><span class="step-val" id="sv-arcWidth">12</span><button class="step-btn" onclick="stepSetting('arcWidth',1)">+</button></div></div>
-    <div class="stip">Thickness of the ring stroke in pixels.</div>
-    <div class="srow"><span class="slv">Overlay Y position (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
-    <div class="stip">Vertical position of the badge + timer text overlay inside the ring. Lower % = higher up.</div>
-    <div class="srow"><span class="slv">Remaining-time text size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
-    <div class="stip">Font size of the "Xh Ym Zs remaining" text shown below the badge.</div>
-    <div class="srow"><span class="slv">"Start" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblSize',-1)">−</button><span class="step-val" id="sv-arcStartLblSize">8</span><button class="step-btn" onclick="stepSetting('arcStartLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">"Start" label distance</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblDist',-2)">−</button><span class="step-val" id="sv-arcStartLblDist">8</span><button class="step-btn" onclick="stepSetting('arcStartLblDist',2)">+</button></div></div>
-    <div class="stip">Size and distance from the left tip of the arc for the "Start" text. Arc mode only.</div>
-    <div class="srow"><span class="slv">"End" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblSize',-1)">−</button><span class="step-val" id="sv-arcEndLblSize">8</span><button class="step-btn" onclick="stepSetting('arcEndLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">"End" label distance</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-2)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',2)">+</button></div></div>
-    <div class="stip">Size and distance from the right tip of the arc for the "End" text. Arc mode only.</div>
+    <div class="srow"><span class="slv">Ring overall size (1–20)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcSize',-1)">−</button><span class="step-val" id="sv-arcSize">10</span><button class="step-btn" onclick="stepSetting('arcSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Ring stroke thickness (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcWidth',-1)">−</button><span class="step-val" id="sv-arcWidth">12</span><button class="step-btn" onclick="stepSetting('arcWidth',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"Start" tip label size — arc only</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblSize',-1)">−</button><span class="step-val" id="sv-arcStartLblSize">8</span><button class="step-btn" onclick="stepSetting('arcStartLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"Start" tip label distance — arc only</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblDist',-1)">−</button><span class="step-val" id="sv-arcStartLblDist">8</span><button class="step-btn" onclick="stepSetting('arcStartLblDist',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"End" tip label size — arc only</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblSize',-1)">−</button><span class="step-val" id="sv-arcEndLblSize">8</span><button class="step-btn" onclick="stepSetting('arcEndLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"End" tip label distance — arc only</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-1)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',1)">+</button></div></div>
   </div>
 
-  <div class="ss" onclick="togSS('sg-fsslbl')">Start Time Label (inside ring) <span class="ss-tog" id="sg-fsslbl-tog">▾</span></div>
-  <div class="ss-body" id="sg-fsslbl">
-    <div class="stip">The "Fasting start time / Daily hh:mm" section lives inside the ring overlay. Use the Overlay Y Position above to shift the entire block, then these controls to fine-tune.</div>
-    <div class="srow"><span class="slv">"Fasting start time" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">"Daily hh:mm" value size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">15</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Extra top gap</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssMt',-2)">−</button><span class="step-val" id="sv-fssMt">6</span><button class="step-btn" onclick="stepSetting('fssMt',2)">+</button></div></div>
-    <div class="stip">Gap between the remaining-time text above and this label block.</div>
-    <div class="srow"><span class="slv">Horizontal nudge</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssX',-2)">−</button><span class="step-val" id="sv-fssX">0</span><button class="step-btn" onclick="stepSetting('fssX',2)">+</button></div></div>
-    <div class="stip">Shift the label block left (negative) or right (positive) from center.</div>
+  <!-- ① Plan Type pill -->
+  <div class="ss" onclick="togSS('sg-pt')">① Plan Type — "16:8 ›" badge <span class="ss-tog" id="sg-pt-tog">▾</span></div>
+  <div class="ss-body collapsed" id="sg-pt">
+    <div class="stip">The orange pill at the top of the ring overlay. Tap it to change your fasting plan. Controls here move/resize it independently.</div>
+    <div class="srow"><span class="slv">Badge text size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
+    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptX',-2)">−</button><span class="step-val" id="sv-ptX">0</span><button class="step-btn" onclick="stepSetting('ptX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('ptY',-2)">−</button><span class="step-val" id="sv-ptY">0</span><button class="step-btn" onclick="stepSetting('ptY',2)">+</button></div></div>
+    <div class="stip">Whole overlay Y position (all 4 elements move together):</div>
+    <div class="srow"><span class="slv">Overlay Y position (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
+  </div>
+
+  <!-- ② Remaining Time -->
+  <div class="ss" onclick="togSS('sg-rt')">② Remaining Time — "Xh Ym Zs remaining" <span class="ss-tog" id="sg-rt-tog">▾</span></div>
+  <div class="ss-body collapsed" id="sg-rt">
+    <div class="stip">The countdown text below the Plan Type badge. Shows time left in the fast (or time over goal).</div>
+    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtX',-2)">−</button><span class="step-val" id="sv-rtX">0</span><button class="step-btn" onclick="stepSetting('rtX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('rtY',-2)">−</button><span class="step-val" id="sv-rtY">0</span><button class="step-btn" onclick="stepSetting('rtY',2)">+</button></div></div>
+  </div>
+
+  <!-- ③ Fasting Start Time label -->
+  <div class="ss" onclick="togSS('sg-fsl')">③ Fasting Start Time — label text <span class="ss-tog" id="sg-fsl-tog">▾</span></div>
+  <div class="ss-body collapsed" id="sg-fsl">
+    <div class="stip">The small grey "Fasting start time" caption above the daily time. Controls its size and position.</div>
+    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslSize',-1)">−</button><span class="step-val" id="sv-fslSize">11</span><button class="step-btn" onclick="stepSetting('fslSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslX',-2)">−</button><span class="step-val" id="sv-fslX">0</span><button class="step-btn" onclick="stepSetting('fslX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fslY',-2)">−</button><span class="step-val" id="sv-fslY">0</span><button class="step-btn" onclick="stepSetting('fslY',2)">+</button></div></div>
+  </div>
+
+  <!-- ④ Daily Starting Time -->
+  <div class="ss" onclick="togSS('sg-dst')">④ Daily Starting Time — "Daily, hh:mm AM/PM" <span class="ss-tog" id="sg-dst-tog">▾</span></div>
+  <div class="ss-body collapsed" id="sg-dst">
+    <div class="stip">The tappable time value (e.g. "Daily, 8:00 PM ✏️"). Tap it in the app to change your daily fasting start time.</div>
+    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstSize',-1)">−</button><span class="step-val" id="sv-dstSize">15</span><button class="step-btn" onclick="stepSetting('dstSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift right/left (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstX',-2)">−</button><span class="step-val" id="sv-dstX">0</span><button class="step-btn" onclick="stepSetting('dstX',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Shift down/up (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('dstY',-2)">−</button><span class="step-val" id="sv-dstY">0</span><button class="step-btn" onclick="stepSetting('dstY',2)">+</button></div></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-charts')">Charts &amp; Stats <span class="ss-tog" id="sg-charts-tog">▾</span></div>
   <div class="ss-body" id="sg-charts">
     <div class="stip">Controls graphs on the Dashboard tab.</div>
-    <div class="srow"><span class="slv">Plan badge font size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
-    <div class="stip">Size of the "16:8 ›" button text in the Fasting widget.</div>
     <div class="srow"><span class="slv">Chart height</span><select class="ssel" id="s-chh" onchange="saveCfg('chartH',this.value);applyUI();setTimeout(drawAllCharts,80)"><option value="120px">Compact</option><option value="150px">Normal</option><option value="200px">Tall</option></select></div>
     <div class="srow"><span class="slv">Chart bar style</span><select class="ssel" id="s-cbs" onchange="saveCfg('chartBarStyle',this.value);setTimeout(drawAllCharts,80)"><option value="square">Square</option><option value="rounded">Rounded</option><option value="pill">Pill</option></select></div>
   </div>
@@ -634,7 +656,10 @@ input,select,textarea{color-scheme:light dark}
     <button class="bdanger" onclick="confirmWipe()">Wipe all data</button>
   </div>
 
-  <button class="btns" onclick="closeMo('mo-settings')" style="margin-top:12px">Done</button>
+  <div style="position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 0;margin:10px -18px -26px;display:flex;gap:8px;align-items:center;padding-left:18px;padding-right:18px">
+    <button class="btnp" onclick="closeMo('mo-settings')" style="margin:0;flex:1;padding:11px">Done</button>
+    <button class="btns" onclick="G('mo-settings').scrollTop=0" style="margin:0;padding:11px;width:auto;flex:none;font-size:12px">↑ Top</button>
+  </div>
 </div></div>
 
 <div class="mov hidden" id="mo-import"><div class="modal"><div class="mdrag"></div><div class="mtitle">Import / Restore</div>
@@ -742,7 +767,8 @@ let CF={
   username:'',pixelRange:'3M',customIcon:null,
   arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,
   arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,
-  fssLblSize:11,fssValSize:15,fssMt:6,fssX:0,
+  fslSize:11,dstSize:15,
+  ptX:0,ptY:0,rtX:0,rtY:0,fslX:0,fslY:0,dstX:0,dstY:0,
   logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,
   accentColor:null,
   animInterval:10,
@@ -875,13 +901,8 @@ function fssHTML(){
   const[h,m]=CF.fastStartTime.split(':').map(Number);
   const tf=CF.timeFormat,h12=(h%12)||12,ap=h>=12?'PM':'AM';
   const ts=tf==='12h'?`${h12}:${String(m).padStart(2,'0')} ${ap}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-  return `<div class="fss">
-    <div class="fss-l">Fasting start time</div>
-    <div style="display:inline-flex;align-items:center;gap:4px;cursor:pointer" onclick="openSTModal()">
-      <div class="fss-t" id="fsstd">Daily, ${ts}</div>
-      <span style="font-size:12px;color:var(--tx2)">\u270f\ufe0f</span>
-    </div>
-  </div>`;
+  return `<div class="fsl">Fasting start time</div>
+<div class="dst" onclick="openSTModal()"><span id="fsstd">Daily, ${ts}</span><span style="font-size:11px;opacity:.6">\u270f\ufe0f</span></div>`;
 }
 function buildArcSVG(){
   const cont=G('arc-container');if(!cont)return;
@@ -935,10 +956,16 @@ const STEP_DEFS={
   arcStartLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
   arcEndLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
-  fssLblSize:{min:8,max:20,step:1,t:'px',apply:()=>{applyUI();buildArcSVG();updateFastUI();}},
-  fssValSize:{min:10,max:32,step:1,t:'px',apply:()=>{applyUI();buildArcSVG();updateFastUI();}},
-  fssMt:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
-  fssX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
+  ptX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
+  ptY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
+  rtX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
+  rtY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
+  fslSize:{min:8,max:22,step:1,t:'px',apply:()=>{applyUI();}},
+  fslX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
+  fslY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
+  dstSize:{min:8,max:32,step:1,t:'px',apply:()=>{applyUI();}},
+  dstX:{min:-80,max:80,step:2,t:'px',apply:()=>{applyUI();}},
+  dstY:{min:-60,max:60,step:2,t:'px',apply:()=>{applyUI();}},
   logTextSize:{min:10,max:20,step:1,t:'px',apply:()=>{applyUI();}},
   planNameSize:{min:11,max:26,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
   planDescSize:{min:8,max:16,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
@@ -995,10 +1022,12 @@ function applyUI(){
   r.setProperty('--arc-size',arcPx+'px');
   r.setProperty('--arc-text-y',CF.arcTextY||'35%');
   r.setProperty('--arc-text-size',CF.arcTextSize||'13px');
-  r.setProperty('--fss-lbl-size',(CF.fssLblSize||11)+'px');
-  r.setProperty('--fss-val-size',(CF.fssValSize||15)+'px');
-  r.setProperty('--fss-mt',(CF.fssMt!=null?CF.fssMt:6)+'px');
-  r.setProperty('--fss-x',(CF.fssX||0)+'px');
+  r.setProperty('--fsl-size',(CF.fslSize||CF.fssLblSize||11)+'px');
+  r.setProperty('--dst-size',(CF.dstSize||CF.fssValSize||15)+'px');
+  r.setProperty('--pt-x',(CF.ptX||0)+'px');r.setProperty('--pt-y',(CF.ptY||0)+'px');
+  r.setProperty('--rt-x',(CF.rtX||0)+'px');r.setProperty('--rt-y',(CF.rtY||0)+'px');
+  r.setProperty('--fsl-x',(CF.fslX||0)+'px');r.setProperty('--fsl-y',(CF.fslY||0)+'px');
+  r.setProperty('--dst-x',(CF.dstX||0)+'px');r.setProperty('--dst-y',(CF.dstY||0)+'px');
   r.setProperty('--log-text-size',(CF.logTextSize||13)+'px');
   r.setProperty('--plan-shape',(CF.planShapeVal||8)+'px');
   r.setProperty('--plan-name-size',(CF.planNameSize||16)+'px');
@@ -1040,7 +1069,18 @@ function clearIcon(){
 }
 
 // MODALS
-function openMo(id){const e=G(id);if(e){e.classList.remove('hidden');e.scrollTop=0}}
+let _settingsScroll=0;let _settingsOpened=false;
+function openMo(id){
+  const e=G(id);if(!e)return;
+  e.classList.remove('hidden');
+  if(id==='mo-settings'){
+    if(!_settingsOpened){e.scrollTop=0;_settingsOpened=true;}
+    else{requestAnimationFrame(()=>{e.scrollTop=_settingsScroll;});}
+    e.onscroll=()=>{_settingsScroll=e.scrollTop;};
+  }else{
+    e.scrollTop=0;
+  }
+}
 function closeMo(id){const e=G(id);if(e)e.classList.add('hidden')}
 document.addEventListener('click',e=>{
   if(e.target.classList.contains('mov')&&!e.target.querySelector('.cimod'))
@@ -1504,8 +1544,10 @@ function openSettings(){
   sv('arcTextY',parseInt(CF.arcTextY||'35'));sv('arcTextSize',parseInt(CF.arcTextSize||'13'));
   sv('arcStartLblSize',CF.arcStartLblSize||8);sv('arcStartLblDist',CF.arcStartLblDist!=null?CF.arcStartLblDist:8);
   sv('arcEndLblSize',CF.arcEndLblSize||8);sv('arcEndLblDist',CF.arcEndLblDist!=null?CF.arcEndLblDist:8);
-  sv('fssLblSize',CF.fssLblSize||11);sv('fssValSize',CF.fssValSize||15);
-  sv('fssMt',CF.fssMt!=null?CF.fssMt:6);sv('fssX',CF.fssX||0);
+  sv('ptX',CF.ptX||0);sv('ptY',CF.ptY||0);
+  sv('rtX',CF.rtX||0);sv('rtY',CF.rtY||0);
+  sv('fslSize',CF.fslSize||CF.fssLblSize||11);sv('fslX',CF.fslX||0);sv('fslY',CF.fslY||0);
+  sv('dstSize',CF.dstSize||CF.fssValSize||15);sv('dstX',CF.dstX||0);sv('dstY',CF.dstY||0);
   sv('logTextSize',CF.logTextSize||13);
   sv('planNameSize',CF.planNameSize||16);sv('planDescSize',CF.planDescSize||10);
   sel('s-plan-shape',String(CF.planShapeVal||8));
@@ -1553,7 +1595,7 @@ function doImport(){
 function confirmWipe(){
   showConfirm('Wipe ALL data?','Permanent - cannot be undone.',()=>{
     localStorage.clear();
-    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fssLblSize:11,fssValSize:15,fssMt:6,fssX:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
+    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fslSize:11,dstSize:15,ptX:0,ptY:0,rtX:0,rtY:0,fslX:0,fslY:0,dstX:0,dstY:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
     const db=G('dev-bar');if(db)db.classList.remove('show');
