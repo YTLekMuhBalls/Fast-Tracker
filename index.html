@@ -1079,7 +1079,7 @@ function importFile(input){
       const d=JSON.parse(e.target.result);
       showConfirm('Restore backup?','This will replace all current data.',()=>{
         if(d.cfg)Object.assign(CF,d.cfg);if(d.cps)CPs=d.cps;
-        if(d.fl)sFL(d.fl);if(d.wl)sWL(d.wl);if(d.wal)sWaL(d.wal);
+        if(d.fl){const fl=d.fl;fl.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));sFL(fl);}if(d.wl)sWL(d.wl);if(d.wal)sWaL(d.wal);
         saveCFG();saveCPs();applyTheme(CF.theme||'auto');applyUI();
         initCustomIcon();buildArcSVG();renderAll();toast('Restored!');
       });
@@ -1107,7 +1107,7 @@ function importOtherApp(input){
     const summary=parts.join(', ')+(errors?' ('+errors+' skipped)':'');
     showConfirm('Import from '+detected+'?',summary+'\nExisting records kept, duplicates skipped.',()=>{
       let addedF=0,addedW=0,addedWa=0;
-      if(hasF){const fl=getFL();const ex=new Set(fl.map(l=>l.startTime));allLogs.forEach(l=>{if(!ex.has(l.startTime)){fl.push(l);addedF++;}});sFL(fl);}
+      if(hasF){const fl=getFL();const ex=new Set(fl.map(l=>l.startTime));allLogs.forEach(l=>{if(!ex.has(l.startTime)){fl.push(l);addedF++;}});fl.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));sFL(fl);}
       if(hasW){const wl=getWL();const ex=new Set(wl.map(l=>l.ts));allWeights.forEach(l=>{if(!ex.has(l.ts)){wl.push(l);addedW++;}});sWL(wl);}
       if(hasWa){const wal=getWaL();const ex=new Set(wal.map(l=>l.ts));allWater.forEach(l=>{if(!ex.has(l.ts)){wal.push(l);addedWa++;}});sWaL(wal);}
       renderAll();
@@ -1829,7 +1829,7 @@ function doImport(){
     const d=JSON.parse(raw);
     showConfirm('Restore backup?','Replaces all current data.',()=>{
       if(d.cfg)Object.assign(CF,d.cfg);if(d.cps)CPs=d.cps;
-      if(d.fl)sFL(d.fl);if(d.wl)sWL(d.wl);if(d.wal)sWaL(d.wal);
+      if(d.fl){const fl=d.fl;fl.sort((a,b)=>new Date(a.startTime)-new Date(b.startTime));sFL(fl);}if(d.wl)sWL(d.wl);if(d.wal)sWaL(d.wal);
       saveCFG();saveCPs();applyTheme(CF.theme||'auto');applyUI();
       initCustomIcon();closeMo('mo-import');renderAll();toast('Restored!');
     });
