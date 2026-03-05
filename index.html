@@ -59,7 +59,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all}
 .fbadge:active{opacity:.7}
 .atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px}
-.fss{text-align:center;margin-top:var(--fss-mt,6px);margin-left:var(--fss-x,0px)}
+.fss{text-align:center;margin-top:var(--fss-mt,6px);margin-left:var(--fss-x,0px);pointer-events:all}
 .fss-l{font-size:var(--fss-lbl-size,11px);color:var(--tx2);margin-bottom:2px}
 .fss-t{font-size:var(--fss-val-size,15px);font-weight:700;cursor:pointer;color:var(--tx)}.fss-t:active{opacity:.7}
 /* greeting */
@@ -80,6 +80,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .ss{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 3px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .ss-tog{font-size:13px;transition:transform .2s;display:inline-block}
 .ss-body.collapsed{display:none}
+.stip{font-size:11px;color:var(--tx2);margin:2px 0 5px;line-height:1.4;padding:0 2px}
 .irow{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--bd);font-size:13px}
 .ir-l{color:var(--tx2)}.ir-v{font-weight:500;color:var(--tx)}
 /* buttons */
@@ -131,6 +132,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .px-cell:active{transform:scale(.8)}
 .px-l1{background:#FFE8D6}.px-l2{background:#FFCBA0}.px-l3{background:#FFAB6A}
 .px-l4{background:#FF8C3A}.px-l5{background:#FF6B2B}.px-done{background:#E8520A;box-shadow:0 0 0 1.5px rgba(255,107,43,.3)}
+.px-dim{opacity:.22!important;pointer-events:none;cursor:default}
 .px-lbl{font-size:9px;color:var(--tx2);display:flex;align-items:center;justify-content:flex-end;padding-right:3px;background:transparent!important;user-select:none}
 .px-mlbl{font-size:8px;color:var(--tx2);text-align:center;background:transparent!important;display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none}
 /* pixel tooltip */
@@ -188,7 +190,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .liv{font-weight:600;font-size:var(--log-text-size,13px);color:var(--tx)}.lid{font-size:calc(var(--log-text-size,13px) - 2px);color:var(--tx2)}
 .li-acts{display:flex;gap:4px;flex-shrink:0;margin-left:7px}
 .liedit{color:var(--bl);font-size:calc(var(--log-text-size,13px) - 2px);cursor:pointer;padding:4px 10px;background:var(--card2);border-radius:7px;font-weight:600}
-.lidel{color:var(--re);font-size:calc(var(--log-text-size,13px) + 6px);cursor:pointer;padding:0 4px;line-height:1}
+.btn-close{color:var(--tx2);font-size:12px;font-weight:600;padding:5px 12px;border:1.5px solid var(--bd);border-radius:10px;background:none;cursor:pointer}
+.lidel{color:var(--re);font-size:calc(var(--log-text-size,13px) - 1px);cursor:pointer;padding:4px 10px;border:1.5px solid var(--re);border-radius:8px;font-weight:600;line-height:1;background:none}
 /* toast */
 #toast{position:fixed;top:calc(60px + var(--sat));left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(0,0,0,.82);color:#fff;padding:8px 18px;border-radius:22px;font-size:13px;z-index:999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;max-width:90%;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -360,6 +363,7 @@ input,select,textarea{color-scheme:light dark}
     <div class="ctabs"><button class="ctab active" onclick="setPeriod('f','7d',this)">7d</button><button class="ctab" onclick="setPeriod('f','31d',this)">31d</button><button class="ctab" onclick="setPeriod('f','12m',this)">12m</button></div>
     <div class="ch-wrap" style="height:var(--chart-h)"><canvas id="ch-f"></canvas><div class="ch-tip" id="tip-f"></div></div>
     <button class="btns" onclick="openFLogs()" style="margin-top:7px">View all records</button>
+    <button class="btns" onclick="openMF(null)" style="margin-top:4px">+ Log past fast</button>
   </div>
   <!-- Weight chart -->
   <div class="card">
@@ -547,48 +551,62 @@ input,select,textarea{color-scheme:light dark}
 
   <div class="ss" onclick="togSS('sg-arc')">Fasting Arc / Circle <span class="ss-tog" id="sg-arc-tog">▾</span></div>
   <div class="ss-body" id="sg-arc">
-    <div class="srow"><span class="slv">Shape</span><select class="ssel" id="s-arc-shape" onchange="saveCfg('arcShape',this.value);buildArcSVG();updateFastUI()"><option value="arc">Arc (semi)</option><option value="circle">Full circle</option></select></div>
-    <div class="srow"><span class="slv">Size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcSize',-1)">−</button><span class="step-val" id="sv-arcSize">10</span><button class="step-btn" onclick="stepSetting('arcSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Stroke width</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcWidth',-1)">−</button><span class="step-val" id="sv-arcWidth">12</span><button class="step-btn" onclick="stepSetting('arcWidth',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Text Y pos (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Start label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblSize',-1)">−</button><span class="step-val" id="sv-arcStartLblSize">8</span><button class="step-btn" onclick="stepSetting('arcStartLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Start label dist</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblDist',-2)">−</button><span class="step-val" id="sv-arcStartLblDist">8</span><button class="step-btn" onclick="stepSetting('arcStartLblDist',2)">+</button></div></div>
-    <div class="srow"><span class="slv">End label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblSize',-1)">−</button><span class="step-val" id="sv-arcEndLblSize">8</span><button class="step-btn" onclick="stepSetting('arcEndLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">End label dist</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-2)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',2)">+</button></div></div>
+    <div class="stip">Controls the progress ring shown in the Fasting widget.</div>
+    <div class="srow"><span class="slv">Shape</span><select class="ssel" id="s-arc-shape" onchange="saveCfg('arcShape',this.value);buildArcSVG();updateFastUI()"><option value="arc">Arc (open half-ring)</option><option value="circle">Full circle</option></select></div>
+    <div class="srow"><span class="slv">Overall size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcSize',-1)">−</button><span class="step-val" id="sv-arcSize">10</span><button class="step-btn" onclick="stepSetting('arcSize',1)">+</button></div></div>
+    <div class="stip">How large the ring appears (1 = smallest, 20 = largest).</div>
+    <div class="srow"><span class="slv">Ring thickness</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcWidth',-1)">−</button><span class="step-val" id="sv-arcWidth">12</span><button class="step-btn" onclick="stepSetting('arcWidth',1)">+</button></div></div>
+    <div class="stip">Thickness of the ring stroke in pixels.</div>
+    <div class="srow"><span class="slv">Overlay Y position (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
+    <div class="stip">Vertical position of the badge + timer text overlay inside the ring. Lower % = higher up.</div>
+    <div class="srow"><span class="slv">Remaining-time text size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
+    <div class="stip">Font size of the "Xh Ym Zs remaining" text shown below the badge.</div>
+    <div class="srow"><span class="slv">"Start" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblSize',-1)">−</button><span class="step-val" id="sv-arcStartLblSize">8</span><button class="step-btn" onclick="stepSetting('arcStartLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"Start" label distance</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblDist',-2)">−</button><span class="step-val" id="sv-arcStartLblDist">8</span><button class="step-btn" onclick="stepSetting('arcStartLblDist',2)">+</button></div></div>
+    <div class="stip">Size and distance from the left tip of the arc for the "Start" text. Arc mode only.</div>
+    <div class="srow"><span class="slv">"End" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblSize',-1)">−</button><span class="step-val" id="sv-arcEndLblSize">8</span><button class="step-btn" onclick="stepSetting('arcEndLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"End" label distance</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-2)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',2)">+</button></div></div>
+    <div class="stip">Size and distance from the right tip of the arc for the "End" text. Arc mode only.</div>
   </div>
 
-  <div class="ss" onclick="togSS('sg-fsslbl')">Fasting Start Time Label <span class="ss-tog" id="sg-fsslbl-tog">▾</span></div>
+  <div class="ss" onclick="togSS('sg-fsslbl')">Start Time Label (inside ring) <span class="ss-tog" id="sg-fsslbl-tog">▾</span></div>
   <div class="ss-body" id="sg-fsslbl">
-    <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">This section sits inside the arc overlay. Use Arc Text Y to move the whole block up/down, then use these offsets to fine-tune.</div>
-    <div class="srow"><span class="slv">Label size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Value size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">15</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Top gap (Y)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssMt',-2)">−</button><span class="step-val" id="sv-fssMt">6</span><button class="step-btn" onclick="stepSetting('fssMt',2)">+</button></div></div>
-    <div class="srow"><span class="slv">Horizontal shift (X)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssX',-2)">−</button><span class="step-val" id="sv-fssX">0</span><button class="step-btn" onclick="stepSetting('fssX',2)">+</button></div></div>
+    <div class="stip">The "Fasting start time / Daily hh:mm" section lives inside the ring overlay. Use the Overlay Y Position above to shift the entire block, then these controls to fine-tune.</div>
+    <div class="srow"><span class="slv">"Fasting start time" label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"Daily hh:mm" value size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">15</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Extra top gap</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssMt',-2)">−</button><span class="step-val" id="sv-fssMt">6</span><button class="step-btn" onclick="stepSetting('fssMt',2)">+</button></div></div>
+    <div class="stip">Gap between the remaining-time text above and this label block.</div>
+    <div class="srow"><span class="slv">Horizontal nudge</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssX',-2)">−</button><span class="step-val" id="sv-fssX">0</span><button class="step-btn" onclick="stepSetting('fssX',2)">+</button></div></div>
+    <div class="stip">Shift the label block left (negative) or right (positive) from center.</div>
   </div>
 
   <div class="ss" onclick="togSS('sg-charts')">Charts &amp; Stats <span class="ss-tog" id="sg-charts-tog">▾</span></div>
   <div class="ss-body" id="sg-charts">
-    <div class="srow"><span class="slv">Badge font size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
+    <div class="stip">Controls graphs on the Dashboard tab.</div>
+    <div class="srow"><span class="slv">Plan badge font size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
+    <div class="stip">Size of the "16:8 ›" button text in the Fasting widget.</div>
     <div class="srow"><span class="slv">Chart height</span><select class="ssel" id="s-chh" onchange="saveCfg('chartH',this.value);applyUI();setTimeout(drawAllCharts,80)"><option value="120px">Compact</option><option value="150px">Normal</option><option value="200px">Tall</option></select></div>
     <div class="srow"><span class="slv">Chart bar style</span><select class="ssel" id="s-cbs" onchange="saveCfg('chartBarStyle',this.value);setTimeout(drawAllCharts,80)"><option value="square">Square</option><option value="rounded">Rounded</option><option value="pill">Pill</option></select></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-pixels')">Fasting Pixels <span class="ss-tog" id="sg-pixels-tog">▾</span></div>
   <div class="ss-body" id="sg-pixels">
-    <div class="srow"><span class="slv">Pixel grid gap</span><select class="ssel" id="s-pxg" onchange="saveCfg('pxGap',this.value);applyUI();renderDash()"><option value="2px">Tight</option><option value="4px">Normal</option><option value="6px">Wide</option></select></div>
+    <div class="stip">The colored pixel grid on the Dashboard showing your fasting history at a glance.</div>
+    <div class="srow"><span class="slv">Gap between pixels</span><select class="ssel" id="s-pxg" onchange="saveCfg('pxGap',this.value);applyUI();renderDash()"><option value="2px">Tight</option><option value="4px">Normal</option><option value="6px">Wide</option></select></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-logs')">Log Lists <span class="ss-tog" id="sg-logs-tog">▾</span></div>
   <div class="ss-body" id="sg-logs">
-    <div class="srow"><span class="slv">Log text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('logTextSize',-1)">−</button><span class="step-val" id="sv-logTextSize">13</span><button class="step-btn" onclick="stepSetting('logTextSize',1)">+</button></div></div>
+    <div class="stip">Controls text size in the Fasting, Weight, and Water log record lists.</div>
+    <div class="srow"><span class="slv">Log text &amp; button size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('logTextSize',-1)">−</button><span class="step-val" id="sv-logTextSize">13</span><button class="step-btn" onclick="stepSetting('logTextSize',1)">+</button></div></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-plans')">Plans <span class="ss-tog" id="sg-plans-tog">▾</span></div>
   <div class="ss-body" id="sg-plans">
-    <div class="srow"><span class="slv">Card shape</span><select class="ssel" id="s-plan-shape" onchange="savePlanShape(this.value)"><option value="8">Squircle</option><option value="50">Circle</option></select></div>
-    <div class="srow"><span class="slv">Plan name size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planNameSize',-1)">−</button><span class="step-val" id="sv-planNameSize">16</span><button class="step-btn" onclick="stepSetting('planNameSize',1)">+</button></div></div>
-    <div class="srow"><span class="slv">Plan desc size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planDescSize',-1)">−</button><span class="step-val" id="sv-planDescSize">10</span><button class="step-btn" onclick="stepSetting('planDescSize',1)">+</button></div></div>
+    <div class="stip">Controls appearance of plan cards on the Plans tab and in the plan picker.</div>
+    <div class="srow"><span class="slv">Card shape</span><select class="ssel" id="s-plan-shape" onchange="savePlanShape(this.value)"><option value="8">Squircle (rounded square)</option><option value="50">Circle</option></select></div>
+    <div class="srow"><span class="slv">"16:8" name text size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planNameSize',-1)">−</button><span class="step-val" id="sv-planNameSize">16</span><button class="step-btn" onclick="stepSetting('planNameSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">"16h - 8h eat" desc text size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planDescSize',-1)">−</button><span class="step-val" id="sv-planDescSize">10</span><button class="step-btn" onclick="stepSetting('planDescSize',1)">+</button></div></div>
   </div>
 
   <div class="ss" onclick="togSS('sg-icon')">App Icon <span class="ss-tog" id="sg-icon-tog">▾</span></div>
@@ -636,16 +654,17 @@ input,select,textarea{color-scheme:light dark}
     <div class="mtitle" style="margin:0">Fasting Records</div>
     <div style="display:flex;gap:7px;align-items:center">
       <button class="btnsm" onclick="openMF(null)" style="flex:none;padding:4px 9px;font-size:11px">+ Log past</button>
-      <span onclick="closeMo('mo-flogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">x</span>
+      <button class="btn-close" onclick="closeMo('mo-flogs')">Close</button>
     </div>
   </div>
   <div id="fl-list"></div>
+  <button class="btns" onclick="openMF(null)" style="margin-top:10px">+ Log Past Fast</button>
 </div></div>
 
 <div class="mov hidden" id="mo-wtlogs"><div class="modal"><div class="mdrag"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="mtitle" style="margin:0">Weight Records</div>
-    <span onclick="closeMo('mo-wtlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">x</span>
+    <button class="btn-close" onclick="closeMo('mo-wtlogs')">Close</button>
   </div>
   <div id="wl-list"></div>
 </div></div>
@@ -653,7 +672,7 @@ input,select,textarea{color-scheme:light dark}
 <div class="mov hidden" id="mo-watlogs"><div class="modal"><div class="mdrag"></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="mtitle" style="margin:0">Water Records</div>
-    <span onclick="closeMo('mo-watlogs')" style="font-size:24px;cursor:pointer;color:var(--tx2);line-height:1">x</span>
+    <button class="btn-close" onclick="closeMo('mo-watlogs')">Close</button>
   </div>
   <div id="watl-list"></div>
 </div></div>
@@ -1537,7 +1556,8 @@ function confirmWipe(){
     CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fssLblSize:11,fssValSize:15,fssMt:6,fssX:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null,animInterval:10};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
-    saveCFG();saveCPs();saveCF();closeMo('mo-settings');applyTheme('auto');applyUI();renderAll();toast('Wiped');
+    const db=G('dev-bar');if(db)db.classList.remove('show');
+    saveCFG();saveCPs();saveCF();closeMo('mo-settings');applyTheme('auto');applyUI();buildArcSVG();renderAll();toast('Wiped');
   });
 }
 
@@ -1633,16 +1653,45 @@ function renderPx(fl){
     // cells
     for(let d=0;d<7;d++){const ldate=new Date(today);ldate.setDate(today.getDate()-dToMon+d);ldate.setHours(0,0,0,0);html+=makeCellHTML(ldate,ldate>today);}
   }else if(range==='1M'){
-    // 5 cols x 7 rows, fill width
-    const wk=5,labelW=22;
-    const cellSz=Math.min(54,Math.max(10,Math.floor((availW-labelW-wk*gap)/wk)));
-    grid.style.cssText=`display:grid;grid-template-columns:${labelW}px repeat(${wk},${cellSz}px);grid-template-rows:14px repeat(7,${cellSz}px);gap:${gap}px;width:fit-content;max-width:100%`;
+    // Calendar layout: 7 cols (Mon-Sun) x (4-5 rows = weeks), rows labelled "Wk N"
     pxNavEl.style.display='none';
-    const dow=today.getDay(),dToMon=dow===0?6:dow-1;
-    const startMon=new Date(today);startMon.setDate(today.getDate()-dToMon-(wk-1)*7);
+    const DAYS=7;
+    const labelW=26;// week label column width
+    const cellSz=Math.min(40,Math.max(8,Math.floor((availW-labelW-DAYS*gap)/DAYS)));
+    // Figure out the current month
+    const curMonth=today.getMonth(),curYear=today.getFullYear();
+    const firstOfMonth=new Date(curYear,curMonth,1);
+    const lastOfMonth=new Date(curYear,curMonth+1,0);
+    // Determine start of grid: Monday on or before 1st
+    const firstDow=firstOfMonth.getDay();// 0=Sun..6=Sat
+    const startOffset=firstDow===0?6:firstDow-1;// days to go back to reach Monday
+    const gridStart=new Date(firstOfMonth);gridStart.setDate(firstOfMonth.getDate()-startOffset);
+    // Determine end of grid: Sunday on or after last day
+    const lastDow=lastOfMonth.getDay();
+    const endOffset=lastDow===0?0:7-lastDow;
+    const gridEnd=new Date(lastOfMonth);gridEnd.setDate(lastOfMonth.getDate()+endOffset);
+    // Count weeks (rows)
+    const totalDays=Math.round((gridEnd-gridStart)/86400000)+1;
+    const numWeeks=Math.ceil(totalDays/7);
+    grid.style.cssText=`display:grid;grid-template-columns:${labelW}px repeat(${DAYS},${cellSz}px);grid-template-rows:14px repeat(${numWeeks},${cellSz}px);gap:${gap}px;width:fit-content;max-width:100%`;
+    // Header row: blank label + day names
     html+='<div class="px-lbl"></div>';
-    for(let w=0;w<wk;w++){const wd=new Date(startMon);wd.setDate(startMon.getDate()+w*7);html+=`<div class="px-mlbl">${w===0||wd.getDate()<=7?MO_[wd.getMonth()]:''}</div>`;}
-    for(let d=0;d<7;d++){html+=`<div class="px-lbl">${DLBLS[d]}</div>`;for(let w=0;w<wk;w++){const date=new Date(startMon);date.setDate(startMon.getDate()+w*7+d);date.setHours(0,0,0,0);html+=makeCellHTML(date,date>today);}}
+    for(let d=0;d<DAYS;d++)html+=`<div class="px-mlbl">${DLBLS[d]}</div>`;
+    // Week rows
+    for(let w=0;w<numWeeks;w++){
+      html+=`<div class="px-lbl" style="font-size:8px;color:var(--tx2);display:flex;align-items:center;justify-content:center">W${w+1}</div>`;
+      for(let d=0;d<DAYS;d++){
+        const date=new Date(gridStart);date.setDate(gridStart.getDate()+w*7+d);date.setHours(0,0,0,0);
+        const outOfMonth=date.getMonth()!==curMonth;
+        const future=date>today;
+        const log=dayMap[date.toDateString()];
+        let cls='px-cell';
+        if(!future&&log)cls+=' '+pxClass(log.actualH,log.plannedH);
+        if(outOfMonth)cls+=' px-dim';
+        const dateStr=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        html+=`<div class="${cls}" data-date="${dateStr}" data-lid="${log?log.id:''}" data-future="${future||outOfMonth?1:0}"></div>`;
+      }
+    }
   }else{
     // 3M uses 13 weeks. 6M/12M use pages of 13 weeks.
     const PAGE_WK=13;
@@ -1899,7 +1948,7 @@ function openFLogs(){
       <div class="lid">${fmtDate(l.startTime)} to ${fmtDate(l.endTime)}</div></div>
       <div class="li-acts">
         <span class="liedit" onclick="openMF('${l.id}')">Edit</span>
-        <span class="lidel" onclick="delLog('fl','${l.id}')">x</span>
+        <span class="lidel" onclick="delLog('fl','${l.id}')">Delete</span>
       </div>
     </div>`;
   }).join(''):'<div class="emsg">No records yet</div>';
@@ -1913,7 +1962,7 @@ function openWtLogs(){
       <div class="lid">${fmtDate(l.ts)}</div></div>
       <div class="li-acts">
         <span class="liedit" onclick="closeMo('mo-wtlogs');openLogWt('${l.id}')">Edit</span>
-        <span class="lidel" onclick="delLog('wl','${l.id}')">x</span>
+        <span class="lidel" onclick="delLog('wl','${l.id}')">Delete</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-wtlogs');
@@ -1926,7 +1975,7 @@ function openWatLogs(){
       <div class="lid">${fmtDate(l.ts)}</div></div>
       <div class="li-acts">
         <span class="liedit" onclick="closeMo('mo-watlogs');openEditWat('${l.id}')">Edit</span>
-        <span class="lidel" onclick="delLog('wal','${l.id}')">x</span>
+        <span class="lidel" onclick="delLog('wal','${l.id}')">Delete</span>
       </div>
     </div>`).join(''):'<div class="emsg">No records yet</div>';
   openMo('mo-watlogs');
