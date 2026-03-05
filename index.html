@@ -18,7 +18,9 @@
   --inp:#FFF;--inpbd:#E5E5EA;
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
   --badge-fs:17px;--px-gap:4px;--chart-h:150px;
-  --arc-size:400px;--arc-text-y:32%;--arc-text-size:13px;
+  --arc-size:400px;--arc-text-y:35%;--arc-text-size:13px;
+  --fss-lbl-size:11px;--fss-lbl-y:0px;--fss-val-size:20px;--fss-val-y:0px;
+  --log-text-size:13px;--plan-shape:8px;--plan-name-size:16px;--plan-desc-size:10px;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#1C1C1E;--card:#2C2C2E;--card2:#3A3A3C;--tx:#FFF;--tx2:#8E8E93;--bd:#3A3A3C;
@@ -41,8 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .ti{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px 0}
 .ti .ico{font-size:21px;line-height:1}.ti .lbl{font-size:10px;font-weight:500;color:var(--tx2)}
 .ti.active .lbl{color:var(--or)}
-/* greeting */
-.greet-bar{padding:8px 0 2px;font-size:14px;font-weight:600;color:var(--tx);min-height:0}
+/* greeting - now defined in arc section */
 /* cards */
 .card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:background .25s}
 .chdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
@@ -51,15 +52,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .ci-o{background:#FFF0E8}.ci-g{background:#E8F7EE}.ci-b{background:#E5F0FF}
 .chev{font-size:20px;color:var(--tx2);background:none;border:none;cursor:pointer;padding:2px 4px;line-height:1}
 /* arc */
-.awrap{display:flex;flex-direction:column;align-items:center;position:relative;margin:0 0 8px}
-.asvg{width:var(--arc-size,400px);height:auto;display:block;margin:0 auto}
-.acent{position:absolute;top:var(--arc-text-y,32%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
+.awrap{display:flex;flex-direction:column;align-items:center;margin:0 0 8px}
+.arc-container{position:relative;width:min(var(--arc-size,400px),100%)}
+.asvg{width:100%;height:auto;display:block}
+.acent{position:absolute;top:var(--arc-text-y,35%);left:50%;transform:translateX(-50%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
 .fbadge{background:var(--orl);color:var(--or);padding:5px 14px;border-radius:20px;font-weight:800;font-size:var(--badge-fs);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;pointer-events:all}
 .fbadge:active{opacity:.7}
-.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:180px}
+.atime{font-size:var(--arc-text-size,13px);color:var(--tx2);min-height:14px;line-height:1.3;text-align:center;max-width:200px}
 .fss{text-align:center;margin-bottom:7px}
-.fss-l{font-size:11px;color:var(--tx2);margin-bottom:1px}
-.fss-t{font-size:20px;font-weight:700;cursor:pointer;color:var(--tx)}.fss-t:active{opacity:.7}
+.fss-l{font-size:var(--fss-lbl-size,11px);color:var(--tx2);margin-bottom:1px;margin-top:var(--fss-lbl-y,0px)}
+.fss-t{font-size:var(--fss-val-size,20px);font-weight:700;cursor:pointer;color:var(--tx);margin-top:var(--fss-val-y,0px)}.fss-t:active{opacity:.7}
+/* greeting */
+.greet-bar{padding:8px 0 6px;font-size:14px;font-weight:600;color:var(--tx);min-height:0;margin-bottom:4px}
+/* water animation */
+@keyframes waterShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+.wtank-fill{position:relative;overflow:hidden;height:100%;min-width:0;border-radius:12px;transition:width .5s ease,background .3s}
+.wtank-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.3) 50%,transparent 100%);background-size:200% 100%;animation:waterShimmer 2.5s ease-in-out infinite;pointer-events:none}
+/* stepper */
+.stepper{display:flex;align-items:center;gap:5px}
+.step-btn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0}
+.step-btn:active{opacity:.6}
+.step-val{min-width:46px;text-align:center;font-size:12px;font-weight:600;color:var(--or)}
+/* settings groups */
+.ss{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 3px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.ss-tog{font-size:13px;transition:transform .2s;display:inline-block}
+.ss-body.collapsed{display:none}
 .irow{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--bd);font-size:13px}
 .ir-l{color:var(--tx2)}.ir-v{font-weight:500;color:var(--tx)}
 /* buttons */
@@ -83,17 +100,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .wtank-wrap{margin:9px 0 4px}
 .wtank-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .wtank{width:100%;height:42px;background:var(--bd);border-radius:12px;overflow:hidden;position:relative}
-.wtank-fill{height:100%;min-width:0;border-radius:12px;transition:width .5s ease,background .3s}
+/* .wtank-fill defined in arc section */
 .wtank-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;pointer-events:none;white-space:nowrap}
 .wzone-row{display:flex;justify-content:space-between;font-size:9px;color:var(--tx2);margin-top:3px;padding:0 2px}
 .wover-badge{display:inline-block;background:var(--yw);color:#fff;border-radius:8px;padding:2px 7px;font-size:10px;font-weight:700;margin-top:3px}
 /* plans */
 .stitle{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 7px}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.pcard{background:var(--card);border-radius:13px;padding:12px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:border-color .15s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.pcard{background:var(--card);border-radius:var(--plan-shape,8px);padding:12px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:border-color .15s,border-radius .2s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .pcard:active{opacity:.7}
 .pcard.sel{border-color:var(--or);background:var(--orl)}
-.pname{font-size:16px;font-weight:800;color:var(--tx)}.pdesc{font-size:10px;color:var(--tx2);margin-top:2px}
+.pname{font-size:var(--plan-name-size,16px);font-weight:800;color:var(--tx)}.pdesc{font-size:var(--plan-desc-size,10px);color:var(--tx2);margin-top:2px}
 .pcard.sel .pname{color:var(--or)}
 /* stats */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -163,12 +180,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;co
 .slv{font-size:13px;color:var(--tx)}.ssv{font-size:12px;color:var(--or);font-weight:500;cursor:pointer}
 .ssel{padding:5px 9px;border-radius:8px;border:1.5px solid var(--bd);font-size:12px;background:var(--card);color:var(--tx);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
 /* log list */
-.li{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)}
+.li{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);font-size:var(--log-text-size,13px)}
 .li-m{flex:1;min-width:0}
-.liv{font-weight:600;font-size:13px;color:var(--tx)}.lid{font-size:11px;color:var(--tx2)}
+.liv{font-weight:600;font-size:var(--log-text-size,13px);color:var(--tx)}.lid{font-size:calc(var(--log-text-size,13px) - 2px);color:var(--tx2)}
 .li-acts{display:flex;gap:4px;flex-shrink:0;margin-left:7px}
-.liedit{color:var(--bl);font-size:11px;cursor:pointer;padding:3px 8px;background:var(--card2);border-radius:7px;font-weight:600}
-.lidel{color:var(--re);font-size:20px;cursor:pointer;padding:0 3px;line-height:1}
+.liedit{color:var(--bl);font-size:calc(var(--log-text-size,13px) - 2px);cursor:pointer;padding:4px 10px;background:var(--card2);border-radius:7px;font-weight:600}
+.lidel{color:var(--re);font-size:calc(var(--log-text-size,13px) + 6px);cursor:pointer;padding:0 4px;line-height:1}
 /* toast */
 #toast{position:fixed;top:calc(60px + var(--sat));left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(0,0,0,.82);color:#fff;padding:8px 18px;border-radius:22px;font-size:13px;z-index:999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;max-width:90%;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -250,18 +267,10 @@ input,select,textarea{color-scheme:light dark}
 <div class="screen active" id="sc-today">
   <div class="greet-bar" id="greet-today"></div>
   <div class="card">
-    <div class="chdr"><div class="ctitle"><div class="ci ci-o">🔥</div>Fasting</div><button class="chev" onclick="goTab('dashboard')">›</button></div>
+    <div class="chdr" onclick="openFLogs()" style="cursor:pointer"><div class="ctitle"><div class="ci ci-o">🔥</div>Fasting</div><button class="chev" style="pointer-events:none">›</button></div>
     <div class="awrap">
-      <svg class="asvg" viewBox="0 0 200 116">
-        <path d="M14 102 A86 86 0 0 1 186 102" fill="none" stroke="var(--bd)" stroke-width="12" stroke-linecap="round"/>
-        <path id="ap" d="M14 102 A86 86 0 0 1 186 102" fill="none" stroke="var(--or)" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 269.7"/>
-        <circle id="adot" cx="14" cy="102" r="6" fill="var(--or)" opacity="0"/>
-        <text id="arc-start-lbl" x="14" y="114" text-anchor="middle" font-size="8" fill="var(--tx2)" font-family="-apple-system,sans-serif">Start</text>
-        <text id="arc-end-lbl" x="186" y="114" text-anchor="middle" font-size="8" fill="var(--tx2)" font-family="-apple-system,sans-serif">End</text>
-      </svg>
-      <div class="acent">
-        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">16:8</span> ›</button>
-        <div class="atime" id="atime">Not fasting</div>
+      <div class="arc-container" id="arc-container">
+        <!-- arc SVG injected by buildArcSVG() -->
       </div>
     </div>
     <div class="fss"><div class="fss-l">Fasting start time</div><div style="display:inline-flex;align-items:center;gap:5px;cursor:pointer" onclick="openSTModal()"><div class="fss-t" id="fsstd">Daily, PM 8:00</div><span style="font-size:14px;color:var(--tx2)">✏️</span></div></div>
@@ -327,7 +336,7 @@ input,select,textarea{color-scheme:light dark}
       <button class="px-rbtn" data-r="6M" onclick="setPxRange('6M',this)">6M</button>
       <button class="px-rbtn" data-r="12M" onclick="setPxRange('12M',this)">12M</button>
     </div>
-    <div class="px-outer"><div class="px-grid" id="px-grid"></div></div>
+    <div class="px-outer"><div id="px-nav" style="display:none"></div><div class="px-grid" id="px-grid"></div></div>
     <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;font-size:10px;color:var(--tx2)">
       <span><span style="display:inline-block;width:10px;height:10px;background:var(--bd);border-radius:2px;vertical-align:middle;margin-right:2px"></span>None</span>
       <span><span style="display:inline-block;width:10px;height:10px;background:#FFE8D6;border-radius:2px;vertical-align:middle;margin-right:2px"></span>1-20%</span>
@@ -388,7 +397,13 @@ input,select,textarea{color-scheme:light dark}
   <div class="ti" id="ti-dashboard" onclick="goTab('dashboard')"><div class="ico">📊</div><div class="lbl">Dashboard</div></div>
 </div>
 
-<!-- PIXEL TOOLTIP -->
+<!-- INFO MODAL (centered, for pixel taps and chart taps) -->
+<div class="mov cimov hidden" id="mo-info"><div class="modal cimod" style="max-width:310px;padding:20px 18px 16px">
+  <div id="info-body"></div>
+  <button class="btns" onclick="closeMo('mo-info')" style="margin-top:12px">Dismiss</button>
+</div></div>
+
+<!-- PIXEL TOOLTIP (kept as fallback, hidden) -->
 <div id="px-tip">
   <button id="px-tip-close" onclick="closePxTip()">✕</button>
   <div class="pt-row" style="padding-right:22px"><span class="pt-l">Date</span><span class="pt-v" id="pt-date">-</span></div>
@@ -488,80 +503,110 @@ input,select,textarea{color-scheme:light dark}
 </div></div>
 
 <div class="mov hidden" id="mo-settings"><div class="modal"><div class="mdrag"></div><div class="mtitle">Settings</div>
-  <div class="ss">Profile</div>
-  <div class="srow"><span class="slv">Your name</span><span class="ssv" id="s-name" onclick="oInp('Your name','text',saveUsername)">Set name</span></div>
-  <div class="srow"><span class="slv">Height</span><span class="ssv" id="s-ht" onclick="oInp('Height (cm)','number',saveHt)">Set height</span></div>
-  <div class="srow"><span class="slv">Weight unit</span><select class="ssel" id="s-wu" onchange="saveCfg('weightUnit',this.value);renderAll()"><option value="kg">kg</option><option value="lbs">lbs</option></select></div>
-  <div class="srow"><span class="slv">Start weight</span><span class="ssv" id="s-sw" onclick="oInp('Start weight','number',saveSW)">Set</span></div>
-  <div class="srow"><span class="slv">Target weight</span><span class="ssv" id="s-tw" onclick="oInp('Target weight','number',saveTW)">Set</span></div>
-  <div class="ss">Display</div>
-  <div class="srow"><span class="slv">Appearance</span><select class="ssel" id="s-theme" onchange="setTheme(this.value)"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
-  <div class="srow"><span class="slv">Time format</span><select class="ssel" id="s-tf" onchange="saveCfg('timeFormat',this.value);renderAll()"><option value="12h">12-hour</option><option value="24h">24-hour</option></select></div>
-  <div class="srow"><span class="slv">Date format</span><select class="ssel" id="s-df" onchange="saveCfg('dateFormat',this.value)"><option value="datetime">Date and time</option><option value="dateonly">Date only</option><option value="datetime_s">With seconds</option><option value="short">dd/mm</option><option value="full">Full</option></select></div>
-  <div class="srow"><span class="slv">Stats unit</span><select class="ssel" id="s-ftu" onchange="saveCfg('fastTimeUnit',this.value);renderDash()"><option value="h">Hours</option><option value="m">Minutes</option><option value="s">Seconds</option><option value="d">Days</option><option value="w">Weeks</option><option value="mo">Months</option></select></div>
-  <div class="ss">Water</div>
-  <div class="srow"><span class="slv">Daily goal</span><span class="ssv" id="s-wg" onclick="oInp('Water goal (ml)','number',saveWG)">2000 ml</span></div>
-  <div class="srow"><span class="slv">Quick-add increment</span>
-    <select class="ssel" id="s-wi" onchange="saveCfg('waterIncrement',parseInt(this.value))">
-      <option value="100">100ml</option><option value="150">150ml</option><option value="200">200ml</option><option value="250">250ml</option><option value="330">330ml</option><option value="500">500ml</option><option value="750">750ml</option><option value="1000">1L</option><option value="1500">1.5L</option><option value="2000">2L</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-profile')">Profile <span class="ss-tog" id="sg-profile-tog">▾</span></div>
+  <div class="ss-body" id="sg-profile">
+    <div class="srow"><span class="slv">Your name</span><span class="ssv" id="s-name" onclick="oInp('Your name','text',saveUsername)">Set name</span></div>
+    <div class="srow"><span class="slv">Height</span><span class="ssv" id="s-ht" onclick="oInp('Height (cm)','number',saveHt)">Set height</span></div>
+    <div class="srow"><span class="slv">Weight unit</span><select class="ssel" id="s-wu" onchange="saveCfg('weightUnit',this.value);renderAll()"><option value="kg">kg</option><option value="lbs">lbs</option></select></div>
+    <div class="srow"><span class="slv">Start weight</span><span class="ssv" id="s-sw" onclick="oInp('Start weight','number',saveSW)">Set</span></div>
+    <div class="srow"><span class="slv">Target weight</span><span class="ssv" id="s-tw" onclick="oInp('Target weight','number',saveTW)">Set</span></div>
   </div>
-  <div class="ss">Customise UI</div>
-  <div class="srow"><span class="slv">Badge font size</span>
-    <select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()">
-      <option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-display')">Display &amp; Appearance <span class="ss-tog" id="sg-display-tog">▾</span></div>
+  <div class="ss-body" id="sg-display">
+    <div class="srow"><span class="slv">Appearance</span><select class="ssel" id="s-theme" onchange="setTheme(this.value)"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+    <div class="srow"><span class="slv">Time format</span><select class="ssel" id="s-tf" onchange="saveCfg('timeFormat',this.value);renderAll()"><option value="12h">12-hour</option><option value="24h">24-hour</option></select></div>
+    <div class="srow"><span class="slv">Date format</span><select class="ssel" id="s-df" onchange="saveCfg('dateFormat',this.value)"><option value="datetime">Date and time</option><option value="dateonly">Date only</option><option value="datetime_s">With seconds</option><option value="short">dd/mm</option><option value="full">Full</option></select></div>
+    <div class="srow"><span class="slv">Stats unit</span><select class="ssel" id="s-ftu" onchange="saveCfg('fastTimeUnit',this.value);renderDash()"><option value="h">Hours</option><option value="m">Minutes</option><option value="s">Seconds</option><option value="d">Days</option><option value="w">Weeks</option><option value="mo">Months</option></select></div>
+    <div class="srow"><span class="slv">Accent color</span>
+      <div style="display:flex;align-items:center;gap:7px">
+        <input type="color" id="s-accent" value="#FF6B2B" oninput="saveAccentColor(this.value)" style="width:38px;height:28px;border:none;background:none;cursor:pointer;padding:0;border-radius:6px">
+        <button class="btnsm" onclick="resetAccentColor()" style="padding:4px 9px;font-size:10px;margin:0">Reset</button>
+      </div>
+    </div>
   </div>
-  <div class="srow"><span class="slv">Pixel grid gap</span>
-    <select class="ssel" id="s-pxg" onchange="saveCfg('pxGap',this.value);applyUI();renderDash()">
-      <option value="2px">Tight</option><option value="4px">Normal</option><option value="6px">Wide</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-water')">Water <span class="ss-tog" id="sg-water-tog">▾</span></div>
+  <div class="ss-body" id="sg-water">
+    <div class="srow"><span class="slv">Daily goal</span><span class="ssv" id="s-wg" onclick="oInp('Water goal (ml)','number',saveWG)">2000 ml</span></div>
+    <div class="srow"><span class="slv">Quick-add increment</span>
+      <select class="ssel" id="s-wi" onchange="saveCfg('waterIncrement',parseInt(this.value))">
+        <option value="100">100ml</option><option value="150">150ml</option><option value="200">200ml</option><option value="250">250ml</option><option value="330">330ml</option><option value="500">500ml</option><option value="750">750ml</option><option value="1000">1L</option><option value="1500">1.5L</option><option value="2000">2L</option>
+      </select>
+    </div>
   </div>
-  <div class="srow"><span class="slv">Chart height</span>
-    <select class="ssel" id="s-chh" onchange="saveCfg('chartH',this.value);applyUI();setTimeout(drawAllCharts,80)">
-      <option value="120px">Compact</option><option value="150px">Normal</option><option value="200px">Tall</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-arc')">Fasting Arc / Circle <span class="ss-tog" id="sg-arc-tog">▾</span></div>
+  <div class="ss-body" id="sg-arc">
+    <div class="srow"><span class="slv">Shape</span><select class="ssel" id="s-arc-shape" onchange="saveCfg('arcShape',this.value);buildArcSVG();updateFastUI()"><option value="arc">Arc (semi)</option><option value="circle">Full circle</option></select></div>
+    <div class="srow"><span class="slv">Size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcSize',-1)">−</button><span class="step-val" id="sv-arcSize">10</span><button class="step-btn" onclick="stepSetting('arcSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Stroke width</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcWidth',-1)">−</button><span class="step-val" id="sv-arcWidth">12</span><button class="step-btn" onclick="stepSetting('arcWidth',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Text Y pos (%)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextY',-1)">−</button><span class="step-val" id="sv-arcTextY">35</span><button class="step-btn" onclick="stepSetting('arcTextY',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcTextSize',-1)">−</button><span class="step-val" id="sv-arcTextSize">13</span><button class="step-btn" onclick="stepSetting('arcTextSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Start label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblSize',-1)">−</button><span class="step-val" id="sv-arcStartLblSize">8</span><button class="step-btn" onclick="stepSetting('arcStartLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Start label dist</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcStartLblDist',-2)">−</button><span class="step-val" id="sv-arcStartLblDist">8</span><button class="step-btn" onclick="stepSetting('arcStartLblDist',2)">+</button></div></div>
+    <div class="srow"><span class="slv">End label size</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblSize',-1)">−</button><span class="step-val" id="sv-arcEndLblSize">8</span><button class="step-btn" onclick="stepSetting('arcEndLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">End label dist</span><div class="stepper"><button class="step-btn" onclick="stepSetting('arcEndLblDist',-2)">−</button><span class="step-val" id="sv-arcEndLblDist">8</span><button class="step-btn" onclick="stepSetting('arcEndLblDist',2)">+</button></div></div>
   </div>
-  <div class="srow"><span class="slv">Chart bar style</span>
-    <select class="ssel" id="s-cbs" onchange="saveCfg('chartBarStyle',this.value);setTimeout(drawAllCharts,80)">
-      <option value="square">Square</option><option value="rounded">Rounded</option><option value="pill">Pill</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-fsslbl')">Fasting Start Time Label <span class="ss-tog" id="sg-fsslbl-tog">▾</span></div>
+  <div class="ss-body" id="sg-fsslbl">
+    <div class="srow"><span class="slv">Label text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblSize',-1)">−</button><span class="step-val" id="sv-fssLblSize">11</span><button class="step-btn" onclick="stepSetting('fssLblSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Label Y offset</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssLblY',-2)">−</button><span class="step-val" id="sv-fssLblY">0</span><button class="step-btn" onclick="stepSetting('fssLblY',2)">+</button></div></div>
+    <div class="srow"><span class="slv">Value text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValSize',-1)">−</button><span class="step-val" id="sv-fssValSize">20</span><button class="step-btn" onclick="stepSetting('fssValSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Value Y offset</span><div class="stepper"><button class="step-btn" onclick="stepSetting('fssValY',-2)">−</button><span class="step-val" id="sv-fssValY">0</span><button class="step-btn" onclick="stepSetting('fssValY',2)">+</button></div></div>
   </div>
-  <div class="srow"><span class="slv">Arc size</span>
-    <select class="ssel" id="s-arc-sz" onchange="saveCfg('arcSize',parseInt(this.value));applyUI()">
-      <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 (default)</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-charts')">Charts &amp; Stats <span class="ss-tog" id="sg-charts-tog">▾</span></div>
+  <div class="ss-body" id="sg-charts">
+    <div class="srow"><span class="slv">Badge font size</span><select class="ssel" id="s-bfs" onchange="saveCfg('badgeFS',this.value);applyUI()"><option value="13px">Small</option><option value="17px">Normal</option><option value="20px">Large</option><option value="24px">XL</option></select></div>
+    <div class="srow"><span class="slv">Chart height</span><select class="ssel" id="s-chh" onchange="saveCfg('chartH',this.value);applyUI();setTimeout(drawAllCharts,80)"><option value="120px">Compact</option><option value="150px">Normal</option><option value="200px">Tall</option></select></div>
+    <div class="srow"><span class="slv">Chart bar style</span><select class="ssel" id="s-cbs" onchange="saveCfg('chartBarStyle',this.value);setTimeout(drawAllCharts,80)"><option value="square">Square</option><option value="rounded">Rounded</option><option value="pill">Pill</option></select></div>
   </div>
-  <div class="srow"><span class="slv">Arc text Y position</span>
-    <select class="ssel" id="s-arc-ty" onchange="saveCfg('arcTextY',this.value);applyUI()">
-      <option value="10%">10%</option><option value="15%">15%</option><option value="20%">20%</option><option value="25%">25%</option><option value="30%">30%</option><option value="32%">32% (default)</option><option value="35%">35%</option><option value="40%">40%</option><option value="45%">45%</option><option value="50%">50%</option><option value="55%">55%</option><option value="60%">60%</option><option value="65%">65%</option><option value="70%">70%</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-pixels')">Fasting Pixels <span class="ss-tog" id="sg-pixels-tog">▾</span></div>
+  <div class="ss-body" id="sg-pixels">
+    <div class="srow"><span class="slv">Pixel grid gap</span><select class="ssel" id="s-pxg" onchange="saveCfg('pxGap',this.value);applyUI();renderDash()"><option value="2px">Tight</option><option value="4px">Normal</option><option value="6px">Wide</option></select></div>
   </div>
-  <div class="srow"><span class="slv">Arc text size</span>
-    <select class="ssel" id="s-arc-ts" onchange="saveCfg('arcTextSize',this.value);applyUI()">
-      <option value="9px">9px</option><option value="10px">10px</option><option value="11px">11px</option><option value="12px">12px</option><option value="13px">13px (default)</option><option value="14px">14px</option><option value="15px">15px</option><option value="16px">16px</option><option value="18px">18px</option><option value="20px">20px</option>
-    </select>
+
+  <div class="ss" onclick="togSS('sg-logs')">Log Lists <span class="ss-tog" id="sg-logs-tog">▾</span></div>
+  <div class="ss-body" id="sg-logs">
+    <div class="srow"><span class="slv">Log text size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('logTextSize',-1)">−</button><span class="step-val" id="sv-logTextSize">13</span><button class="step-btn" onclick="stepSetting('logTextSize',1)">+</button></div></div>
   </div>
-  <div class="ss">App Icon</div>
-  <div style="font-size:11px;color:var(--tx2);margin-bottom:6px">Upload a custom home screen icon (re-add to home screen after).</div>
-  <img id="icon-preview" class="icon-preview" alt="Icon preview">
-  <div class="brow" style="margin-top:6px">
-    <button class="btnsm" onclick="G('icon-file').click()">Choose image</button>
-    <button class="btnsm" onclick="clearIcon()">Remove icon</button>
+
+  <div class="ss" onclick="togSS('sg-plans')">Plans <span class="ss-tog" id="sg-plans-tog">▾</span></div>
+  <div class="ss-body" id="sg-plans">
+    <div class="srow"><span class="slv">Card shape</span><select class="ssel" id="s-plan-shape" onchange="savePlanShape(this.value)"><option value="8">Squircle</option><option value="50">Circle</option></select></div>
+    <div class="srow"><span class="slv">Plan name size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planNameSize',-1)">−</button><span class="step-val" id="sv-planNameSize">16</span><button class="step-btn" onclick="stepSetting('planNameSize',1)">+</button></div></div>
+    <div class="srow"><span class="slv">Plan desc size (px)</span><div class="stepper"><button class="step-btn" onclick="stepSetting('planDescSize',-1)">−</button><span class="step-val" id="sv-planDescSize">10</span><button class="step-btn" onclick="stepSetting('planDescSize',1)">+</button></div></div>
   </div>
-  <input type="file" id="icon-file" accept="image/*" style="display:none" onchange="uploadIcon(this)">
-  <div class="ss">Developer</div>
-  <div class="srow"><span class="slv">Dev mode</span>
-    <select class="ssel" id="s-dev" onchange="setDevMode(this.value==='1')"><option value="0">Off</option><option value="1">On</option></select>
+
+  <div class="ss" onclick="togSS('sg-icon')">App Icon <span class="ss-tog" id="sg-icon-tog">▾</span></div>
+  <div class="ss-body" id="sg-icon">
+    <div style="font-size:11px;color:var(--tx2);margin-bottom:6px">Upload a custom home screen icon (re-add to home screen after).</div>
+    <img id="icon-preview" class="icon-preview" alt="Icon preview">
+    <div class="brow" style="margin-top:6px">
+      <button class="btnsm" onclick="G('icon-file').click()">Choose image</button>
+      <button class="btnsm" onclick="clearIcon()">Remove icon</button>
+    </div>
+    <input type="file" id="icon-file" accept="image/*" style="display:none" onchange="uploadIcon(this)">
   </div>
-  <div class="srow" id="srow-testpx" style="display:none"><span class="slv">Test pixels in widget</span>
-    <select class="ssel" id="s-testpx" onchange="saveCfg('testPixels',this.value==='1');renderDash()"><option value="0">Off</option><option value="1">On</option></select>
+
+  <div class="ss" onclick="togSS('sg-dev')">Developer <span class="ss-tog" id="sg-dev-tog">▾</span></div>
+  <div class="ss-body" id="sg-dev">
+    <div class="srow"><span class="slv">Dev mode</span><select class="ssel" id="s-dev" onchange="setDevMode(this.value==='1')"><option value="0">Off</option><option value="1">On</option></select></div>
+    <div class="srow" id="srow-testpx" style="display:none"><span class="slv">Test pixels in widget</span><select class="ssel" id="s-testpx" onchange="saveCfg('testPixels',this.value==='1');renderDash()"><option value="0">Off</option><option value="1">On</option></select></div>
   </div>
-  <div class="ss">Data</div>
-  <div style="font-size:11px;color:var(--tx2);margin-bottom:7px">Export to copy, paste to restore.</div>
-  <div class="brow"><button class="btnsm" onclick="exportData()">Export and Copy</button><button class="btnsm" onclick="openImport()">Import</button></div>
-  <button class="btns" onclick="openMF(null)">+ Log past fast</button>
-  <button class="bdanger" onclick="confirmWipe()">Wipe all data</button>
+
+  <div class="ss" onclick="togSS('sg-data')">Data <span class="ss-tog" id="sg-data-tog">▾</span></div>
+  <div class="ss-body" id="sg-data">
+    <div style="font-size:11px;color:var(--tx2);margin-bottom:7px">Export to copy, paste to restore.</div>
+    <div class="brow"><button class="btnsm" onclick="exportData()">Export and Copy</button><button class="btnsm" onclick="openImport()">Import</button></div>
+    <button class="btns" onclick="openMF(null)">+ Log past fast</button>
+    <button class="bdanger" onclick="confirmWipe()">Wipe all data</button>
+  </div>
+
   <button class="btns" onclick="closeMo('mo-settings')" style="margin-top:12px">Done</button>
 </div></div>
 
@@ -619,7 +664,7 @@ input,select,textarea{color-scheme:light dark}
 </div></div>
 
 <script>
-const ARC=269.7;
+// ARC_LEN and CIRCLE_LEN defined in buildArcSVG section
 const DAILY=[
   {type:'14:10',fast:14,eat:10,desc:'14h - 10h eat'},
   {type:'16:8',fast:16,eat:8,desc:'16h - 8h eat'},
@@ -667,13 +712,18 @@ let CF={
   theme:'auto',devMode:false,testPixels:false,
   badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',
   username:'',pixelRange:'3M',customIcon:null,
-  arcSize:10,arcTextY:'32%',arcTextSize:'13px',
+  arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,
+  arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,
+  fssLblSize:11,fssLblY:0,fssValSize:20,fssValY:0,
+  logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,
+  accentColor:null,
 };
 let CPs=[],curFast=null,timerInt=null;
 let TAB='today';
 let wInp=70,watInp=250,cpFH=14,tpH=8,tpM=0,tpAP='PM';
 let inpCb=null,confCb=null;
 let CP_={f:'7d',w:'7d',b:'7d',wat:'7d'};
+let pxPage=0;
 let devSpd=1,devOff=0,devInt=null;
 let GREET_MSG='';
 
@@ -775,11 +825,12 @@ function pickGreet(){
   GREET_MSG=pool[Math.floor(Math.random()*pool.length)];
 }
 function renderGreet(){
-  SET('greet-today',GREET_MSG);
-  SET('greet-dash',GREET_MSG);
+  const msg=GREET_MSG;const n=CF.username||'';
+  let html=msg;
+  if(n&&msg.includes(n))html=msg.replace(n,'<span style="color:var(--or);font-weight:800">'+n+'</span>');
   const gt=G('greet-today'),gd=G('greet-dash');
-  if(gt)gt.style.display=GREET_MSG?'block':'none';
-  if(gd)gd.style.display=GREET_MSG?'block':'none';
+  if(gt){gt.innerHTML=html||'';gt.style.display=msg?'block':'none';}
+  if(gd){gd.innerHTML=html||'';gd.style.display=msg?'block':'none';}
 }
 
 // THEME / UI
@@ -788,15 +839,135 @@ function applyTheme(t){
   else document.documentElement.setAttribute('data-theme',t);
 }
 function setTheme(t){CF.theme=t;saveCFG();applyTheme(t)}
+// ARC SVG BUILDER
+const ARC_LEN=Math.PI*86;
+const CIRCLE_LEN=2*Math.PI*86;
+function buildArcSVG(){
+  const cont=G('arc-container');if(!cont)return;
+  const isCircle=CF.arcShape==='circle';
+  const sw=CF.arcWidth||12;
+  const slSz=CF.arcStartLblSize||8;
+  const elSz=CF.arcEndLblSize||8;
+  const slD=CF.arcStartLblDist!=null?CF.arcStartLblDist:8;
+  const elD=CF.arcEndLblDist!=null?CF.arcEndLblDist:8;
+  const dotR=Math.max(4,Math.round(sw/2));
+  const ft=CF.fastType||'16:8';
+  if(isCircle){
+    cont.innerHTML=`
+      <svg class="asvg" id="arc-svg" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="86" fill="none" stroke="var(--bd)" stroke-width="${sw}" stroke-linecap="round"/>
+        <circle id="ap" cx="100" cy="100" r="86" fill="none" stroke="var(--or)" stroke-width="${sw}" stroke-linecap="round"
+          stroke-dasharray="0 ${CIRCLE_LEN.toFixed(1)}" style="stroke-dashoffset:${(CIRCLE_LEN*0.25).toFixed(1)};transform-origin:center;transform:rotate(-90deg)"/>
+        <circle id="adot" cx="100" cy="${14+sw/2}" r="${dotR}" fill="var(--or)" opacity="0"/>
+      </svg>
+      <div class="acent" id="arc-acent">
+        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">${ft}</span> \u203a</button>
+        <div class="atime" id="atime">Not fasting</div>
+      </div>`;
+  }else{
+    const slY=114+slD;const elY=114+elD;
+    const vbH=Math.max(120,Math.max(slY,elY)+Math.max(slSz,elSz)+4);
+    cont.innerHTML=`
+      <svg class="asvg" id="arc-svg" viewBox="0 0 200 ${vbH}">
+        <path d="M14 102 A86 86 0 0 1 186 102" fill="none" stroke="var(--bd)" stroke-width="${sw}" stroke-linecap="round"/>
+        <path id="ap" d="M14 102 A86 86 0 0 1 186 102" fill="none" stroke="var(--or)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="0 ${ARC_LEN.toFixed(1)}"/>
+        <circle id="adot" cx="14" cy="102" r="${dotR}" fill="var(--or)" opacity="0"/>
+        <text id="arc-start-lbl" x="14" y="${slY}" text-anchor="middle" font-size="${slSz}" fill="var(--tx2)" font-family="-apple-system,sans-serif">Start</text>
+        <text id="arc-end-lbl" x="186" y="${elY}" text-anchor="middle" font-size="${elSz}" fill="var(--tx2)" font-family="-apple-system,sans-serif">End</text>
+      </svg>
+      <div class="acent" id="arc-acent">
+        <button class="fbadge" id="ftbadge" onclick="openFTModal()"><span id="ftlbl">${ft}</span> \u203a</button>
+        <div class="atime" id="atime">Not fasting</div>
+      </div>`;
+  }
+}
+
+// STEPPER & GROUP TOGGLES
+const STEP_DEFS={
+  arcSize:{min:1,max:20,step:1,t:'n',apply:()=>{applyUI();}},
+  arcWidth:{min:4,max:24,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
+  arcTextY:{min:5,max:90,step:1,t:'pct',apply:()=>{applyUI();}},
+  arcTextSize:{min:8,max:32,step:1,t:'px',apply:()=>{applyUI();}},
+  arcStartLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
+  arcStartLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
+  arcEndLblSize:{min:5,max:20,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
+  arcEndLblDist:{min:-10,max:50,step:1,t:'n',apply:()=>{buildArcSVG();updateFastUI();}},
+  fssLblSize:{min:8,max:20,step:1,t:'px',apply:()=>{applyUI();}},
+  fssLblY:{min:-30,max:30,step:1,t:'px',apply:()=>{applyUI();}},
+  fssValSize:{min:12,max:32,step:1,t:'px',apply:()=>{applyUI();}},
+  fssValY:{min:-30,max:30,step:1,t:'px',apply:()=>{applyUI();}},
+  logTextSize:{min:10,max:20,step:1,t:'px',apply:()=>{applyUI();}},
+  planNameSize:{min:11,max:26,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
+  planDescSize:{min:8,max:16,step:1,t:'px',apply:()=>{applyUI();renderPlans();}},
+};
+function getStepVal(k){
+  const d=STEP_DEFS[k];const v=CF[k];
+  if(d.t==='px')return parseInt(v)||0;
+  if(d.t==='pct')return parseInt(v)||0;
+  return typeof v==='number'?v:parseInt(v)||0;
+}
+function setStepVal(k,n){
+  const d=STEP_DEFS[k];
+  if(d.t==='px')CF[k]=n+'px';
+  else if(d.t==='pct')CF[k]=n+'%';
+  else CF[k]=n;
+}
+function stepSetting(k,delta){
+  const d=STEP_DEFS[k];if(!d)return;
+  let v=getStepVal(k);
+  v=Math.max(d.min,Math.min(d.max,v+delta));
+  setStepVal(k,v);saveCFG();
+  const el=G('sv-'+k);if(el)el.textContent=v;
+  d.apply();
+}
+function togSS(id){
+  const body=G(id),tog=G(id+'-tog');
+  if(!body)return;
+  const collapsed=body.classList.toggle('collapsed');
+  if(tog)tog.textContent=collapsed?'\u25b8':'\u25be';
+}
+
+// INFO MODAL
+function showInfoModal(rows){
+  const body=G('info-body');if(!body)return;
+  body.innerHTML=rows.map(r=>`
+    <div style="display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid var(--bd)">
+      <span style="color:var(--tx2);font-size:12px;flex-shrink:0">${r.l}</span>
+      <span style="font-weight:600;color:var(--tx);font-size:12px;text-align:right">${r.v}</span>
+    </div>`).join('');
+  openMo('mo-info');
+}
+
+// ACCENT COLOR
+function saveAccentColor(v){CF.accentColor=v;saveCFG();applyUI();}
+function resetAccentColor(){CF.accentColor=null;saveCFG();applyUI();const el=G('s-accent');if(el)el.value='#FF6B2B';}
+function savePlanShape(v){CF.planShapeVal=parseInt(v)||8;saveCFG();applyUI();renderPlans();}
+
 function applyUI(){
   const r=document.documentElement.style;
   r.setProperty('--badge-fs',CF.badgeFS||'17px');
   r.setProperty('--px-gap',CF.pxGap||'4px');
   r.setProperty('--chart-h',CF.chartH||'150px');
-  const arcPx=Math.max(1,Math.min(20,CF.arcSize||10))*40;
+  const arcPx=Math.max(1,Math.min(20,CF.arcSize||9))*40;
   r.setProperty('--arc-size',arcPx+'px');
-  r.setProperty('--arc-text-y',CF.arcTextY||'32%');
+  r.setProperty('--arc-text-y',CF.arcTextY||'35%');
   r.setProperty('--arc-text-size',CF.arcTextSize||'13px');
+  r.setProperty('--fss-lbl-size',(CF.fssLblSize||11)+'px');
+  r.setProperty('--fss-lbl-y',(CF.fssLblY||0)+'px');
+  r.setProperty('--fss-val-size',(CF.fssValSize||20)+'px');
+  r.setProperty('--fss-val-y',(CF.fssValY||0)+'px');
+  r.setProperty('--log-text-size',(CF.logTextSize||13)+'px');
+  r.setProperty('--plan-shape',(CF.planShapeVal||8)+'px');
+  r.setProperty('--plan-name-size',(CF.planNameSize||16)+'px');
+  r.setProperty('--plan-desc-size',(CF.planDescSize||10)+'px');
+  if(CF.accentColor){
+    r.setProperty('--or',CF.accentColor);
+    const hx=CF.accentColor.replace('#','');
+    const rv=parseInt(hx.slice(0,2),16),gv=parseInt(hx.slice(2,4),16),bv=parseInt(hx.slice(4,6),16);
+    r.setProperty('--orl','rgba('+rv+','+gv+','+bv+',.12)');
+  }else{
+    r.removeProperty('--or');r.removeProperty('--orl');
+  }
 }
 
 // CUSTOM ICON
@@ -1021,23 +1192,31 @@ function updateFastUI(){
   const ap=G('ap'),ad=G('adot'),at=G('atime'),fb=G('fbtn'),ftl=G('ftlbl');
   if(!ap)return;
   if(ftl)ftl.textContent=CF.fastType;
+  const isCircle=CF.arcShape==='circle';
+  const totalLen=isCircle?CIRCLE_LEN:ARC_LEN;
   if(curFast){
     const n=NOW(),start=new Date(curFast.startTime);
     const elapsed=n-start,total=curFast.plannedH*3600000;
-    const prog=Math.min(elapsed/total,1),fill=ARC*prog;
-    ap.setAttribute('stroke-dasharray',`${fill} ${ARC}`);
+    const prog=Math.min(elapsed/total,1),fill=totalLen*prog;
+    ap.setAttribute('stroke-dasharray',`${fill} ${totalLen}`);
     const col=arcColor(prog);
     ap.style.stroke=col;
     ad.style.opacity='1';
-    const ang=Math.PI*(1-prog);
-    const cx=100+86*Math.cos(ang),cy=102-86*Math.sin(ang);
+    let cx,cy;
+    if(isCircle){
+      const ang=-Math.PI/2+prog*2*Math.PI;
+      cx=100+86*Math.cos(ang);cy=100+86*Math.sin(ang);
+    }else{
+      const ang=Math.PI*(1-prog);
+      cx=100+86*Math.cos(ang);cy=102-86*Math.sin(ang);
+    }
     ad.setAttribute('cx',cx);ad.setAttribute('cy',cy);ad.style.fill=col;
     const rem=total-elapsed;
     if(rem>0){const rh=Math.floor(rem/3600000),rm=Math.floor((rem%3600000)/60000),rs=Math.floor((rem%60000)/1000);at.textContent=`${rh}h ${rm}m ${rs}s remaining`;}
     else{const ov=Math.abs(rem),oh=Math.floor(ov/3600000),om=Math.floor((ov%3600000)/60000);at.textContent=`${oh}h ${om}m over goal`;}
     fb.textContent='End fast';fb.className='btnp stop';
   }else{
-    ap.setAttribute('stroke-dasharray',`0 ${ARC}`);ap.style.stroke='var(--bd)';
+    ap.setAttribute('stroke-dasharray',`0 ${totalLen}`);ap.style.stroke='var(--bd)';
     ad.style.opacity='0';at.textContent='Not fasting';fb.textContent='Start fasting';fb.className='btnp';
   }
   const ni=G('irnext'),ei=G('irend');if(!ni)return;
@@ -1109,8 +1288,8 @@ function renderCPL(id,inMo){
   if(!CPs.length){el.innerHTML='<div class="emsg">No custom plans yet</div>';return;}
   el.innerHTML=`<div class="pgrid">${CPs.map(p=>`<div class="pcard${CF.fastType===p.type?' sel':''}" onclick="${inMo?'selMo':'selPlan'}('${p.type}')"><div class="pname">${p.type}</div><div class="pdesc">${p.name}</div></div>`).join('')}</div>`;
 }
-function selPlan(type){CF.fastType=type;saveCFG();renderPlans();renderToday();updateFastUI();toast(`Plan: ${type}`);}
-function selMo(type){CF.fastType=type;saveCFG();closeMo('mo-ft');renderToday();updateFastUI();toast(`Plan: ${type}`);}
+function selPlan(type){CF.fastType=type;saveCFG();renderPlans();renderToday();buildArcSVG();updateFastUI();toast(`Plan: ${type}`);}
+function selMo(type){CF.fastType=type;saveCFG();closeMo('mo-ft');renderToday();buildArcSVG();updateFastUI();toast(`Plan: ${type}`);}
 function openFTModal(){renderPG('mopd',DAILY,true);renderPG('mopo',ONETIME,true);renderCPL('mopc',true);openMo('mo-ft');}
 
 // START TIME
@@ -1242,7 +1421,19 @@ function openSettings(){
   sel('s-theme',CF.theme||'auto');sel('s-dev',CF.devMode?'1':'0');
   sel('s-bfs',CF.badgeFS||'17px');sel('s-pxg',CF.pxGap||'4px');sel('s-chh',CF.chartH||'150px');
   sel('s-cbs',CF.chartBarStyle||'rounded');sel('s-testpx',CF.testPixels?'1':'0');
-  sel('s-arc-sz',String(CF.arcSize||10));sel('s-arc-ty',CF.arcTextY||'32%');sel('s-arc-ts',CF.arcTextSize||'13px');
+  sel('s-arc-shape',CF.arcShape||'arc');
+  // Stepper values
+  const sv=(k,v)=>{const e=G('sv-'+k);if(e)e.textContent=v;};
+  sv('arcSize',CF.arcSize||9);sv('arcWidth',CF.arcWidth||12);
+  sv('arcTextY',parseInt(CF.arcTextY||'35'));sv('arcTextSize',parseInt(CF.arcTextSize||'13'));
+  sv('arcStartLblSize',CF.arcStartLblSize||8);sv('arcStartLblDist',CF.arcStartLblDist!=null?CF.arcStartLblDist:8);
+  sv('arcEndLblSize',CF.arcEndLblSize||8);sv('arcEndLblDist',CF.arcEndLblDist!=null?CF.arcEndLblDist:8);
+  sv('fssLblSize',CF.fssLblSize||11);sv('fssLblY',CF.fssLblY||0);
+  sv('fssValSize',CF.fssValSize||20);sv('fssValY',CF.fssValY||0);
+  sv('logTextSize',CF.logTextSize||13);
+  sv('planNameSize',CF.planNameSize||16);sv('planDescSize',CF.planDescSize||10);
+  sel('s-plan-shape',String(CF.planShapeVal||8));
+  const ac=G('s-accent');if(ac)ac.value=CF.accentColor||'#FF6B2B';
   SET('s-ht',CF.height?`${CF.height} cm`:'Set height');
   SET('s-sw',CF.startWeight?`${CF.startWeight} ${CF.weightUnit}`:'Set');
   SET('s-tw',CF.targetWeight?`${CF.targetWeight} ${CF.weightUnit}`:'Set');
@@ -1285,7 +1476,7 @@ function doImport(){
 function confirmWipe(){
   showConfirm('Wipe ALL data?','Permanent - cannot be undone.',()=>{
     localStorage.clear();
-    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:10,arcTextY:'32%',arcTextSize:'13px'};
+    CF={fastType:'16:8',fastStartTime:'20:00',waterGoal:2000,waterIncrement:250,weightUnit:'kg',timeFormat:'12h',dateFormat:'datetime',fastTimeUnit:'h',height:null,startWeight:null,targetWeight:null,theme:'auto',devMode:false,testPixels:false,badgeFS:'17px',pxGap:'4px',chartH:'150px',chartBarStyle:'rounded',username:'',pixelRange:'3M',customIcon:null,arcSize:9,arcTextY:'35%',arcTextSize:'13px',arcShape:'arc',arcWidth:12,arcStartLblSize:8,arcStartLblDist:8,arcEndLblSize:8,arcEndLblDist:8,fssLblSize:11,fssLblY:0,fssValSize:20,fssValY:0,logTextSize:13,planShapeVal:8,planNameSize:16,planDescSize:10,accentColor:null};
     CPs=[];curFast=null;devOff=0;devSpd=1;clearInterval(devInt);devInt=null;
     if(timerInt){clearInterval(timerInt);timerInt=null;}
     saveCFG();saveCPs();saveCF();closeMo('mo-settings');applyTheme('auto');applyUI();renderAll();toast('Wiped');
@@ -1333,7 +1524,7 @@ function calcStreak(fl){
 
 // PIXEL RANGE
 function setPxRange(r,btn){
-  CF.pixelRange=r;saveCFG();
+  CF.pixelRange=r;saveCFG();pxPage=0;
   document.querySelectorAll('.px-rbtn').forEach(b=>b.classList.remove('act'));
   btn.classList.add('act');
   renderDash();
@@ -1352,89 +1543,97 @@ document.addEventListener('click',e=>{if(!e.target.closest('#px-tip')&&!e.target
 
 function renderPx(fl){
   const grid=G('px-grid');if(!grid)return;
-  const weekCount=PX_WEEKS[CF.pixelRange||'3M']||13;
-  
-  // Compute dynamic cell size based on available width
+  const range=CF.pixelRange||'3M';
   const gap=parseInt(CF.pxGap||'4px')||4;
-  const labelW=22;
   const availW=(grid.parentElement.offsetWidth||340)-2;
-  const cellSize=Math.min(36,Math.max(4,Math.floor((availW-labelW-weekCount*gap)/weekCount)));
-  const rowH=Math.min(36,Math.max(4,cellSize));
-  
-  grid.style.gridTemplateColumns=`${labelW}px repeat(${weekCount},${cellSize}px)`;
-  grid.style.gridTemplateRows=`14px repeat(7,${rowH}px)`;
-  grid.style.width='fit-content';
-  grid.style.maxWidth='100%';
-  grid.style.overflowX='hidden';
-
-  const dayMap={};
-  fl.forEach(l=>{
-    const ds=new Date(l.startTime).toDateString();
-    if(!dayMap[ds]||l.actualH>dayMap[ds].actualH)dayMap[ds]=l;
-  });
   const today=new Date(NOW());today.setHours(0,0,0,0);
-  const dow=today.getDay(),dToMon=dow===0?6:dow-1;
-  const startMon=new Date(today);startMon.setDate(today.getDate()-dToMon-(weekCount-1)*7);
+  const dayMap={};
+  fl.forEach(l=>{const ds=new Date(l.startTime).toDateString();if(!dayMap[ds]||l.actualH>dayMap[ds].actualH)dayMap[ds]=l;});
   const DLBLS=['Mo','Tu','We','Th','Fr','Sa','Su'];
   const MO_=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html='';
-  // header row
-  html+='<div class="px-lbl"></div>';
-  const stepM=weekCount>13?Math.ceil(weekCount/6):1;
-  for(let w=0;w<weekCount;w++){
-    const wd=new Date(startMon);wd.setDate(startMon.getDate()+w*7);
-    const showM=(w===0)||(wd.getDate()<=7&&w>0&&w%stepM===0);
-    html+=`<div class="px-mlbl">${showM?MO_[wd.getMonth()]:''}</div>`;
+
+  function makeCellHTML(date,future){
+    const log=dayMap[date.toDateString()];
+    let cls='px-cell';
+    if(!future&&log)cls+=' '+pxClass(log.actualH,log.plannedH);
+    const dateStr=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    return `<div class="${cls}" data-date="${dateStr}" data-lid="${log?log.id:''}" data-future="${future?1:0}"></div>`;
   }
-  // day rows
-  for(let d=0;d<7;d++){
-    html+=`<div class="px-lbl">${DLBLS[d]}</div>`;
-    for(let w=0;w<weekCount;w++){
-      const date=new Date(startMon);date.setDate(startMon.getDate()+w*7+d);date.setHours(0,0,0,0);
-      const isFuture=date>today;
-      const log=dayMap[date.toDateString()];
-      let cls='px-cell';
-      if(!isFuture&&log)cls+=' '+pxClass(log.actualH,log.plannedH);
-      const ds=date.toDateString();
-      const logId=log?log.id:'';
-      const dateStr=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-      html+=`<div class="${cls}" data-date="${dateStr}" data-lid="${logId}" data-future="${isFuture?1:0}"></div>`;
-    }
+
+  const pxNavEl=G('px-nav');
+  const needsNav=(range==='6M'||range==='12M');
+
+  if(range==='1W'){
+    // 7 days horizontal - 1 row x 7 columns, big cells
+    const cellSz=Math.min(44,Math.floor((availW-7*gap)/7));
+    grid.style.cssText=`display:grid;grid-template-columns:repeat(7,${cellSz}px);grid-template-rows:14px ${cellSz}px;gap:${gap}px;width:fit-content;max-width:100%`;
+    pxNavEl.style.display='none';
+    // header: day labels
+    const dow=today.getDay(),dToMon=dow===0?6:dow-1;
+    for(let d=0;d<7;d++){const ldate=new Date(today);ldate.setDate(today.getDate()-dToMon+d);html+=`<div class="px-mlbl">${DLBLS[d]}</div>`;}
+    // cells
+    for(let d=0;d<7;d++){const ldate=new Date(today);ldate.setDate(today.getDate()-dToMon+d);ldate.setHours(0,0,0,0);html+=makeCellHTML(ldate,ldate>today);}
+  }else if(range==='1M'){
+    // 5 cols x 7 rows, fill width
+    const wk=5,labelW=22;
+    const cellSz=Math.min(54,Math.max(10,Math.floor((availW-labelW-wk*gap)/wk)));
+    grid.style.cssText=`display:grid;grid-template-columns:${labelW}px repeat(${wk},${cellSz}px);grid-template-rows:14px repeat(7,${cellSz}px);gap:${gap}px;width:fit-content;max-width:100%`;
+    pxNavEl.style.display='none';
+    const dow=today.getDay(),dToMon=dow===0?6:dow-1;
+    const startMon=new Date(today);startMon.setDate(today.getDate()-dToMon-(wk-1)*7);
+    html+='<div class="px-lbl"></div>';
+    for(let w=0;w<wk;w++){const wd=new Date(startMon);wd.setDate(startMon.getDate()+w*7);html+=`<div class="px-mlbl">${w===0||wd.getDate()<=7?MO_[wd.getMonth()]:''}</div>`;}
+    for(let d=0;d<7;d++){html+=`<div class="px-lbl">${DLBLS[d]}</div>`;for(let w=0;w<wk;w++){const date=new Date(startMon);date.setDate(startMon.getDate()+w*7+d);date.setHours(0,0,0,0);html+=makeCellHTML(date,date>today);}}
+  }else{
+    // 3M uses 13 weeks. 6M/12M use pages of 13 weeks.
+    const PAGE_WK=13;
+    const totalWk=PX_WEEKS[range]||13;
+    const totalPages=Math.ceil(totalWk/PAGE_WK);
+    if(typeof pxPage==='undefined'||pxPage<0)pxPage=0;
+    pxPage=Math.min(pxPage,totalPages-1);
+    const labelW=22;
+    const cellSz=Math.min(36,Math.max(4,Math.floor((availW-labelW-PAGE_WK*gap)/PAGE_WK)));
+    grid.style.cssText=`display:grid;grid-template-columns:${labelW}px repeat(${PAGE_WK},${cellSz}px);grid-template-rows:14px repeat(7,${cellSz}px);gap:${gap}px;width:fit-content;max-width:100%`;
+    if(needsNav){
+      pxNavEl.style.display='flex';
+      // page 0 = most recent, page N-1 = oldest
+      const canPrev=pxPage<totalPages-1;const canNext=pxPage>0;
+      pxNavEl.innerHTML=`
+        <button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage++;renderDash()" ${canPrev?'':'disabled style="opacity:.3;pointer-events:none"'}>\u2039 Older</button>
+        <span style="font-size:11px;color:var(--tx2)">Page ${totalPages-pxPage} of ${totalPages}</span>
+        <button class="px-rbtn" style="padding:4px 12px;font-size:12px" onclick="pxPage--;renderDash()" ${canNext?'':'disabled style="opacity:.3;pointer-events:none"'}>Newer \u203a</button>`;
+    }else{pxNavEl.style.display='none';}
+    const dow=today.getDay(),dToMon=dow===0?6:dow-1;
+    // page 0 = most recent PAGE_WK weeks, page 1 = previous PAGE_WK weeks, etc.
+    const weeksBack=pxPage*PAGE_WK;
+    const startMon=new Date(today);startMon.setDate(today.getDate()-dToMon-(weeksBack+PAGE_WK-1)*7);
+    html+='<div class="px-lbl"></div>';
+    for(let w=0;w<PAGE_WK;w++){const wd=new Date(startMon);wd.setDate(startMon.getDate()+w*7);const showM=(w===0)||(wd.getDate()<=7&&w>0);html+=`<div class="px-mlbl">${showM?MO_[wd.getMonth()]:''}</div>`;}
+    for(let d=0;d<7;d++){html+=`<div class="px-lbl">${DLBLS[d]}</div>`;for(let w=0;w<PAGE_WK;w++){const date=new Date(startMon);date.setDate(startMon.getDate()+w*7+d);date.setHours(0,0,0,0);html+=makeCellHTML(date,date>today);}}
   }
+
   grid.innerHTML=html;
 
-  // Event delegation for tap tooltip
+  // Tap: show centered info modal
+  function fmtT(iso){const d=new Date(iso),H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0');const h12=(H%12)||12,ap=H>=12?'PM':'AM';return CF.timeFormat==='12h'?`${h12}:${M}${ap}`:`${String(H).padStart(2,'0')}:${M}`;}
   grid.onclick=(e)=>{
     const cell=e.target.closest('.px-cell');
     if(!cell||cell.dataset.future==='1')return;
     const lid=cell.dataset.lid;
     const log=lid?fl.find(l=>l.id===lid):null;
-    const tip=G('px-tip');if(!tip)return;
     if(log){
-      SET('pt-date',fmtDate(log.startTime).split(' ')[0]||cell.dataset.date);
-      SET('pt-plan',log.type||'-');
-      SET('pt-dur',fmtDuration(log.actualH));
       const pct=log.completionPct!=null?log.completionPct:parseFloat((log.actualH/log.plannedH*100).toFixed(1));
-      SET('pt-pct',`${pct.toFixed(1)}% ${log.completed?'✓ Complete':'Partial'}`);
-      const tr=G('pt-time-row');
-      if(tr){
-        tr.style.display='';
-        const tf=CF.timeFormat;
-        function fmtT(iso){const d=new Date(iso),H=d.getHours(),M=String(d.getMinutes()).padStart(2,'0');const h12=(H%12)||12,ap=H>=12?'PM':'AM';return tf==='12h'?`${h12}:${M}${ap}`:`${String(H).padStart(2,'0')}:${M}`;}
-        SET('pt-time',fmtT(log.startTime)+' → '+fmtT(log.endTime));
-      }
+      showInfoModal([
+        {l:'Date',v:cell.dataset.date},
+        {l:'Plan',v:log.type||'-'},
+        {l:'Duration',v:fmtDuration(log.actualH)},
+        {l:'Completion',v:`${pct.toFixed(1)}% ${log.completed?'\u2713 Complete':'Partial'}`},
+        {l:'Time',v:fmtT(log.startTime)+' \u2192 '+fmtT(log.endTime)},
+      ]);
     }else{
-      SET('pt-date',cell.dataset.date);SET('pt-plan','-');SET('pt-dur','-');SET('pt-pct','-');
-      const tr=G('pt-time-row');if(tr)tr.style.display='none';
+      showInfoModal([{l:'Date',v:cell.dataset.date},{l:'Status',v:'No fast logged'}]);
     }
-    // position tooltip
-    const rect=cell.getBoundingClientRect();
-    const tw=Math.min(230,window.innerWidth-20);
-    let lft=rect.left+rect.width/2-tw/2;
-    if(lft<10)lft=10;if(lft+tw>window.innerWidth-10)lft=window.innerWidth-tw-10;
-    let top=rect.top-130;if(top<60)top=rect.bottom+8;
-    tip.style.left=lft+'px';tip.style.top=top+'px';tip.style.width=tw+'px';
-    tip.classList.add('show');
     e.stopPropagation();
   };
 
@@ -1443,9 +1642,7 @@ function renderPx(fl){
   if(panel){
     const show=CF.devMode&&CF.testPixels;
     panel.classList.toggle('show',show);
-    if(show){
-      G('px-test-grid').innerHTML=PX_TEST_OPTIONS.map(o=>`<button class="px-test-btn" style="background:${o.bg}" onclick="addTestPixel(${o.pct})">${o.label}</button>`).join('');
-    }
+    if(show){G('px-test-grid').innerHTML=PX_TEST_OPTIONS.map(o=>`<button class="px-test-btn" style="background:${o.bg}" onclick="addTestPixel(${o.pct})">${o.label}</button>`).join('');}
   }
 }
 
@@ -1499,35 +1696,26 @@ function drawRoundedBar(ctx,x,y,w,h,style){
     else ctx.fillRect(x,y,w,h);
   }else ctx.fillRect(x,y,w,h);
 }
-function showChartTip(tipId,x,y,label,val,H){
-  const tip=G(tipId);if(!tip)return;
-  tip.textContent=`${label}: ${val}`;
-  tip.style.display='block';
-  const tw=tip.offsetWidth||80;
-  let lft=x-tw/2;if(lft<0)lft=0;
-  tip.style.left=lft+'px';
-  tip.style.top=(y>60?y-32:y+8)+'px';
-  clearTimeout(tip._t);tip._t=setTimeout(()=>{tip.style.display='none';},2500);
-}
-function addChartTapHandler(cvId,tipId,pts,valFmt){
+function addChartTapHandler(cvId,tipId,pts,valFmt,chartLabel){
   const cv=G(cvId);if(!cv)return;
+  // Remove old listeners by cloning
+  const newCv=cv.cloneNode(true);cv.parentNode.replaceChild(newCv,cv);
   function onTap(e){
     e.preventDefault();
-    const rect=cv.getBoundingClientRect();
+    const rect=newCv.getBoundingClientRect();
     const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-    const cy=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
     if(!pts||!pts.length)return;
     let best=null,bestD=9999;
     pts.forEach(p=>{const d=Math.abs(p.x-cx);if(d<bestD){bestD=d;best=p;}});
-    if(best&&bestD<40){
-      const val=valFmt?valFmt(best.v):best.v;
-      showChartTip(tipId,best.x,best.y,best.lbl,val,rect.height);
+    if(best&&bestD<50){
+      const val=valFmt?valFmt(best.v):String(best.v);
+      showInfoModal([{l:'Period',v:best.lbl},{l:chartLabel||'Value',v:val}]);
     }
   }
-  cv.addEventListener('click',onTap);
-  cv.addEventListener('touchend',onTap,{passive:false});
+  newCv.addEventListener('click',onTap);
+  newCv.addEventListener('touchend',onTap,{passive:false});
 }
-function drawBar(id,labels,values,color,tipId,chartKey){
+function drawBar(id,labels,values,color,tipId,chartKey,chartLabel){
   if(!labels.length){noData(id,'No data yet');return;}
   const r=setupCv(id);if(!r)return;
   const{ctx,W,H}=r;
@@ -1555,9 +1743,9 @@ function drawBar(id,labels,values,color,tipId,chartKey){
     if(n<=14||(i%(Math.ceil(n/10))===0)||i===n-1){ctx.fillStyle='#8E8E93';ctx.textAlign='center';ctx.font='7px -apple-system,sans-serif';ctx.fillText(lbl,x+bw/2,H-pb+10);}
   });
   if(chartKey)chartPts[chartKey]=pts;
-  if(tipId)addChartTapHandler(id,tipId,pts,v=>typeof v==='number'?v.toFixed(1):''+v);
+  if(tipId)addChartTapHandler(id,tipId,pts,v=>typeof v==='number'?v.toFixed(1):''+v,chartLabel||'Value');
 }
-function drawLine(id,labels,values,color,tipId,chartKey){
+function drawLine(id,labels,values,color,tipId,chartKey,chartLabel){
   const nv=values.filter(v=>v!=null);
   if(nv.length<1){noData(id,'Not enough data');return;}
   const r=setupCv(id);if(!r)return;
@@ -1597,7 +1785,7 @@ function drawLine(id,labels,values,color,tipId,chartKey){
   ctx.fillStyle='#8E8E93';ctx.textAlign='center';ctx.font='7px -apple-system,sans-serif';
   pts.forEach(([x,],i)=>{if(n<=14||i%(Math.ceil(n/8))===0||i===n-1)ctx.fillText(labels[i],x,H-pb+10);});
   if(chartKey)chartPts[chartKey]=tapPts;
-  if(tipId)addChartTapHandler(id,tipId,tapPts,v=>typeof v==='number'?v.toFixed(2):''+v);
+  if(tipId)addChartTapHandler(id,tipId,tapPts,v=>typeof v==='number'?v.toFixed(2):''+v,chartLabel||'Value');
 }
 const fmt2=n=>String(n).padStart(2,'0');
 const dKey=d=>`${fmt2(d.getDate())}/${fmt2(d.getMonth()+1)}`;
@@ -1617,12 +1805,12 @@ function drawChart(c){
   if(c==='f'||c==='all'){
     const fl=getFL();
     const{labels,values}=buildPd(CP_.f,fl,'startTime',ls=>ls.reduce((s,l)=>s+(l.actualH||0),0));
-    drawBar('ch-f',labels,values,'#FF6B2B','tip-f','f');
+    drawBar('ch-f',labels,values,'#FF6B2B','tip-f','f','Hours fasted');
   }
   if(c==='w'||c==='all'){
     const wl=getWL();if(!wl.length){noData('ch-w','No weight data yet');return;}
     const{labels,values}=buildPd(CP_.w,wl,'ts',ls=>ls.length?ls[ls.length-1].weight:null);
-    drawLine('ch-w',labels,values,'#34C759','tip-w','w');
+    drawLine('ch-w',labels,values,'#34C759','tip-w','w','Weight');
   }
   if(c==='b'||c==='all'){
     if(!CF.height){noData('ch-b','Set height in Settings');return;}
@@ -1630,12 +1818,12 @@ function drawChart(c){
     const hM=CF.height/100;
     const bl=wl.map(l=>({...l,bv:parseFloat((l.weight/(hM*hM)).toFixed(2))}));
     const{labels,values}=buildPd(CP_.b,bl,'ts',ls=>ls.length?ls[ls.length-1].bv:null);
-    drawLine('ch-b',labels,values,'#AF52DE','tip-b','b');
+    drawLine('ch-b',labels,values,'#AF52DE','tip-b','b','BMI');
   }
   if(c==='wat'||c==='all'){
     const wal=getWaL();
     const{labels,values}=buildPd(CP_.wat,wal,'ts',ls=>ls.reduce((s,l)=>s+(l.amount||0),0));
-    drawBar('ch-wat',labels,values,'#007AFF','tip-wat','wat');
+    drawBar('ch-wat',labels,values,'#007AFF','tip-wat','wat','Water (ml)');
   }
 }
 function drawAllCharts(){drawChart('f');drawChart('w');drawChart('b');drawChart('wat');}
@@ -1717,7 +1905,7 @@ function updateDate(){
   SET('hdate',`${days[d.getDay()]}, ${mo[d.getMonth()]} ${d.getDate()}`);
 }
 window.addEventListener('load',()=>{
-  loadData();applyTheme(CF.theme||'auto');applyUI();
+  loadData();applyTheme(CF.theme||'auto');applyUI();buildArcSVG();
   // Sync pixel range button
   const pxRangeBtns=document.querySelectorAll('.px-rbtn');
   pxRangeBtns.forEach(b=>{b.classList.toggle('act',b.dataset.r===(CF.pixelRange||'3M'));});
